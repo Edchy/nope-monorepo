@@ -1,0 +1,131 @@
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Level 1: Primitives
+   ------------------------------------------------------------ */
+:root {
+  /* Color primitives */
+  --neutral-50: #fafafa;
+  --neutral-100: #f2f0ef;
+  --neutral-200: #e8e8e8;
+  --neutral-300: #d0d0d0;
+  --neutral-400: #a0a0a0;
+  --neutral-500: #707070;
+  --neutral-600: #505050;
+  --neutral-700: #303030;
+  --neutral-800: #1a1a1a;
+  --neutral-900: #0f0f0f;
+  --neutral-950: #080808;
+  --neutral-warm-600: oklch(0.5 0.012 70);
+
+  --experimental-1: #7c2bdd;
+  --experimental-2: #00d900;
+  --experimental-3: oklch(0.75 0.1 125);
+
+  /* Spacing primitives */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* Typography primitives — fluid type scale (Utopia, utopia.fyi)
+     Min viewport: 375px  Max viewport: 1240px
+     Min scale: 1.2 (minor third)  Max scale: 1.25 (major third)
+     Step 0: 1rem @ 375px → 1.125rem @ 1240px */
+  --step--2: clamp(0.6944rem, 0.6856rem + 0.0444vw, 0.72rem);
+  --step--1: clamp(0.8333rem, 0.8101rem + 0.1159vw, 0.9rem);
+  --step-0: clamp(1rem, 0.9565rem + 0.2174vw, 1.125rem);
+  --step-1: clamp(1.2rem, 1.1283rem + 0.3587vw, 1.4063rem);
+  --step-2: clamp(1.44rem, 1.3295rem + 0.5527vw, 1.7578rem);
+  --step-3: clamp(1.728rem, 1.5648rem + 0.816vw, 2.1973rem);
+  --step-4: clamp(2.0736rem, 1.8395rem + 1.1703vw, 2.7466rem);
+  --step-5: clamp(2.4883rem, 2.1597rem + 1.6431vw, 3.4332rem);
+
+  /* Semantic aliases */
+  --font-size-xs: var(--step--2);
+  --font-size-sm: var(--step--1);
+  --font-size-base: var(--step-0);
+  --font-size-lg: var(--step-1);
+  --font-size-xl: var(--step-2);
+  --font-size-2xl: var(--step-3);
+  --font-size-3xl: var(--step-4);
+  --font-size-4xl: var(--step-5);
+
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-thin: 100;
+  --font-weight-bold: 700;
+  --font-weight-black: 900;
+
+  --line-height-display: 0.9;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+
+  /* Border primitives */
+  --border-radius-sm: 4px;
+  --border-radius-full: 9999px;
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+}
+
+/* ------------------------------------------------------------
+   Level 2: Semantic tokens
+   ------------------------------------------------------------ */
+:root {
+  /* Backgrounds */
+  --color-background: var(--neutral-100);
+  --color-background-surface: #ffffff;
+  --color-background-subtle: var(--neutral-100);
+
+  /* Text */
+  --color-text-primary: var(--neutral-900);
+  --color-text-secondary: var(--neutral-warm-600);
+  --color-text-disabled: color-mix(
+    in oklch,
+    var(--color-text-primary) 25%,
+    var(--color-background)
+  );
+  --color-text-inverse: var(--neutral-50);
+
+  /* Actions */
+  --color-action-primary: var(--neutral-900);
+  --color-action-primary-hover: var(--neutral-700);
+
+  /* Borders */
+  --color-border-default: color-mix(
+    in oklch,
+    var(--color-background) 97%,
+    black
+  );
+  --color-border-strong: color-mix(
+    in oklch,
+    var(--color-background) 70%,
+    black
+  );
+
+  /* Semantic spacing */
+  --space-section: var(--space-20);
+  --space-container-x: var(--space-6);
+
+  /* Layout */
+  --max-width-content: 720px;
+  --max-width-wide: 1024px;
+  --max-width-layout: 1200px;
+
+  /* Font families */
+  --font-family-base: var(--font-jost);
+
+  /* Motion */
+  --motion-ease-decelerate: cubic-bezier(0.19, 1, 0.22, 1);
+}

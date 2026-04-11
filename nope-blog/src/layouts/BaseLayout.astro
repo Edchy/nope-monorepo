@@ -19,10 +19,11 @@ const {
 const currentPath = Astro.url.pathname;
 
 const navLinks = [
-  { href: "/blog", label: "blog" },
-  { href: "/resources", label: "resources" },
-  { href: "/gallery", label: "gallery" },
-  { href: "https://nope.digital", label: "nope.digital", isExternal: true },
+  { href: "/blog", label: "Blog" },
+  { href: "/art-int", label: "Art Int" },
+  { href: "/resources", label: "Resources" },
+  { href: "/gallery", label: "Gallery" },
+  { href: "https://nope.digital", label: "Nope.digital", isExternal: true },
 ];
 ---
 
@@ -38,21 +39,50 @@ const navLinks = [
     <ClientRouter />
   </head>
   <body>
+    <button
+      type="button"
+      class="menu-trigger"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      aria-controls="shell-aside"
+    >
+      <svg
+        class="menu-icon"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
+        <line
+          class="menu-icon__top"
+          x1="3" y1="9" x2="21" y2="9"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        ></line>
+        <line
+          class="menu-icon__bot"
+          x1="3" y1="15" x2="21" y2="15"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        ></line>
+      </svg>
+    </button>
+
     <div class="shell">
-      <aside class="shell__aside" transition:persist="shell-aside">
+      <aside id="shell-aside" class="shell__aside" transition:persist="shell-aside">
         <div class="shell__aside-inner">
-          <div class="shell__meta">
-            <slot name="meta">
-              <p class="shell__page-title">{title}</p>
-              {description && <p class="shell__page-desc">{description}</p>}
-            </slot>
-          </div>
+          <a href="/" class="shell__wordmark">NOPE</a>
 
           <nav class="shell__nav" aria-label="Main navigation">
-            <a href="/" class="shell__site-title">NOPE</a>
             <ul class="shell__nav-links">
-              {navLinks.map(({ href, label, isExternal }) => (
-                <li>
+              {navLinks.map(({ href, label, isExternal }, index) => (
+                <li
+                  class="shell__nav-item"
+                  style={`--nav-item-index: ${index}`}
+                >
                   <a
                     href={href}
                     class:list={[
@@ -68,6 +98,25 @@ const navLinks = [
             </ul>
           </nav>
         </div>
+        <button
+          type="button"
+          class="aside-toggle aside-toggle--open"
+          aria-label="Hide sidebar"
+          aria-controls="shell-aside"
+          aria-expanded="true"
+        >
+          <span class="aside-toggle__icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+              <path
+                d="M10.5 4.5 6 9l4.5 4.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+        </button>
       </aside>
 
       <main class="shell__main" transition:name="shell-main" transition:animate="none">
@@ -75,36 +124,85 @@ const navLinks = [
       </main>
     </div>
 
+    <button
+      type="button"
+      class="aside-toggle aside-toggle--closed"
+      aria-label="Show sidebar"
+      aria-controls="shell-aside"
+      aria-expanded="false"
+    >
+      <span class="aside-toggle__icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+          <path
+            d="M10.5 4.5 6 9l4.5 4.5"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+    </button>
+
     {!noFooter && <Footer siteTitle="NOPE" />}
   </body>
 </html>
 
 <style>
+  :root {
+    --shell-aside-width: 15rem;
+    --aside-toggle-size: 1.25rem;
+    --aside-toggle-hit-size: calc(var(--aside-toggle-size) + var(--space-2));
+    --shell-aside-transition-duration: 360ms;
+    --shell-aside-fade-duration: 240ms;
+    --shell-aside-transition: var(--shell-aside-transition-duration) cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ── Shell ── */
   .shell {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
     min-height: 100svh;
   }
 
   @media (min-width: 768px) {
     .shell {
-      grid-template-columns: 280px 1fr;
+      grid-template-columns: var(--shell-aside-width) minmax(0, 1fr);
+      transition: grid-template-columns var(--shell-aside-transition);
+    }
+
+    .shell.shell--aside-collapsed {
+      grid-template-columns: 0 minmax(0, 1fr);
     }
   }
 
-  /* ── Left panel ── */
+  /* ── Aside ── */
   .shell__aside {
-    background: var(--surface, #edeae3);
-    border-right: 1px solid rgba(0, 0, 0, 0.06);
+    background-color: var(--experimental-1);
+    color: var(--experimental-2);
+    min-width: 0;
   }
 
   @media (min-width: 768px) {
     .shell__aside {
       position: sticky;
       top: 0;
+      width: var(--shell-aside-width);
       height: 100svh;
       overflow-y: auto;
+      overflow-x: visible;
+      z-index: 2;
+      transform: translateX(0);
+      will-change: transform, opacity;
+      transition:
+        transform var(--shell-aside-transition),
+        opacity var(--shell-aside-fade-duration) ease-out;
+    }
+
+    .shell.shell--aside-collapsed .shell__aside {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(calc(var(--shell-aside-width) * -1));
     }
   }
 
@@ -114,50 +212,39 @@ const navLinks = [
     justify-content: space-between;
     height: 100%;
     padding: var(--space-8);
-    gap: var(--space-8);
   }
 
-  /* ── Meta slot (top) ── */
-  .shell__meta {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+  @media (min-width: 768px) {
+    .shell__aside-inner {
+      will-change: transform, opacity;
+      transition:
+        opacity var(--shell-aside-fade-duration) ease-out,
+        transform var(--shell-aside-transition);
+    }
+
+    .shell.shell--aside-collapsed .shell__aside-inner {
+      opacity: 0;
+      transform: translateX(calc(var(--space-4) * -1));
+    }
   }
 
-  .shell__page-title {
-    margin: 0;
+  /* ── Wordmark ── */
+  .shell__wordmark {
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
-    letter-spacing: var(--letter-spacing-tight);
-    line-height: var(--line-height-tight);
-  }
-
-  .shell__page-desc {
-    margin: var(--space-3) 0 0;
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-    line-height: var(--line-height-relaxed);
-  }
-
-  /* ── Nav (bottom) ── */
-  .shell__nav {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-  }
-
-  .shell__site-title {
-    font-weight: var(--font-weight-bold);
-    font-size: var(--font-size-sm);
-    letter-spacing: 0.06em;
+    letter-spacing: -0.025em;
     text-decoration: none;
-    color: var(--color-text-primary);
-    transition: opacity var(--transition-fast);
+    color: var(--experimental-2);
+    transition: opacity 0.15s ease;
   }
 
-  .shell__site-title:hover {
-    opacity: 0.6;
+  .shell__wordmark:hover {
+    opacity: 0.7;
+  }
+
+  /* ── Nav ── */
+  .shell__nav {
+    margin-top: auto;
   }
 
   .shell__nav-links {
@@ -166,29 +253,351 @@ const navLinks = [
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: var(--space-1);
   }
 
   .shell__nav-link {
     display: inline-flex;
     align-items: baseline;
-    gap: var(--space-1);
-    font-size: var(--font-size-sm);
+    gap: var(--space-2);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     text-decoration: none;
-    color: var(--color-text-secondary);
-    transition: color var(--transition-fast);
+    color: color-mix(in oklch, var(--experimental-2) 50%, var(--experimental-1));
+    transition: color 0.15s ease;
   }
 
   .shell__nav-link:hover,
   .shell__nav-link--active {
-    color: var(--color-text-primary);
+    color: var(--experimental-2);
   }
 
-  /* ── Right panel ── */
+  /* ── Main ── */
   .shell__main {
     min-width: 0;
     display: flex;
     flex-direction: column;
     align-self: stretch;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Hamburger trigger — desktop hidden ── */
+  .menu-trigger {
+    display: none;
+  }
+
+  .aside-toggle {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .aside-toggle {
+      display: inline-flex;
+      top: 50%;
+      align-items: center;
+      justify-content: center;
+      width: var(--aside-toggle-hit-size);
+      height: var(--aside-toggle-hit-size);
+      padding: 0;
+      border: none;
+      border-radius: var(--border-radius-full);
+      background-color: transparent;
+      color: var(--color-background-surface);
+      z-index: 102;
+      transition:
+        color 150ms ease,
+        background-color var(--shell-aside-fade-duration) ease-out,
+        box-shadow var(--shell-aside-fade-duration) ease-out,
+        opacity var(--shell-aside-fade-duration) ease-out;
+      transform: translateY(-50%);
+      opacity: 1;
+    }
+
+    .aside-toggle--open {
+      position: absolute;
+      right: var(--space-1);
+    }
+
+    .shell.shell--aside-collapsed .aside-toggle--open {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .aside-toggle--open:hover {
+      opacity: 0.56;
+    }
+
+    .aside-toggle--closed {
+      position: fixed;
+      left: var(--space-2);
+      background-color: var(--experimental-1);
+      color: var(--color-background-surface);
+      opacity: 0;
+      pointer-events: none;
+      box-shadow: 0 0 0 var(--border-width-1) color-mix(in oklch, var(--experimental-1) 70%, black);
+    }
+
+    .shell.shell--aside-collapsed ~ .aside-toggle--closed {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .aside-toggle--closed:hover {
+      opacity: 1;
+    }
+
+    .aside-toggle__icon {
+      display: inline-flex;
+      transform: scale(0.85);
+      transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .aside-toggle--closed .aside-toggle__icon {
+      transform: scale(0.85) rotate(180deg);
+    }
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 767px) {
+    .shell__wordmark {
+      display: none;
+    }
+
+    .shell__aside {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--space-8);
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-12px);
+      transition-property: opacity, transform;
+      transition-duration: 180ms;
+      transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+    }
+
+    .shell__aside.is-open {
+      pointer-events: auto;
+      opacity: 1;
+      transform: translateY(0);
+      transition-duration: 280ms;
+      transition-timing-function: var(--motion-ease-decelerate);
+    }
+
+    .shell__aside-inner {
+      justify-content: space-between;
+    }
+
+    .shell__nav-item {
+      --nav-item-stagger: 50ms;
+      opacity: 0;
+      transform: translateY(16px);
+      transition-property: opacity, transform;
+      transition-duration: 180ms;
+      transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+    }
+
+    .shell__aside.is-open .shell__nav-item {
+      opacity: 1;
+      transform: translateY(0);
+      transition-duration: 350ms;
+      transition-timing-function: var(--motion-ease-decelerate);
+      transition-delay: calc(var(--nav-item-index, 0) * var(--nav-item-stagger));
+    }
+
+    .shell__nav-link {
+      font-size: clamp(3rem, 18vw, 5rem);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: -0.03em;
+      padding-block: var(--space-2);
+      line-height: var(--line-height-tight);
+    }
+
+    .menu-trigger {
+      display: inline-flex;
+      position: fixed;
+      top: var(--space-4);
+      right: var(--space-4);
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      background: transparent;
+      color: var(--experimental-2);
+      border: none;
+      z-index: 101;
+    }
+
+    .menu-trigger .menu-icon__top,
+    .menu-trigger .menu-icon__bot {
+      transition: transform 0.28s var(--motion-ease-decelerate);
+    }
+
+    .menu-trigger .menu-icon__top {
+      transform-origin: 12px 9px;
+    }
+
+    .menu-trigger .menu-icon__bot {
+      transform-origin: 12px 15px;
+    }
+
+    .menu-trigger[aria-expanded="true"] .menu-icon__top {
+      transform: translateY(3px) rotate(45deg);
+    }
+
+    .menu-trigger[aria-expanded="true"] .menu-icon__bot {
+      transform: translateY(-3px) rotate(-45deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shell,
+    .shell__aside,
+    .shell__aside-inner,
+    .aside-toggle,
+    .aside-toggle__icon {
+      transition-duration: 0.01ms !important;
+    }
   }
 </style>
+
+<script>
+  {
+    let cleanup: (() => void) | undefined;
+
+    function init() {
+      cleanup?.();
+
+      const trigger = document.querySelector<HTMLButtonElement>(".menu-trigger");
+      const shell = document.querySelector<HTMLElement>(".shell");
+      const aside = document.querySelector<HTMLElement>("#shell-aside");
+      const asideInner = aside?.querySelector<HTMLElement>(".shell__aside-inner");
+      const openDesktopTrigger = aside?.querySelector<HTMLButtonElement>(".aside-toggle--open");
+      const closedDesktopTrigger = document.querySelector<HTMLButtonElement>(".aside-toggle--closed");
+
+      if (!trigger || !openDesktopTrigger || !closedDesktopTrigger || !shell || !aside || !asideInner) return;
+
+      aside.style.transition = "";
+      aside.style.opacity = "";
+      aside.style.pointerEvents = "";
+      const desktopMedia = window.matchMedia("(min-width: 768px)");
+
+      const syncAriaState = () => {
+        const desktopCollapsed = shell.classList.contains("shell--aside-collapsed");
+        const mobileOpen = aside.classList.contains("is-open");
+        const asideIsVisible = desktopMedia.matches ? !desktopCollapsed : mobileOpen;
+
+        asideInner.toggleAttribute("inert", !asideIsVisible);
+        asideInner.setAttribute("aria-hidden", String(!asideIsVisible));
+        [openDesktopTrigger, closedDesktopTrigger].forEach((button) => {
+          button.setAttribute("aria-expanded", String(!desktopCollapsed));
+          button.setAttribute(
+            "aria-label",
+            desktopCollapsed ? "Show sidebar" : "Hide sidebar",
+          );
+        });
+      };
+
+      const openMobileMenu = () => {
+        aside.classList.add("is-open");
+        trigger.setAttribute("aria-expanded", "true");
+        document.body.style.overflow = "hidden";
+        syncAriaState();
+      };
+
+      const closeMobileMenu = () => {
+        aside.classList.remove("is-open");
+        trigger.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+        syncAriaState();
+      };
+
+      const setDesktopCollapsed = (collapsed: boolean) => {
+        shell.classList.toggle("shell--aside-collapsed", collapsed);
+        syncAriaState();
+      };
+
+      const syncViewportState = () => {
+        if (desktopMedia.matches) closeMobileMenu();
+        else syncAriaState();
+      };
+
+      const controller = new AbortController();
+      const { signal } = controller;
+
+      trigger.addEventListener(
+        "click",
+        () => (aside.classList.contains("is-open") ? closeMobileMenu() : openMobileMenu()),
+        { signal },
+      );
+
+      [openDesktopTrigger, closedDesktopTrigger].forEach((button) => {
+        button.addEventListener(
+          "click",
+          () => setDesktopCollapsed(!shell.classList.contains("shell--aside-collapsed")),
+          { signal },
+        );
+      });
+
+      aside.querySelectorAll<HTMLAnchorElement>(".shell__nav-link").forEach((link) => {
+        link.addEventListener(
+          "click",
+          () => {
+            if (desktopMedia.matches) return;
+
+            const onAfterSwap = () => {
+              aside.style.transition = "none";
+              closeMobileMenu();
+              requestAnimationFrame(() => {
+                aside.style.transition = "";
+              });
+              document.removeEventListener("astro:after-swap", onAfterSwap);
+            };
+            document.addEventListener("astro:after-swap", onAfterSwap);
+          },
+          { signal },
+        );
+      });
+
+      document.addEventListener(
+        "keydown",
+        (e) => {
+          if (e.key === "Escape" && aside.classList.contains("is-open")) closeMobileMenu();
+        },
+        { signal },
+      );
+
+      const handleViewportChange = () => {
+        syncViewportState();
+      };
+
+      if ("addEventListener" in desktopMedia) {
+        desktopMedia.addEventListener("change", handleViewportChange);
+      } else {
+        desktopMedia.addListener(handleViewportChange);
+      }
+
+      syncAriaState();
+
+      cleanup = () => {
+        controller.abort();
+        if ("removeEventListener" in desktopMedia) {
+          desktopMedia.removeEventListener("change", handleViewportChange);
+        } else {
+          desktopMedia.removeListener(handleViewportChange);
+        }
+        document.body.style.overflow = "";
+      };
+    }
+
+    document.addEventListener("astro:page-load", init);
+    init();
+  }
+</script>

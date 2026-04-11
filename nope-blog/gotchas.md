@@ -16,6 +16,14 @@ Each entry should include:
 
 ## Entries
 
+### 2026-04-11: Full-screen gallery routes need their own exit chrome
+
+**What:** The gallery used a fixed full-viewport wrapper, which made the normal site navigation effectively unavailable once you entered the route.
+
+**Why:** Immersive canvas pages sit above the regular shell unless they provide their own persistent controls or intentionally preserve the shell layer.
+
+**Fix:** Keep an explicit back path and pause/resume controls inside the gallery chrome whenever a route takes over the viewport.
+
 ### 2026-04-02: Initial Setup
 
 **What:** Started project without design tokens. Hardcoded values in global.css.

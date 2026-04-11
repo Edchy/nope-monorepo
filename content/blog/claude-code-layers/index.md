@@ -1,7 +1,7 @@
 ---
 title: "Understanding Claude Code's Context Layers"
 date: 2026-04-10
-draft: true
+draft: false
 ---
 When you use Claude Code, there is not just one thing telling Claude how to behave. There is a whole stack of instructions layered on top of each other, and knowing how they work saves you a lot of confusion.
 

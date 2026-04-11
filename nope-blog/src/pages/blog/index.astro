@@ -19,12 +19,6 @@ const swatchColors = [
 ---
 
 <BaseLayout title="Blog — NOPE" description="Notes on building, design, and the web.">
-  <Fragment slot="meta">
-    <p class="meta__eyebrow">Blog</p>
-    <h1 class="meta__title">Notes on building, design, and the web.</h1>
-    <p class="meta__count">{posts.length} posts</p>
-  </Fragment>
-
   <div class="blog-content">
     <ul class="blog-grid">
       {
@@ -73,7 +67,7 @@ const swatchColors = [
     font-size: clamp(1.1rem, 2vw, 1.5rem);
     font-weight: var(--font-weight-bold);
     line-height: var(--line-height-tight);
-    letter-spacing: var(--letter-spacing-tight);
+    letter-spacing: -0.025em;
   }
 
   .meta__count {
@@ -117,7 +111,7 @@ const swatchColors = [
   .blog-card__swatch {
     aspect-ratio: 4 / 3;
     width: 100%;
-    transition: opacity var(--transition-base);
+    transition: opacity 0.2s ease;
   }
 
   .blog-card__link:hover .blog-card__swatch {
@@ -155,7 +149,7 @@ const swatchColors = [
   .blog-card__desc {
     margin: 0;
     font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     line-height: var(--line-height-relaxed);
   }
 </style>

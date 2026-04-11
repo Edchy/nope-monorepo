@@ -1,62 +1,76 @@
-# PRD: NOPE Digital Website
+# PRD: NOPE Blog
 
-## Idea Snapshot
+## What This Is
 
-- **Problem and audience:** Need a place to showcase work and document learning journey. Audience is potential clients, employers, and fellow learners.
-- **Value prop vs. alternatives:** A focused site gives full control over presentation and brand. No platform limitations or algorithmic clutter.
-- **Impact goal:** Establish a strong NOPE Digital web presence and present work, writing, and references in a cohesive way.
+A personal site by NOPE Digital. The primary purpose is writing — long-form posts, notes, and essays. Secondary purpose is being a personal corner of the internet: a place for things worth sharing, things worth remembering, and things that don't fit anywhere else.
 
-## Top Three Problems Solved
+This is not a portfolio site. Work and client history live on nope-main.
 
-1. No central place to showcase portfolio work
-2. No clear public home for blog content
-3. No curated space for tools/references and visual gallery work
+## Problem and Audience
 
-## Assumptions to Validate
+- **Problem:** No dedicated home for writing and personal curation under the NOPE Digital brand.
+- **Audience:** Whoever finds it. No specific target demographic — this is a personal site, not a product.
+- **Value prop:** Full control over voice, presentation, and what gets published. No algorithmic feed, no platform constraints.
 
-- Portfolio pieces are compelling enough to attract interest
-- Blog content will be maintained often enough to justify a dedicated section
-- Site performance and design meet professional standards
+## Goals
+
+1. Make writing easy to publish and pleasant to read.
+2. Give the site a personality — it should feel like a place, not a template.
+3. Leave room to grow without planning every room in advance.
 
 ## Success Metrics (v1)
 
+- Writing is easy to add (one Markdown file = one post)
 - Site loads fast (< 2s)
-- All pages accessible and responsive
-- Content is easy to update (just add markdown)
-- Clean, professional aesthetic
+- All pages responsive
+- The design reflects the NOPE brand, not generic defaults
 
-## User Stories
+## Core Feature: Blog
 
-- As a visitor, I land directly on the main work experience
-- As a visitor, I can read blog posts
-- As a visitor, I can find curated resources
-- As a visitor, I can explore a visual gallery sourced from work content
+The blog is the anchor of the site.
+
+**Must-have:**
+- Post listing page
+- Individual post pages with good typography
+- Date, title, description per post
+- Draft support (drafts don't publish)
+- RSS feed
+
+**Nice-to-have:**
+- Tags or categories
+- Reading time estimate
+- Prev/next post navigation
+- Search
+
+## Future Sections (Ideas — Not Scoped)
+
+These are directional, not commitments. Add them when the content and intent are clear enough to build intentionally.
+
+| Section | Rough idea |
+|---------|------------|
+| Resources | Curated links — tools, articles, references worth keeping |
+| Reading / Articles | Things I've read and want to remember or share |
+| Videos | Interesting, fun, or inspiring video finds |
+| Art | Visual work, inspiration, or personal creative output |
+| AI | Dedicated space for AI-related writing, tools, or experiments |
+| Shop | TBD — merchandise, digital products, or something else entirely |
+
+None of these should be built until there's a clear answer to: what content goes here, and what does a visitor do on this page?
 
 ## Tech Stack
 
 - **Framework:** Astro
-- **Rationale:** Static site generation, content collections, zero JS by default, fast builds
+- **Rationale:** Static, fast, content-collection-native, zero JS by default
 - **Styling:** Vanilla CSS with design tokens
-- **Content:** Markdown in content collections
-- **Deployment:** (to be determined)
+- **Content:** Markdown in shared `content/` directory (monorepo root)
+- **Deployment:** Netlify (nope-blog base directory)
 
 ## Tier
 
-**Personal** - Portfolio piece, needs polish but not full production CI/CD rigor.
+**Personal** — no CI rigor required, but the bar for design quality is high.
 
-## Must-Haves (v1)
+## Out of Scope
 
-- Home page as the primary work landing page
-- Blog listing and individual posts
-- Resources page
-- Gallery page
-- Responsive design
-- Design tokens for consistency
-
-## Nice-to-Have (later)
-
-- RSS feed
-- Search
-- Dark mode
-- Analytics
-- Contact form
+- Portfolio or client work (lives on nope-main)
+- User accounts or any auth
+- CMS (Markdown is the CMS)

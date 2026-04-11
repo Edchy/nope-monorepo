@@ -58,7 +58,7 @@ const currentPath = Astro.url.pathname;
   .blog-header__inner {
     max-width: var(--max-width-content);
     margin-inline: auto;
-    min-height: var(--header-height);
+    min-height: 4.25rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -66,10 +66,10 @@ const currentPath = Astro.url.pathname;
   }
 
   .blog-header__title {
-    font-weight: var(--font-weight-heading);
+    font-weight: var(--font-weight-bold);
     color: var(--color-text-primary);
     text-decoration: none;
-    transition: opacity var(--transition-fast);
+    transition: opacity 0.15s ease;
   }
 
   .blog-header__title:hover {

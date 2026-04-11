@@ -172,13 +172,27 @@ const displayDataJson = JSON.stringify(displayData);
 ---
 
 <BaseLayout title="Digital Gallery" noFooter>
-  <div class="gallery-wrapper">
+  <div class="gallery-wrapper" id="gallery-wrapper" data-gallery-state="idle">
     <canvas id="gallery-canvas"></canvas>
+    <div class="gallery-hud">
+      <a href="/" class="gallery-hud__back" id="gallery-back-link">Back to site</a>
+      <div class="gallery-hud__panel">
+        <p class="gallery-hud__status" id="gallery-status" aria-live="polite" hidden>
+          Paused.
+        </p>
+        <p class="gallery-hud__instructions">
+          <span class="gallery-kbd-group"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
+          move · Mouse look · <kbd>E</kbd> open
+        </p>
+      </div>
+    </div>
     <div id="display-labels"></div>
     <div class="gallery-overlay" id="gallery-overlay">
       <h1>Digital Gallery</h1>
-      <p>Click to explore the exhibition</p>
-      <span class="hint">WASD to move · Mouse to look</span>
+      <p>Walk the exhibition at your own pace.</p>
+      <button type="button" class="gallery-overlay__action" id="gallery-toggle">
+        Enter
+      </button>
     </div>
   </div>
   <script type="application/json" id="gallery-data" set:html={displayDataJson} />
@@ -189,12 +203,155 @@ const displayDataJson = JSON.stringify(displayData);
     position: fixed;
     inset: 0;
     z-index: 0;
+    --gallery-chrome-surface: color-mix(in oklch, var(--neutral-950) 78%, transparent);
+    --gallery-chrome-border: color-mix(in oklch, var(--neutral-50) 20%, transparent);
+    --gallery-chrome-text: var(--neutral-50);
+    --gallery-chrome-text-muted: color-mix(in oklch, var(--neutral-50) 76%, transparent);
   }
 
   #gallery-canvas {
     display: block;
     width: 100%;
     height: 100%;
+  }
+
+  .gallery-hud {
+    position: absolute;
+    inset-block-start: var(--space-4);
+    inset-inline: var(--space-4);
+    z-index: 3;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    pointer-events: none;
+  }
+
+  .gallery-hud > * {
+    pointer-events: auto;
+  }
+
+  .gallery-hud__back,
+  .gallery-overlay__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding-inline: var(--space-4);
+    border: var(--border-width-1) solid var(--gallery-chrome-border);
+    background: var(--gallery-chrome-surface);
+    backdrop-filter: blur(18px) saturate(145%);
+    -webkit-backdrop-filter: blur(18px) saturate(145%);
+    color: var(--gallery-chrome-text);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  .gallery-hud__back:hover,
+  .gallery-overlay__action:hover {
+    background: color-mix(in oklch, var(--neutral-950) 88%, var(--neutral-50));
+    color: var(--gallery-chrome-text);
+    text-decoration: none;
+  }
+
+  .gallery-hud__panel {
+    width: min(100%, 30rem);
+    margin-inline-start: auto;
+    padding: var(--space-6);
+    border: var(--border-width-1) solid var(--gallery-chrome-border);
+    background: var(--gallery-chrome-surface);
+    backdrop-filter: blur(18px) saturate(145%);
+    -webkit-backdrop-filter: blur(18px) saturate(145%);
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .gallery-hud__status {
+    color: var(--gallery-chrome-text);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-snug);
+    max-width: 32ch;
+  }
+
+  .gallery-hud__instructions {
+    color: var(--gallery-chrome-text-muted);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-snug);
+    max-width: 40ch;
+    padding-top: var(--space-2);
+  }
+
+  .gallery-hud kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.1em;
+    min-height: 2.1em;
+    padding-inline: 0.55em;
+    border: var(--border-width-1) solid color-mix(in oklch, var(--neutral-50) 28%, transparent);
+    background: color-mix(in oklch, var(--neutral-50) 10%, transparent);
+    color: var(--gallery-chrome-text);
+    font-family: inherit;
+    font-size: 0.8em;
+    font-weight: var(--font-weight-semibold);
+    line-height: 1;
+    vertical-align: middle;
+    box-shadow: inset 0 -2px 0 color-mix(in oklch, var(--neutral-950) 45%, transparent);
+  }
+
+  .gallery-kbd-group {
+    display: inline-flex;
+    gap: var(--space-1);
+    margin-inline-end: var(--space-1);
+    vertical-align: middle;
+  }
+
+  .gallery-wrapper[data-gallery-state="locked"] .gallery-hud {
+    justify-content: flex-end;
+  }
+
+  .gallery-wrapper[data-gallery-state="locked"] .gallery-hud__back,
+  .gallery-wrapper[data-gallery-state="locked"] .gallery-hud__instructions {
+    display: none;
+  }
+
+  .gallery-wrapper[data-gallery-state="locked"] .gallery-hud__panel {
+    width: auto;
+    max-width: min(100%, 18rem);
+    padding: var(--space-3) var(--space-4);
+    gap: 0;
+  }
+
+  .gallery-wrapper[data-gallery-state="locked"] .gallery-hud__status {
+    max-width: none;
+    font-size: var(--font-size-sm);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 767px) {
+    .gallery-hud {
+      flex-direction: column;
+      align-items: stretch;
+      inset-inline: var(--space-4);
+    }
+
+    .gallery-hud__panel {
+      width: 100%;
+      margin-inline-start: 0;
+    }
+
+    .gallery-hud__status {
+      max-width: none;
+    }
   }
 
   #display-labels {
@@ -321,7 +478,6 @@ const displayDataJson = JSON.stringify(displayData);
     background:
       radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 45%),
       linear-gradient(180deg, rgba(19, 21, 24, 0.88), rgba(11, 12, 14, 0.94));
-    cursor: pointer;
     transition: opacity 0.4s;
   }
 
@@ -333,7 +489,7 @@ const displayDataJson = JSON.stringify(displayData);
   .gallery-overlay h1 {
     font-family: var(--font-jost), system-ui, sans-serif;
     font-size: 2.5rem;
-    font-weight: var(--font-weight-heading);
+    font-weight: var(--font-weight-bold);
     letter-spacing: -0.02em;
     color: #f7f3eb;
     margin: 0;
@@ -341,16 +497,13 @@ const displayDataJson = JSON.stringify(displayData);
 
   .gallery-overlay p {
     font-family: var(--font-jost), system-ui, sans-serif;
-    font-weight: var(--font-weight-body);
+    font-weight: var(--font-weight-regular);
     color: rgba(247, 243, 235, 0.78);
     font-size: 1rem;
     margin: 0;
   }
 
-  .gallery-overlay .hint {
-    color: rgba(247, 243, 235, 0.48);
-    font-size: 0.8rem;
-    margin-top: 16px;
+  .gallery-overlay__action {
   }
 </style>
 
@@ -396,7 +549,57 @@ const displayDataJson = JSON.stringify(displayData);
 
   const canvas = document.getElementById('gallery-canvas') as HTMLCanvasElement;
   const overlay = document.getElementById('gallery-overlay') as HTMLElement;
-  if (!canvas || !overlay) return;
+  const wrapper = document.getElementById('gallery-wrapper') as HTMLElement;
+  const backLink = document.getElementById('gallery-back-link') as HTMLAnchorElement;
+  const statusText = document.getElementById('gallery-status') as HTMLParagraphElement;
+  const toggleButton = document.getElementById('gallery-toggle') as HTMLButtonElement;
+  if (!canvas || !overlay || !wrapper || !backLink || !statusText || !toggleButton) return;
+
+  let hasExplored = false;
+  const initialStatusHtml = '';
+  const pausedStatusHtml = 'Paused.';
+  const exploringStatusHtml = 'Exploring. <kbd>Esc</kbd> to pause.';
+
+  function getBackTarget() {
+    const fallback = { href: '/', label: 'Back to site' };
+
+    try {
+      if (!document.referrer) return fallback;
+      const referrer = new URL(document.referrer);
+
+      if (referrer.origin !== window.location.origin || referrer.pathname === window.location.pathname) {
+        return fallback;
+      }
+
+      return {
+        href: `${referrer.pathname}${referrer.search}${referrer.hash}`,
+        label: 'Back',
+      };
+    } catch {
+      return fallback;
+    }
+  }
+
+  function syncGalleryChrome(locked: boolean) {
+    wrapper.dataset.galleryState = locked ? 'locked' : 'idle';
+
+    if (locked) {
+      statusText.innerHTML = exploringStatusHtml;
+      statusText.hidden = false;
+      toggleButton.textContent = 'Exploring';
+      return;
+    }
+
+    const statusHtml = hasExplored ? pausedStatusHtml : initialStatusHtml;
+    statusText.innerHTML = statusHtml;
+    statusText.hidden = statusHtml.length === 0;
+    toggleButton.textContent = hasExplored ? 'Resume' : 'Enter';
+  }
+
+  const backTarget = getBackTarget();
+  backLink.href = backTarget.href;
+  backLink.textContent = backTarget.label;
+  syncGalleryChrome(false);
 
   // Scene
   const scene = new Scene();
@@ -1628,14 +1831,18 @@ const displayDataJson = JSON.stringify(displayData);
   });
 
   overlay.addEventListener('click', () => controls.lock());
+  toggleButton.addEventListener('click', () => controls.lock());
   controls.addEventListener('lock', () => {
+    hasExplored = true;
     overlay.classList.add('hidden');
     labelsContainer.classList.add('active');
+    syncGalleryChrome(true);
   });
   controls.addEventListener('unlock', () => {
     overlay.classList.remove('hidden');
     labelsContainer.classList.remove('active');
     labelEls.forEach(({ el }) => el.classList.remove('visible'));
+    syncGalleryChrome(false);
   });
 
   // WASD movement

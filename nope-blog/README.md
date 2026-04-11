@@ -1,6 +1,6 @@
-# NOPE Digital Website
+# NOPE Blog
 
-A static Astro site for NOPE Digital with four public sections: home, blog, resources, and gallery.
+A personal site by NOPE Digital. Writing is the primary purpose. Everything else — resources, links, art, video, and whatever comes next — lives here too.
 
 ## Quick Start
 
@@ -25,12 +25,12 @@ npm run dev       # Start dev server at localhost:4321
 ```
 src/
 ├── components/       # Shared UI (Header, Footer, Nav)
-├── content/          # Markdown content collections
-│   ├── blog/         # Blog posts
-│   └── work/         # Portfolio/gallery source content
 ├── layouts/          # Page layouts (Base, Blog)
 ├── pages/            # Routes
 └── styles/           # Global CSS with design tokens
+
+content/              # Shared content root (monorepo root)
+└── blog/             # Blog posts (Markdown)
 ```
 
 ### Content Collections
@@ -38,9 +38,8 @@ src/
 Defined in `src/content.config.ts` with Zod validation:
 
 - **blog** — `title`, `description?`, `date`, `draft`
-- **work** — `title`, `description?`, `date?`, `section?`, `tags?`, `url?`, `images?`, `tech?`, `effort`
 
-Add a `.md` file to the appropriate folder to publish new content.
+Add a `.md` file to `content/blog/` to publish a new post.
 
 ### Styling
 
@@ -56,16 +55,17 @@ Key tokens:
 
 | Route | Description |
 |-------|-------------|
-| `/` | Home — primary work landing page |
-| `/blog` | Post listing + individual posts |
-| `/resources` | Curated tools and references |
-| `/gallery` | Interactive 3D gallery built from work content |
+| `/` | Home — post listing or editorial landing |
+| `/blog` | All posts |
+| `/blog/[slug]` | Individual post |
+
+Future sections (not yet built) are tracked in the PRD.
 
 ## Tech Stack
 
 - **Astro** — Static site generation, zero JS by default
 - **Vanilla CSS** — Design tokens, no framework
-- **Markdown** — Content authoring for blog and work collections
+- **Markdown** — All content
 
 ## License
 

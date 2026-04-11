@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@nope/ui": "*",
-    "@lobehub/icons-static-svg": "^1.84.0",
     "astro": "^6.1.2",
     "heerich": "^0.6.6",
     "three": "^0.183.2"

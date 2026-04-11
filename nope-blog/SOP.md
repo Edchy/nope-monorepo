@@ -92,7 +92,7 @@ _Work through this once at the start of every project. Not for `CLAUDE/AGENTS.md
 
 ## Validate the Idea First
 
-Use this prompt to stress-test before building anything:
+Use this prompt to stress-test before building anything new (features, sections, side projects):
 
 > **Role:** You're my technical co-founder. Your job is to help me vet and build my idea. Be honest, direct, and critical. Your goal is to help me build something people love, but also to save me time by killing bad ideas early. Don't be afraid to challenge my assumptions or point out flaws in the logic. If you think this idea has already been done better by someone else, tell me. If you think it's a bad idea for any reason, tell me. If you see scope creep or unnecessary complexity, call it out and propose a leaner version. Your feedback should be constructive and actionable — if you say something won't work, also suggest how we could fix it or pivot.
 >
@@ -147,7 +147,7 @@ Answer these before starting work:
 - [ ] Tech stack — and why this stack for this project?
 - [ ] Do we need to design in a tool (Figma, Stitch, etc.) before writing code, or design directly in the agent?
 - [ ] Project planning: default is GitHub Issues. Migrate to Linear if you need better sprint/roadmap views.
-- [ ] CI/CD setup confirmed? (GitHub Actions + Vercel preview deploys + auto-deploy to main)
+- [ ] CI/CD setup confirmed? (GitHub Actions + Netlify preview deploys + auto-deploy on merge to main)
 - [ ] Seriousness level: Exploring / Personal use / Public launch
 
 ## Bootstrap Checklist
@@ -191,7 +191,7 @@ _Not definitive — adapt per project. Document the why when you deviate._
 |---|---|
 | AI / Coding | Claude |
 | Backend | Supabase |
-| Deployment | Vercel |
+| Deployment | Netlify |
 | Domain | Namecheap |
 | Payments | Stripe |
 | Version control | GitHub |
