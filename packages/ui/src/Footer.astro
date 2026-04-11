@@ -169,12 +169,6 @@ const footerLetters = [...footerWordmark];
           return;
         }
 
-        footerLetters.forEach((letter) => {
-          letter.style.opacity = "0";
-          letter.style.transform =
-            "translate3d(0, var(--footer-wordmark-offset-y, 1.15em), 0) rotate(-8deg) scale(0.9)";
-        });
-
         footerShell.dataset.footerReady = "true";
 
         if (
@@ -182,13 +176,15 @@ const footerLetters = [...footerWordmark];
           window.matchMedia("(max-width: 768px)").matches ||
           window.matchMedia("(prefers-reduced-motion: reduce)").matches
         ) {
-          footerLetters.forEach((letter) => {
-            letter.style.opacity = "1";
-            letter.style.transform = "translate3d(0, 0, 0)";
-          });
           footerShell.dataset.footerVisible = "true";
           return;
         }
+
+        footerLetters.forEach((letter) => {
+          letter.style.opacity = "0";
+          letter.style.transform =
+            "translate3d(0, var(--footer-wordmark-offset-y, 1.15em), 0) rotate(-8deg) scale(0.9)";
+        });
 
         const footerStyles = getComputedStyle(footerShell);
         const springEasing =

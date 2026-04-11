@@ -379,6 +379,7 @@ const navLinks = [
       z-index: 100;
       pointer-events: none;
       opacity: 0;
+      overflow-y: auto;
       transform: translateY(-12px);
       transition-property: opacity, transform;
       transition-duration: 180ms;
@@ -415,10 +416,10 @@ const navLinks = [
     }
 
     .shell__nav-link {
-      font-size: clamp(3rem, 18vw, 5rem);
+      font-size: clamp(2rem, 11vw, 3.5rem);
       font-weight: var(--font-weight-bold);
       letter-spacing: -0.03em;
-      padding-block: var(--space-2);
+      padding-block: var(--space-1);
       line-height: var(--line-height-tight);
     }
 
