@@ -195,6 +195,10 @@ const displayDataJson = JSON.stringify(displayData);
       </button>
     </div>
   </div>
+  <div id="gallery-mobile-wall" hidden>
+    <p>The 3D gallery requires a desktop browser.</p>
+    <a href="/" class="gallery-hud__back">Back to site</a>
+  </div>
   <script type="application/json" id="gallery-data" set:html={displayDataJson} />
 </BaseLayout>
 
@@ -503,6 +507,28 @@ const displayDataJson = JSON.stringify(displayData);
   }
 
   .gallery-overlay__action {
+  }
+
+  #gallery-mobile-wall {
+    --gallery-chrome-surface: color-mix(in oklch, var(--neutral-950) 78%, transparent);
+    --gallery-chrome-border: color-mix(in oklch, var(--neutral-50) 20%, transparent);
+    --gallery-chrome-text: var(--neutral-50);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    min-height: 100dvh;
+    padding: var(--space-6);
+    text-align: center;
+    color: var(--neutral-50);
+    background: var(--neutral-950);
+  }
+
+  #gallery-mobile-wall p {
+    font-size: var(--font-size-lg);
+    color: var(--neutral-400);
+    margin: 0;
   }
 </style>
 
@@ -1993,5 +2019,15 @@ const displayDataJson = JSON.stringify(displayData);
   }, { once: true });
   }
 
-  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:page-load', () => {
+    const isMobile = window.matchMedia('(pointer: coarse)').matches;
+    if (isMobile) {
+      const wrapper = document.getElementById('gallery-wrapper') as HTMLElement | null;
+      const mobileWall = document.getElementById('gallery-mobile-wall') as HTMLElement | null;
+      if (wrapper) wrapper.hidden = true;
+      if (mobileWall) mobileWall.hidden = false;
+      return;
+    }
+    init();
+  });
 </script>

@@ -33,13 +33,7 @@ const secondPost = posts[1];
       <span class="cell__sublabel cell__meta">Art &amp; intelligence</span>
     </a>
 
-    <!-- 4: Gallery -->
-    <a href="/gallery" class="cell cell--gallery cell--lift" data-lift-max="18">
-      <span class="cell__label-lg">Gallery</span>
-      <span class="cell__sublabel cell__meta">3D work &amp; experiments</span>
-    </a>
-
-    <!-- 5: Latest blog post -->
+    <!-- 4: Latest blog post -->
     {latestPost && (
       <a
         href={`/blog/${latestPost.id.replace(/\/index$/, "")}`}
@@ -60,6 +54,12 @@ const secondPost = posts[1];
         </p>
       </a>
     )}
+
+    <!-- 5: Gallery -->
+    <a href="/gallery" class="cell cell--gallery cell--lift" data-lift-max="18">
+      <span class="cell__label-lg">Gallery</span>
+      <span class="cell__sublabel cell__meta">3D work &amp; experiments</span>
+    </a>
 
   </div>
 </BaseLayout>
@@ -102,7 +102,7 @@ const secondPost = posts[1];
     grid-column: span 2;
     justify-content: stretch;
     padding: 0;
-    background: #050505;
+    background: var(--neutral-900);
     color: var(--neutral-50);
     transition: background-color 0.45s ease;
   }
@@ -124,7 +124,8 @@ const secondPost = posts[1];
 
   /* ── Blog post cells ── */
   .cell--post {
-    background: var(--color-background-surface);
+    background: var(--experimental-1);
+    color: var(--neutral-50);
     gap: var(--space-3);
   }
 
@@ -231,12 +232,12 @@ const secondPost = posts[1];
 
     .cell--voxel {
       grid-column: 1 / -1;
-      grid-row: 1;
+      grid-row: 3;
     }
 
     .cell--post {
-      grid-column: 2;
-      grid-row: 3;
+      grid-column: 1;
+      grid-row: 1;
     }
 
     .cell--quote {
@@ -245,8 +246,8 @@ const secondPost = posts[1];
     }
 
     .cell--gallery {
-      grid-column: 1;
-      grid-row: 3;
+      grid-column: 2;
+      grid-row: 1;
     }
 
     .cell--dark {
