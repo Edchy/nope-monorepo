@@ -53,6 +53,7 @@ const footerLetters = [...footerWordmark];
     overflow: hidden;
     overflow: clip;
     contain: layout style paint;
+    overflow-anchor: none;
   }
 
   .site-footer__shell {
@@ -174,6 +175,10 @@ const footerLetters = [...footerWordmark];
       justify-self: start;
       text-align: left;
     }
+
+    .site-footer__tagline {
+      display: none;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -195,6 +200,10 @@ const footerLetters = [...footerWordmark];
     const footerShell = document.querySelector<HTMLElement>("[data-footer-shell]");
     if (footerShell) {
       function initFooterReveal() {
+        if (window.matchMedia("(max-width: 768px)").matches) {
+          return;
+        }
+
         const footerLetters = footerShell.querySelectorAll<HTMLElement>(
           ".site-footer__letter",
         );
@@ -207,7 +216,6 @@ const footerLetters = [...footerWordmark];
 
         if (
           sessionStorage.getItem("footer-revealed") === "true" ||
-          window.matchMedia("(max-width: 768px)").matches ||
           window.matchMedia("(prefers-reduced-motion: reduce)").matches
         ) {
           footerShell.dataset.footerVisible = "true";
