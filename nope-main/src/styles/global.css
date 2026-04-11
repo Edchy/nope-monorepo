@@ -134,7 +134,8 @@ a {
 }
 
 .site-main__stage > section:first-of-type {
-  min-height: 100lvh;
+  flex: 1 0 auto;
+  min-height: 100%;
 }
 
 .site-main__stage > section:first-of-type.layout-shell,

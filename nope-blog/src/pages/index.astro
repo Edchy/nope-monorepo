@@ -264,18 +264,33 @@ const secondPost = posts[1];
       min-height: 0;
     }
 
+    .cell--post,
+    .cell--gallery,
+    .cell--dark,
+    .cell--quote,
     .cell--voxel {
       grid-column: 1;
-      grid-row: auto;
-      min-height: 60vw;
     }
 
-    .cell--quote,
-    .cell--dark,
-    .cell--gallery,
     .cell--post {
-      grid-column: 1;
-      grid-row: auto;
+      grid-row: 1;
+    }
+
+    .cell--gallery {
+      grid-row: 2;
+    }
+
+    .cell--dark {
+      grid-row: 3;
+    }
+
+    .cell--quote {
+      grid-row: 4;
+    }
+
+    .cell--voxel {
+      grid-row: 5;
+      min-height: 60vw;
     }
 
     .cell--quote {

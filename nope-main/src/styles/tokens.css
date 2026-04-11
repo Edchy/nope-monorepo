@@ -33,9 +33,11 @@
   --space-8: 32px;
   --space-10: 40px;
   --space-12: 48px;
+  --space-14: 56px;
   --space-16: 64px;
   --space-20: 80px;
   --space-24: 96px;
+  --space-32: 128px;
 
   /* Typography primitives — fluid type scale (Utopia, utopia.fyi)
      Min viewport: 375px  Max viewport: 1240px
@@ -147,7 +149,7 @@
   --motion-ease-footer-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Font families */
-  --font-family-base: var(--font-jost);
+  --font-family-base: var(--font-zt-nature);
 
   /* Hero */
   --hero-word-stagger: 80ms;

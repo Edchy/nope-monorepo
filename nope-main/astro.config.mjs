@@ -14,8 +14,8 @@ export default defineConfig({
   },
   fonts: [
     {
-      name: "Jost",
-      cssVariable: "--font-jost",
+      name: "ZT Nature",
+      cssVariable: "--font-zt-nature",
       provider: fontProviders.local(),
       fallbacks: ["system-ui", "sans-serif"],
       options: {
@@ -23,7 +23,7 @@ export default defineConfig({
           {
             style: "normal",
             weight: "100 900",
-            src: ["./src/assets/fonts/Jost-VariableFont_wght.ttf"],
+            src: ["./src/assets/fonts/ZT Nature Variable-VF.ttf"],
             display: "block",
           },
         ],

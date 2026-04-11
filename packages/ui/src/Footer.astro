@@ -18,7 +18,7 @@ const footerLetters = [...footerWordmark];
 
 <footer class="site-footer">
   <div class="site-footer__shell" data-footer-shell>
-    <div class="site-footer__marquee" aria-hidden="true">
+    <div class="site-footer__marquee site-footer__marquee--desktop" aria-hidden="true">
       <p class="site-footer__wordmark">
         {footerLetters.map((letter, index) => (
           <span
@@ -30,6 +30,9 @@ const footerLetters = [...footerWordmark];
           </span>
         ))}
       </p>
+    </div>
+    <div class="site-footer__marquee site-footer__marquee--mobile" aria-hidden="true">
+      <p class="site-footer__wordmark site-footer__wordmark--mobile">{siteTitle}</p>
     </div>
     <div class="site-footer__meta" aria-label="Footer details">
       <p class="site-footer__copy">
@@ -62,6 +65,10 @@ const footerLetters = [...footerWordmark];
   .site-footer__marquee {
     overflow: hidden;
     overflow: clip;
+  }
+
+  .site-footer__marquee--mobile {
+    display: none;
   }
 
   .site-footer__wordmark {
@@ -128,18 +135,45 @@ const footerLetters = [...footerWordmark];
   }
 
   @media (max-width: 768px) {
+    .site-footer {
+      contain: none;
+    }
+
     .site-footer__shell {
       padding-top: var(--space-8, 2rem);
       padding-bottom: var(--space-3, 0.75rem);
+      overflow: visible;
     }
 
-    .site-footer__wordmark {
-      margin-left: calc(var(--space-container-x, var(--space-4, 1rem)) * -1);
-      margin-right: calc(var(--space-container-x, var(--space-4, 1rem)) * -1);
-      font-size: clamp(3.8rem, 24vw, 8rem);
-      line-height: 0.78;
+    .site-footer__marquee--desktop {
+      display: none;
     }
 
+    .site-footer__marquee--mobile {
+      display: block;
+      overflow: visible;
+    }
+
+    .site-footer__wordmark--mobile {
+      width: auto;
+      margin: 0;
+      padding-inline: var(--space-container-x, var(--space-4, 1rem));
+      font-size: clamp(3.5rem, 18vw, 6rem);
+      line-height: 0.86;
+    }
+
+    .site-footer__meta {
+      grid-template-columns: 1fr;
+      justify-items: start;
+      gap: var(--space-2, 0.5rem);
+    }
+
+    .site-footer__copy:first-child,
+    .site-footer__copy--center,
+    .site-footer__tagline {
+      justify-self: start;
+      text-align: left;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
