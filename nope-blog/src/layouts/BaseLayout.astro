@@ -265,13 +265,16 @@ const navLinks = [
     letter-spacing: 0.08em;
     text-transform: uppercase;
     text-decoration: none;
-    color: color-mix(in oklch, var(--experimental-2) 50%, var(--experimental-1));
-    transition: color 0.15s ease;
+    color: var(--color-text-inverse);
+    transition: opacity 0.15s ease;
   }
 
-  .shell__nav-link:hover,
+  .shell__nav-link:hover {
+    opacity: 0.6;
+  }
+
   .shell__nav-link--active {
-    color: var(--experimental-2);
+    opacity: 1;
   }
 
   /* ── Main ── */

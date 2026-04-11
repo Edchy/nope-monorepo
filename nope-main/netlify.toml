@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build:main"
+  publish = "nope-main/dist"
+
+[build.environment]
+  NODE_VERSION = "22.12.0"
+
+[context.production]
+  ignore = "git diff --quiet \"$CACHED_COMMIT_REF\" \"$COMMIT_REF\" -- nope-main packages/ui content/work package.json package-lock.json"

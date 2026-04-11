@@ -2,6 +2,7 @@ import { defineConfig, fontProviders } from "astro/config";
 import mdx from "@astrojs/mdx";
 
 export default defineConfig({
+  site: "https://nope.digital",
   integrations: [mdx()],
   vite: {
     server: {
@@ -23,7 +24,7 @@ export default defineConfig({
             style: "normal",
             weight: "100 900",
             src: ["./src/assets/fonts/Jost-VariableFont_wght.ttf"],
-            display: "swap",
+            display: "block",
           },
         ],
       },

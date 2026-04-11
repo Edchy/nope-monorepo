@@ -4,34 +4,6 @@ import VoxelWork from "../components/VoxelWork.astro";
 import { getCollection } from "astro:content";
 import { quotes } from "../data/quotes";
 
-const colorTokens = [
-  "var(--neutral-50)",
-  "var(--neutral-100)",
-  "var(--neutral-200)",
-  "var(--neutral-300)",
-  "var(--neutral-400)",
-  "var(--neutral-500)",
-  "var(--neutral-600)",
-  "var(--neutral-700)",
-  "var(--neutral-800)",
-  "var(--neutral-900)",
-  "var(--neutral-950)",
-  "var(--neutral-warm-600)",
-  "var(--experimental-1)",
-  "var(--experimental-2)",
-  "var(--experimental-3)",
-  "var(--color-background)",
-  "var(--color-background-surface)",
-  "var(--color-background-subtle)",
-  "var(--color-text-secondary)",
-  "var(--color-text-disabled)",
-  "var(--color-text-inverse)",
-  "var(--color-action-primary)",
-  "var(--color-action-primary-hover)",
-  "var(--color-border-default)",
-  "var(--color-border-strong)",
-];
-
 const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
@@ -46,43 +18,40 @@ const secondPost = posts[1];
     <!-- 1: Voxel -->
     <a href="https://nope.digital" class="cell cell--voxel" aria-label="Work" target="_blank" rel="noopener noreferrer">
       <VoxelWork />
-      <span class="cell__label">nope.digital ↗</span>
+      <span class="cell__label cell__meta">nope.digital ↗</span>
     </a>
 
     <!-- 2: Cycling quotes -->
     <div class="cell cell--quote" id="quote-cell" data-quotes={JSON.stringify(quotes)}>
       <blockquote class="cell__blockquote" id="quote-text"></blockquote>
-      <p class="cell__source" id="quote-source"></p>
+      <p class="cell__source cell__meta cell__meta--end" id="quote-source"></p>
     </div>
 
     <!-- 3: Art Int -->
-    <a href="/art-int" class="cell cell--dark">
+    <a href="/art-int" class="cell cell--dark cell--lift" data-lift-max="18">
       <span class="cell__label-lg">Art Int</span>
-      <span class="cell__sublabel">Art &amp; intelligence</span>
+      <span class="cell__sublabel cell__meta">Art &amp; intelligence</span>
     </a>
 
     <!-- 4: Gallery -->
-    <a
-      href="/gallery"
-      class="cell cell--gallery"
-      data-colors={JSON.stringify(colorTokens)}
-    >
+    <a href="/gallery" class="cell cell--gallery cell--lift" data-lift-max="18">
       <span class="cell__label-lg">Gallery</span>
-      <span class="cell__sublabel">3D work &amp; experiments</span>
+      <span class="cell__sublabel cell__meta">3D work &amp; experiments</span>
     </a>
 
     <!-- 5: Latest blog post -->
     {latestPost && (
       <a
         href={`/blog/${latestPost.id.replace(/\/index$/, "")}`}
-        class="cell cell--post"
+        class="cell cell--post cell--lift"
+        data-lift-max="18"
       >
-        <p class="cell__eyebrow">Latest post</p>
+        <p class="cell__eyebrow cell__meta">Latest post</p>
         <h2 class="cell__title">{latestPost.data.title}</h2>
         {latestPost.data.description && (
-          <p class="cell__desc">{latestPost.data.description}</p>
+          <p class="cell__desc cell__meta">{latestPost.data.description}</p>
         )}
-        <p class="cell__date">
+        <p class="cell__date cell__meta cell__meta--end">
           {latestPost.data.date.toLocaleDateString("en-US", {
             year: "numeric",
             month: "short",
@@ -115,7 +84,17 @@ const secondPost = posts[1];
     position: relative;
     overflow: hidden;
     border: none;
-    transition: background-color 0.2s ease;
+    text-transform: uppercase;
+  }
+
+  .cell--lift {
+    --_tx: 0px;
+    --_ty: 0px;
+    --_scale: 1;
+    transform: translate(var(--_tx), var(--_ty)) scale(var(--_scale));
+    transform-origin: center;
+    transition: transform 0.15s ease;
+    will-change: transform;
   }
 
   /* ── Voxel cell ── */
@@ -124,6 +103,8 @@ const secondPost = posts[1];
     justify-content: stretch;
     padding: 0;
     background: #050505;
+    color: var(--neutral-50);
+    transition: background-color 0.45s ease;
   }
 
   .cell--voxel :global(canvas),
@@ -138,71 +119,39 @@ const secondPost = posts[1];
     position: absolute;
     bottom: var(--space-6);
     left: var(--space-6);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.6);
     z-index: 2;
-    transition: color 0.2s ease;
-  }
-
-  .cell--voxel:hover .cell__label {
-    color: rgba(255, 255, 255, 1);
   }
 
   /* ── Blog post cells ── */
   .cell--post {
     background: var(--color-background-surface);
-    gap: var(--space-2);
-  }
-
-  .cell--post:hover {
-    background: var(--neutral-100);
+    gap: var(--space-3);
   }
 
   .cell--post-alt {
     background: var(--neutral-100);
   }
 
-  .cell--post-alt:hover {
-    background: var(--neutral-200);
-  }
-
   .cell__eyebrow {
     margin: 0;
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-text-secondary);
   }
 
+  .cell__label-lg,
   .cell__title {
     margin: 0;
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-bold);
     line-height: var(--line-height-tight);
     letter-spacing: -0.02em;
-    color: var(--color-text-primary);
   }
 
   .cell__desc {
     margin: 0;
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
     line-height: var(--line-height-relaxed);
   }
 
-  .cell__date,
-  .cell__tags {
-    margin: var(--space-2) 0 0 auto;
-    font-size: var(--font-size-xs);
-    color: var(--color-text-secondary);
-  }
-
-  .cell__tags {
-    text-transform: lowercase;
+  .cell__date {
+    margin: auto 0 0 auto;
   }
 
   /* ── Quote cell ── */
@@ -211,27 +160,21 @@ const secondPost = posts[1];
     color: var(--color-text-primary);
     justify-content: space-between;
     padding: var(--space-8) var(--space-6);
-  }
-
-  .cell--quote:hover {
-    background: color-mix(in oklch, var(--color-background) 92%, black);
+    transition:
+      background-color 0.45s ease,
+      color 0.45s ease;
   }
 
   .cell__blockquote {
     margin: 0;
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
-    line-height: var(--line-height-snug);
+    line-height: var(--line-height-relaxed);
     letter-spacing: -0.01em;
   }
 
   .cell__source {
     margin: 0;
-    font-size: var(--font-size-xs);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    opacity: 0.6;
-    align-self: flex-end;
   }
 
   /* ── Gallery cell ── */
@@ -239,11 +182,6 @@ const secondPost = posts[1];
     background: var(--neutral-800);
     color: var(--neutral-50);
     gap: var(--space-2);
-    transition: filter 0.2s ease;
-  }
-
-  .cell--gallery:hover {
-    filter: brightness(0.92);
   }
 
   /* ── Dark / Art Int cell ── */
@@ -253,22 +191,33 @@ const secondPost = posts[1];
     gap: var(--space-2);
   }
 
-  .cell--dark:hover {
-    background: color-mix(in oklch, var(--experimental-2) 90%, black);
-  }
-
   /* ── Shared typographic pieces ── */
-  .cell__label-lg {
-    font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-bold);
-    letter-spacing: -0.03em;
-    line-height: var(--line-height-tight);
+  .cell__meta {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.1em;
+    line-height: var(--line-height-relaxed);
+    color: currentColor;
+    opacity: 0.62;
   }
 
-  .cell__sublabel {
-    font-size: var(--font-size-sm);
-    opacity: 0.5;
-    letter-spacing: 0.04em;
+  .cell__meta--end {
+    align-self: flex-end;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .cell--voxel:hover {
+      background: var(--experimental-2);
+    }
+
+    .cell--quote:hover {
+      background: var(--color-text-primary);
+      color: var(--color-background);
+    }
+
+    .cell--lift:is(:hover, :focus-visible) {
+      z-index: 2;
+    }
   }
 
   /* ── Mobile: stack to 2-col, then 1-col ── */
@@ -307,11 +256,46 @@ const secondPost = posts[1];
   @media (max-width: 480px) {
     .home-grid {
       grid-template-columns: 1fr;
+      grid-template-rows: none;
+      grid-auto-rows: minmax(12rem, auto);
+      min-height: 0;
     }
 
     .cell--voxel {
-      grid-column: span 1;
+      grid-column: 1;
+      grid-row: auto;
       min-height: 60vw;
+    }
+
+    .cell--quote,
+    .cell--dark,
+    .cell--gallery,
+    .cell--post {
+      grid-column: 1;
+      grid-row: auto;
+    }
+
+    .cell--quote {
+      min-height: 18rem;
+    }
+
+    .cell--dark,
+    .cell--gallery,
+    .cell--post {
+      min-height: 12rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cell--lift {
+      transform: none;
+      transition: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cell--lift {
+      transition: none;
     }
   }
 
@@ -328,6 +312,19 @@ const secondPost = posts[1];
 </style>
 
 <script>
+  let cleanupLiftCells: (() => void) | undefined;
+
+  const canUseLiftInteractions = () =>
+    window.matchMedia("(min-width: 769px)").matches &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const resetLiftStyles = (cell: HTMLElement) => {
+    cell.style.setProperty("--_tx", "0px");
+    cell.style.setProperty("--_ty", "0px");
+    cell.style.setProperty("--_scale", "1");
+  };
+
   function initQuotes() {
     const cell = document.getElementById("quote-cell");
     const textEl = document.getElementById("quote-text");
@@ -369,38 +366,59 @@ const secondPost = posts[1];
   document.addEventListener("astro:page-load", initQuotes);
   initQuotes();
 
-  function initColors() {
-    const cells = Array.from(document.querySelectorAll<HTMLElement>("[data-colors]"));
-    if (!cells.length) return;
+  function initLiftCells() {
+    cleanupLiftCells?.();
 
-    const intervals: number[] = [];
+    const cells = document.querySelectorAll<HTMLElement>(".cell--lift");
+    if (!cells.length) {
+      cleanupLiftCells = undefined;
+      return;
+    }
+
+    if (!canUseLiftInteractions()) {
+      cells.forEach((cell) => resetLiftStyles(cell));
+      cleanupLiftCells = undefined;
+      return;
+    }
+
+    const controller = new AbortController();
+    const { signal } = controller;
 
     cells.forEach((cell) => {
-      const colors = JSON.parse(cell.dataset.colors ?? "[]") as string[];
-      if (!colors.length) return;
+      const max = Number(cell.dataset.liftMax ?? 18);
 
-      let index = 0;
+      cell.addEventListener(
+        "mousemove",
+        (event) => {
+          const rect = cell.getBoundingClientRect();
+          const nx = (event.clientX - rect.left) / rect.width;
+          const ny = (event.clientY - rect.top) / rect.height;
 
-      const render = (color: string) => {
-        cell.style.backgroundColor = color;
-      };
+          cell.style.setProperty("--_tx", `${nx * max}px`);
+          cell.style.setProperty("--_ty", `${-(ny * max)}px`);
+          cell.style.setProperty("--_scale", "1.04");
+        },
+        { signal },
+      );
 
-      const advance = () => {
-        index = (index + 1) % colors.length;
-        render(colors[index]);
-      };
-
-      render(colors[0]);
-      intervals.push(window.setInterval(advance, 1200));
+      cell.addEventListener(
+        "mouseleave",
+        () => {
+          resetLiftStyles(cell);
+        },
+        { signal },
+      );
     });
 
-    document.addEventListener(
-      "astro:before-swap",
-      () => intervals.forEach((interval) => clearInterval(interval)),
-      { once: true },
-    );
+    cleanupLiftCells = () => {
+      controller.abort();
+      cells.forEach((cell) => resetLiftStyles(cell));
+    };
   }
 
-  document.addEventListener("astro:page-load", initColors);
-  initColors();
+  document.addEventListener("astro:page-load", initLiftCells);
+  document.addEventListener("astro:before-swap", () => cleanupLiftCells?.(), {
+    once: true,
+  });
+  initLiftCells();
 </script>
