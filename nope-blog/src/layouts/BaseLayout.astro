@@ -1,6 +1,7 @@
 ---
 import { Font } from "astro:assets";
 import "../styles/global.css";
+import DebugScrollOverlay from "@nope/ui/src/DebugScrollOverlay.astro";
 import Footer from "@nope/ui/src/Footer.astro";
 import { ClientRouter } from "astro:transitions";
 
@@ -21,8 +22,8 @@ const currentPath = Astro.url.pathname;
 const navLinks = [
   { href: "/blog", label: "Blog" },
   { href: "/art-int", label: "Art Int" },
-  { href: "/resources", label: "Resources" },
   { href: "/gallery", label: "Gallery" },
+  { href: "/resources", label: "Resources" },
   { href: "https://nope.digital", label: "Nope.digital", isExternal: true },
 ];
 ---
@@ -70,7 +71,7 @@ const navLinks = [
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <Font cssVariable="--font-jost" />
+    <Font cssVariable="--font-nature" />
   </head>
   <body>
     <button
@@ -178,6 +179,7 @@ const navLinks = [
       </span>
     </button>
 
+    <DebugScrollOverlay />
     {!noFooter && <Footer siteTitle="NOPE" />}
   </body>
 </html>

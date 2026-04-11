@@ -61,14 +61,15 @@ import LiftButton from "../components/LiftButton.astro";
               ><span class="hero__title-dot" aria-hidden="true">.</span>
             </span>
           </h1>
-          <p class="hero__summary">
-            Websites. Apps. Design. <br />
-            For folks who want it done right. <br/>
-            Come with an idea or without one.<br/>
-            Either works. <br />
-            Say hello and we'll figure it out.
-          </p>
-          <p class="hero__summary"></p>
+          <div class="hero__summary-group">
+            <p class="hero__summary">
+              Websites. Apps. Design. For folks who want it done right.
+            </p>
+            <p class="hero__summary">
+              Come with an idea or without one. Either works. Say hello and
+              we'll figure it out.
+            </p>
+          </div>
           <nav class="hero__actions">
             <LiftButton
               href="mailto:hello@nope.digital"
@@ -278,6 +279,12 @@ import LiftButton from "../components/LiftButton.astro";
       var(--color-text-primary) 84%,
       var(--neutral-500)
     );
+  }
+
+  .hero__summary-group {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 28rem;
   }
 
   .hero__summary {

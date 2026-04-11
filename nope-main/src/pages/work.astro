@@ -229,9 +229,9 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
 
   .work-item-archive .project-name {
     font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
     letter-spacing: 0.06em;
     color: var(--color-text-secondary);
-    text-decoration: line-through;
   }
 
   .project-meta {
@@ -379,9 +379,10 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
   .preview-desc {
     margin: 0;
     padding-right: var(--space-4);
-    font-size: 0.65rem;
-    line-height: var(--line-height-relaxed);
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-snug);
     color: var(--neutral-warm-600);
+    text-wrap: pretty;
   }
 
 

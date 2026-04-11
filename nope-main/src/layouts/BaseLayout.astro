@@ -3,6 +3,7 @@ import { Font } from "astro:assets";
 import { ClientRouter, slide } from "astro:transitions";
 
 import Header from "../components/Header.astro";
+import DebugScrollOverlay from "@nope/ui/src/DebugScrollOverlay.astro";
 import Footer from "@nope/ui/src/Footer.astro";
 import "../styles/global.css";
 
@@ -80,6 +81,7 @@ const { title, description = SITE_TITLE } = Astro.props;
         <slot />
       </div>
     </main>
+    <DebugScrollOverlay />
     <Footer siteTitle={SITE_TITLE} />
   </body>
 </html>

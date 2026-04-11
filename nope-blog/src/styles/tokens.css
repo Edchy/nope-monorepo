@@ -124,7 +124,7 @@
   --max-width-layout: 1200px;
 
   /* Font families */
-  --font-family-base: var(--font-jost);
+  --font-family-base: var(--font-nature);
 
   /* Motion */
   --motion-ease-decelerate: cubic-bezier(0.19, 1, 0.22, 1);

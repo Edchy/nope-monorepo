@@ -1,0 +1,135 @@
+<div class="debug-scroll" data-debug-scroll hidden aria-hidden="true">
+  <pre class="debug-scroll__text" data-debug-scroll-text></pre>
+</div>
+
+<style>
+  .debug-scroll {
+    position: fixed;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    z-index: 9999;
+    width: min(18rem, calc(100vw - 1.5rem));
+    padding: 0.75rem;
+    background: rgb(10 10 10 / 0.9);
+    color: #f5f5f5;
+    border: 1px solid rgb(255 255 255 / 0.16);
+    border-radius: 0.375rem;
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.28);
+    pointer-events: none;
+    font: 600 11px/1.35 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
+    white-space: pre-wrap;
+  }
+
+  .debug-scroll__text {
+    margin: 0;
+  }
+</style>
+
+<script>
+  {
+    const overlay = document.querySelector<HTMLElement>("[data-debug-scroll]");
+    const text = document.querySelector<HTMLElement>("[data-debug-scroll-text]");
+
+    if (overlay && text) {
+      let cleanup: (() => void) | undefined;
+
+      function init() {
+        cleanup?.();
+
+        const params = new URLSearchParams(window.location.search);
+        const enabled = params.get("debug-scroll") === "1";
+
+        overlay.hidden = !enabled;
+        overlay.setAttribute("aria-hidden", String(!enabled));
+
+        if (!enabled) {
+          cleanup = undefined;
+          return;
+        }
+
+        const controller = new AbortController();
+        const { signal } = controller;
+        const viewport = window.visualViewport;
+        let lastEvent = "init";
+        let rafId = 0;
+
+        const render = () => {
+          rafId = 0;
+
+          const doc = document.documentElement;
+          const scrollTop = window.scrollY;
+          const innerHeight = window.innerHeight;
+          const viewportHeight = viewport?.height ?? innerHeight;
+          const scrollHeight = doc.scrollHeight;
+          const distanceFromBottom = Math.max(
+            0,
+            scrollHeight - (scrollTop + viewportHeight),
+          );
+          const activeTag = document.activeElement?.tagName?.toLowerCase() ?? "none";
+          const activeClass =
+            document.activeElement instanceof HTMLElement
+              ? document.activeElement.className || "-"
+              : "-";
+
+          text.textContent = [
+            `event: ${lastEvent}`,
+            `scrollY: ${Math.round(scrollTop)}`,
+            `innerHeight: ${Math.round(innerHeight)}`,
+            `vv.height: ${Math.round(viewportHeight)}`,
+            `scrollHeight: ${Math.round(scrollHeight)}`,
+            `fromBottom: ${Math.round(distanceFromBottom)}`,
+            `active: ${activeTag}`,
+            `activeClass: ${String(activeClass).slice(0, 36)}`,
+          ].join("\n");
+        };
+
+        const scheduleRender = (eventName: string) => {
+          lastEvent = eventName;
+          if (rafId) return;
+          rafId = window.requestAnimationFrame(render);
+        };
+
+        scheduleRender("init");
+
+        window.addEventListener("scroll", () => scheduleRender("scroll"), {
+          signal,
+          passive: true,
+        });
+        window.addEventListener("resize", () => scheduleRender("resize"), {
+          signal,
+        });
+        window.addEventListener(
+          "orientationchange",
+          () => scheduleRender("orientationchange"),
+          {
+            signal,
+          },
+        );
+        document.addEventListener("focusin", () => scheduleRender("focusin"), {
+          signal,
+        });
+
+        if (viewport) {
+          viewport.addEventListener("resize", () => scheduleRender("vv-resize"), {
+            signal,
+          });
+          viewport.addEventListener("scroll", () => scheduleRender("vv-scroll"), {
+            signal,
+          });
+        }
+
+        cleanup = () => {
+          controller.abort();
+          if (rafId) {
+            window.cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        };
+      }
+
+      document.addEventListener("astro:page-load", init);
+      init();
+    }
+  }
+</script>

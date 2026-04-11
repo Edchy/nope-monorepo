@@ -8,72 +8,73 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <h1 class="page-title visually-hidden">About</h1>
       <div class="about-chunk-1">
         <p>
-          Nope is a small studio.<br />
-          We make websites, apps, and digital things.
+          Nope digital is a small studio. We make websites, apps, and digital things.
         </p>
       </div>
 
       <div class="about-chunk-2">
-        <p>Digital, from digitus, Latin for finger. Fingers became digits, digits became numbers, numbers became everything on a screen. <br/> 1s & 0s. <br/>
-        We like that. We still make things with our fingers.</p>
+        <p>
+          Digital comes from <em>digitus</em>, Latin for finger. Fingers became
+          digits, digits became numbers, and numbers became everything on a
+          screen. Ones and zeros.
+        </p>
+        <p> We like that. We still make things with our fingers.</p>
       </div>
 
       <div class="about-chunk-3">
         <p>
-          The name is intentional.<br />
-          We say no to most things.<br />
-          Not out of stubbornness. Out of conviction.
+          The name nope is intentional. We say no to most things. Not out of
+          stubbornness. Out of conviction.
         </p>
       </div>
 
       <div class="about-chunk-4">
         <p>
-          Most things don't need to exist.<br />
-          Extra features nobody asked for.<br />
-          Pages that fill space.<br />
-          Design that decorates instead of communicates.<br />
-          We remove all of it.<br />
-          What's left is usually better.
+          Most things don't need to exist. Extra features nobody asked for.
+          Pages that fill space. Design that decorates instead of communicates.
+        </p>
+        <p>
+          We remove all of it. What's left is usually better.
         </p>
       </div>
 
       <div class="about-chunk-5">
         <p>
-          This is minimalism, but not as an aesthetic. As a method.<br />
-          Every decision starts with a question: <br /> Does this need to be here?<br
-          />
-          If the answer isn't clearly yes, it goes.
+          This is minimalism, but not as an aesthetic. As a method.
+        </p>
+        <p>
+          Every decision starts with a question: Does this need to be here? If
+          the answer isn't clearly yes, it goes.
         </p>
 
         <p>
-          We apply this to everything.<br />
-          The work we take on, the words we write,<br /> the pixels we place.
+          We apply this to everything: the work we take on, the words we write,
+          the pixels we place.
         </p>
       </div>
 
       <div class="about-chunk-6">
         <p>
-          We take design seriously.<br />
-          Not as decoration. As communication.
+          We take design seriously. Not as decoration. As communication.
         </p>
 
         <p>
-          The typeface, the spacing, the colour, the weight of a line.<br />
-          These are all decisions.<br />
-          Decisions made carelessly produce work that feels wrong even when people
-          can't say why.<br />
+          The typeface, the spacing, the colour, the weight of a line. These
+          are all decisions. Decisions made carelessly produce work that feels
+          wrong even when people can't say why.
+        </p>
+        <p>
           We make them carefully.
         </p>
 
         <p>
-          Good design disappears.<br />
-          You stop noticing it and start using it.
+          Good design disappears. You stop noticing it and start using it.
         </p>
       </div>
 
       <div class="about-chunk-7">
         <p>
-          The name wasn't a strategy.<br /> It was just the first honest thing.
+          The name wasn't a strategy. It was just the first honest thing.
         </p>
         <span class="signature">— Nope</span>
       </div>
@@ -104,6 +105,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     .about-chunk-5,
     .about-chunk-6,
     .about-chunk-7 {
+      display: grid;
+      gap: var(--space-4);
       padding-block: var(--space-12);
       text-wrap: pretty;
       max-width: 32ch;
