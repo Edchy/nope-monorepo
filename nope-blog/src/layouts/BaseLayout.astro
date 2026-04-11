@@ -404,7 +404,7 @@ const navLinks = [
     }
 
     .shell__aside {
-      display: flex;
+      display: none;
       flex-direction: column;
       justify-content: center;
       gap: var(--space-8);
@@ -421,6 +421,7 @@ const navLinks = [
     }
 
     .shell__aside.is-open {
+      display: flex;
       pointer-events: auto;
       opacity: 1;
       transform: translateY(0);
