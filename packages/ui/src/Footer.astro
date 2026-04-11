@@ -57,7 +57,7 @@ const footerLetters = [...footerWordmark];
   }
 
   .site-footer__shell {
-    padding-top: var(--space-10, 2.5rem);
+    padding-top: var(--space-24, 6rem);
     padding-bottom: var(--space-4, 1rem);
     overflow: hidden;
     overflow: clip;
@@ -136,12 +136,25 @@ const footerLetters = [...footerWordmark];
   }
 
   @media (max-width: 768px) {
+    .site-footer__shell {
+      padding-top: var(--space-20, 5rem);
+    }
+
+    .site-footer__wordmark {
+      margin-left: calc(var(--space-container-x, var(--space-4, 1rem)) * -1);
+      margin-right: calc(var(--space-container-x, var(--space-4, 1rem)) * -1);
+      font-size: clamp(4rem, 20vw, 8rem);
+      line-height: 0.8;
+    }
+  }
+
+  @media (max-width: 480px) {
     .site-footer {
       contain: none;
     }
 
     .site-footer__shell {
-      padding-top: var(--space-8, 2rem);
+      padding-top: var(--space-20, 5rem);
       padding-bottom: var(--space-3, 0.75rem);
       overflow: visible;
     }
