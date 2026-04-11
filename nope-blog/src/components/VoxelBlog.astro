@@ -1,0 +1,180 @@
+---
+
+---
+
+<figure class="voxel-blog" aria-hidden="true">
+  <div class="voxel-blog__stage"></div>
+  <span class="voxel-blog__wordmark">NOPE</span>
+</figure>
+
+<style>
+  .voxel-blog {
+    --vb-fill: #111111;
+    --vb-fill-light: #222222;
+    --vb-stroke: #ffffff;
+    --vb-text: #ffffff;
+
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .voxel-blog__stage {
+    position: absolute;
+    inset: 0;
+  }
+
+  .voxel-blog__stage :global(svg) {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .voxel-blog__wordmark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-jost), system-ui, sans-serif;
+    font-size: clamp(100px, 24vw, 280px);
+    font-weight: var(--font-weight-heading);
+    color: var(--vb-text);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    z-index: 10;
+    user-select: none;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  import { Heerich } from "heerich";
+
+  function init() {
+  document.querySelectorAll<HTMLElement>(".voxel-blog").forEach((section) => {
+    const stage = section.querySelector<HTMLElement>(".voxel-blog__stage");
+    const wordmark = section.querySelector<HTMLElement>(
+      ".voxel-blog__wordmark",
+    );
+    if (!stage || !wordmark) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    const styles = getComputedStyle(section);
+    const token = (name: string, fallback: string) =>
+      styles.getPropertyValue(name)?.trim() || fallback;
+
+    const colors = {
+      bg: token("--vb-bg", "#fafafa"),
+      fill: token("--vb-fill", "#111111"),
+      fillLight: token("--vb-fill-light", "#222222"),
+      stroke: token("--vb-stroke", "#ffffff"),
+    };
+
+    const h = new Heerich({
+      tile: 72,
+      camera: { type: "oblique", angle: 45, distance: 12 },
+      style: {
+        fill: colors.fill,
+        stroke: colors.stroke,
+        strokeWidth: 1,
+      },
+    });
+
+    function buildScene() {
+      h.clear();
+
+      const style = {
+        default: { fill: colors.fill, stroke: colors.stroke, strokeWidth: 1 },
+        top: { fill: colors.fillLight },
+      };
+
+      // Massive central monolith
+      h.applyGeometry({
+        type: "box",
+        position: [2, 0, 2],
+        size: [4, 6, 4],
+        style,
+      });
+
+      // Carve a tunnel through it
+      h.removeGeometry({
+        type: "box",
+        position: [3, 0, 0],
+        size: [2, 2, 8],
+      });
+
+      // Low wide platform
+      h.applyGeometry({
+        type: "box",
+        position: [0, 0, 0],
+        size: [8, 1, 8],
+        style,
+      });
+
+      // Offset tower
+      h.applyGeometry({
+        type: "box",
+        position: [6, 1, 0],
+        size: [2, 4, 2],
+        style,
+      });
+
+      // Floating slab
+      h.applyGeometry({
+        type: "box",
+        position: [0, 4, 1],
+        size: [3, 1, 5],
+        style,
+      });
+
+      // Single cube accent
+      h.applyGeometry({
+        type: "box",
+        position: [1, 5, 3],
+        size: [1, 1, 1],
+        style,
+      });
+    }
+
+    const render = () => {
+      stage.innerHTML = h.toSVG({ padding: 60 });
+    };
+
+    buildScene();
+    render();
+
+    if (!prefersReducedMotion) {
+      let rafId: number;
+      const baseAngle = 45;
+      const swingAmplitude = 40;
+      const swingSpeed = 0.0003;
+
+      const animate = (now: number) => {
+        const swing = Math.sin(now * swingSpeed) * swingAmplitude;
+        const dist = 16 + Math.cos(now * swingSpeed * 0.7) * 3;
+        h.setCamera({
+          type: "oblique",
+          angle: baseAngle + swing,
+          distance: dist,
+        });
+        render();
+        rafId = requestAnimationFrame(animate);
+      };
+      rafId = requestAnimationFrame(animate);
+
+      document.addEventListener(
+        "astro:before-swap",
+        () => cancelAnimationFrame(rafId),
+        { once: true },
+      );
+    }
+  });
+  }
+
+  document.addEventListener("astro:page-load", init);
+</script>

@@ -1,0 +1,428 @@
+---
+title: "A Brief History of How the Web Got So Complicated"
+subtitle: "The messy, magical evolution of how we build websites — and where we are now"
+date: 2025-05-22
+description: "A confused dev’s guide to how the web actually works — servers, clients, static vs dynamic, and what all those acronyms really mean."
+tags: ["js", "nerdstuff"]
+draft: false
+---
+Okay, listen. I’m writing this post not because I fully understand how the web works — but because I **don’t.** Every time I hear terms like “server-side rendering,” “static generation,” or “client hydration,” my brain just goes goo-goo-ga-ga and quietly logs out.
+
+So this blog is me trying to figure it out. I’m going back to the basics: what is a server? what is a client? why does it matter where the code runs? And how did we get from boring static HTML to frameworks that promise to do everything — but somehow still leave me wondering what’s actually happening.
+
+If you’re also slightly confused and just want a plain-English explanation of this mess, welcome — you’re in the right place.
+
+## Chapter 1: The Early Web – Just HTML
+
+In the early days of the web, websites were made up of static HTML files. These files contained the content and structure of a page — things like headings, paragraphs, links, and images — but no interactivity or dynamic behavior.
+
+When someone wanted to view a website, they would open a web browser (like Netscape back then), type in a URL, and the browser would send a request over the internet to a **server**. That server was just a computer set up to store and serve HTML files.
+
+The server would respond by sending back the HTML file for the requested page. The browser — also called the **client** — would then render that HTML so the user could see the content.
+
+At this stage:
+
+**The client** is the user’s browser — it requests and displays content.
+
+**The server** is a computer that stores website files and responds to requests from clients.
+
+There was no backend logic or databases involved for most sites — everything was just static files.
+
+It was a simple request-response model: the client asks for a file, the server sends it back.
+
+Now, before we continue, i want to clarify a couple of things. I mentioned that early websites were "static" and that they had no "interactivity" or "dynamic behavior". What do i mean by that? 
+
+### Static
+
+Static refers to HTML files that remain the same (unchanging) until manually edited by a developer. Here's what makes a website static:
+
+1. Content doesn't change dynamically - the HTML files are pre-written and served exactly as stored on the web server
+2. Every visitor sees the same content
+3. To update the site, a developer must directly edit the HTML files and re-upload them
+4. The server simply delivers these pre-existing files as-is without processing or generating content on demand
+
+Here is a simple example. Let's say you have a HTML-page that looks like this:
+
+```html
+	index.html
+	<h1>Hello, person!</h1>
+	```
+
+Every person that visits your site will get this exact same HTML from the server. Basically, the servers' job is to locate that file and send it back, as is. Done.
+
+## Chapter 2: From Static to Dynamic – When Servers Started Running Code
+
+As websites evolved, developers wanted to go beyond simple, unchanging HTML. They wanted content to be personalized, interactive, and driven by data. This is when the idea of "dynamic websites" emerged — pages that could change depending on who was visiting or what they were doing.
+
+### Dynamic
+
+Now, in contrast to static, we have the opposite, which is dynamic. This just means that the HTML given back by the server can be different for every request. But that also means more work for the server. It now not only has to find and send back the HTML document, it also has to generate content "on-the-fly".
+
+Let's say we want to display the requesting user's name, instead of just "person". We would need to do something like this:
+
+```html
+	index.html
+	<h1>Hello, (placeholder)</h1>
+	```
+
+Well, this would just output: "Hello, (placeholder)", just a string, right?
+
+In order for this to work we would need some type of server-side processing, some language that allows us to add dynamic "islands" to our HTML, or placeholders or variables or whatever you wanna call it. Languages like this almost didn't exist in the early days and the server technology was very limited so this was not possible. Now we have many different: PHP, Ruby, Python, Java, etc.
+
+So, when a request comes in to the server from the client, it can now look for information embedded in that request and dynamically generate new HTML with that information, and then send it back to the client. 
+
+### But how does the server know what information to send back?
+
+When your browser makes a request to a dynamic website, it typically includes information that helps the server personalize the response:
+
+1. **Cookies**: Small pieces of data stored in your browser that identify you
+2. **Query parameters**: Information in the URL (like `?user=Meg`)
+3. **Form data**: Information submitted through forms
+4. **Session data**: Server-side stored information about your current browsing session
+5. **HTTP headers**: Additional metadata about the request (browser type, language preferences)
+
+A dynamic server uses these inputs along with server-side programming (PHP, Ruby, Python, etc.) to:
+
+1. Process the request
+2. Pull relevant data from databases
+3. Fill in templates with personalized content
+4. Generate the final HTML on-the-fly
+5. Send the personalized response back to your browser
+
+### The Bored Cashier vs The Custom Order Factory
+
+Let's hammer this home with a metaphor.
+
+#### Static Website (The Bored Cashier)
+
+Imagine a convenience store with a bored cashier who has pre-packaged identical paper bags. No matter who walks in or what they ask for, they just hand over the same bag to everyone. The bags were prepared earlier in the day, and the cashier doesn't customize anything - just reaches under the counter and hands it over. Quick and efficient, but everyone gets exactly the same items.
+
+#### Dynamic Website (The Custom Order Factory)
+
+Now imagine a restaurant where when you place an order:
+
+- The host takes your name and preferences
+- The kitchen staff checks the inventory database
+- Cooks prepare your specific meal based on your order details
+- They might even check your loyalty card to see your past orders
+- The waiter arranges everything on a plate specifically for you
+- Only then is your custom meal brought to your table
+
+Each order creates a flurry of behind-the-scenes activity. It takes more work and resources, but the result is personalized to each customer. Sometimes it might take a moment longer, but you get exactly what you asked for.
+
+Static is pre-made and unchanging (efficient but inflexible), while dynamic is assembled on-demand (resource-intensive but personalized).
+
+### Interactivity
+
+Early static HTML pages were essentially digital documents you could read and navigate through links - similar to a digital book with a clickable table of contents. You could view the content and follow links to other pages, but couldn't meaningfully modify or interact with the page itself.
+
+Later, technologies like JavaScript enabled these interactive behaviors, transforming websites from passive documents into responsive applications that users could actively engage with.
+
+The distinction here is that:
+- **"Dynamic"** refers to server-side technologies (PHP, ASP, Ruby on Rails, etc.) that generate different HTML content for each request before sending it to the browser
+- **"Interactivity"** refers to client-side technologies (primarily JavaScript) that enable users to interact with and modify the page after it has loaded in their browser
+
+And the history is that:
+1. First came static HTML (unchanging documents)
+2. Then server-side dynamic content generation (customized documents)
+3. Then client-side interactivity (documents users could manipulate)
+
+Modern web applications typically combine both dynamic server-side content generation and rich client-side interactivity to create comprehensive user experiences.
+
+## CSR, SSG & SSR
+
+Maybe you've heard of these terms, and maybe, like for me, they make your head go "goo-goo-gaga"? Let's try to understand them together.
+
+These concepts aren't so complicated if we start with the traditional definitions:
+
+- **SSG (Static Site Generation)**: HTML files are pre-built once at build time
+- **SSR (Server-Side Rendering)**: HTML is generated on-demand when a user requests a page
+- **CSR (Client-Side Rendering)**: HTML is generated in the user's browser using JavaScript (more on that later)
+
+However, modern frameworks like [Next.js](https://nextjs.org/) and [Astro](https://astro.build/) have blurred these traditional distinctions, which is where my confusion begins.
+
+### The Mental Model Problem
+
+Here's what trips me up: when I think of SSR, I automatically think of a remote server generating HTML for each user request. But this mental model breaks down with modern frameworks.
+
+In Astro, for example, you write server-side code in `.astro` components. When you run `npm run build`, this server-side code executes _once_ during the build process, then you're left with static HTML files. Your computer becomes "the server" during this build step.
+
+How? Astro uses Node.js under the hood to create a server-side JavaScript environment. The key insight is that "server" doesn't automatically mean a remote web server—it could be Node.js running anywhere.
+
+### A Better Mental Model
+
+Instead of thinking "server = remote computer," think:
+
+- **Client-side**: Code running in the user's browser
+- **Server-side**: Code running in a Node.js environment **anywhere** (your computer, a build server, or a remote server)
+
+The timing is what really matters:
+
+- **SSG**: Server-side code runs once at build time → static files
+- **SSR**: Server-side code runs on each user request → dynamic HTML
+- **CSR**: JavaScript runs in the browser after page load → dynamic DOM manipulation
+
+As [Dan Abramov](https://overreacted.io/static-as-a-server/) puts it: "Static" is a "server" that runs ahead of time. The server-side logic still happens—it just happens during the build process rather than on each request.
+
+So, i'll repeat this again:
+- **Traditional server rendering**: Execution happens on each user request
+- **Static site generation**: Execution happens once at build time
+
+With Astro, you're writing "server-side" code, but the "server" only runs during development and build time—not when users visit your site. The end result is a statically generated site. 
+
+But they also support SSR. By opting in with `output: server` in the config and using an SSR adapter. The [docs](https://docs.astro.build/en/guides/on-demand-rendering/) for this is very good (the first section explains SSG vs SSR in a few lines).
+
+Now, lets talk a bit more about servers. We've established that a server in the context of JavaScript frameworks, is just a computer that runs code in a JavaScript environment (node, bun, deno, etc.). But in the traditional sense...
+
+## What Is a Server, Really?
+
+In the early web, a **server** was just a regular computer — like the one you might have at home — but set up in a specific way. Its job was to listen for requests from other computers (clients) and respond with the appropriate files.
+
+Someone — usually a developer or a company — would configure a computer to run special software called a **web server**. Examples of this software include **Apache** or **Nginx**. This software listens for incoming requests over the internet (specifically on port 80 for HTTP), and knows how to respond with files like HTML, CSS, images, etc.
+
+So technically:
+- The **hardware** is just a computer.
+- The **software** is what makes it a “web server” — it handles incoming requests and sends responses.
+
+In the early web, setting up a server usually meant:
+- Renting or owning a physical machine.
+- Connecting it to the internet with a fixed IP address.
+- Installing web server software.
+- Placing HTML files in specific directories on that machine, so they could be served when someone requested a URL.
+
+This was mostly done by developers, businesses, universities, or hobbyists who knew how to work with servers. Later on, hosting companies made it easier by letting people “rent” space on pre-configured servers.
+
+These servers literally just held folders full of HTML files (and maybe images and CSS files). When a user visited a URL like example.com/about.html, the server would find the about.html file in its storage and send it to the browser.
+No code was being _run_ to generate the HTML. It was already written and sitting there — that’s why we call these **static sites**.
+
+### Why do we need a server?
+
+The server acts as the "source of truth" for a website. Without it, there would be no place for users to request content from.
+
+You can't just open someone else's website unless there's a computer (server) on the internet that's:
+
+- Always connected.
+- Always ready to respond to requests.
+- Hosting the actual files of the site.
+
+So, even the simplest website needs some kind of server to deliver content to users' browsers.
+
+### Two Types of Servers
+
+However, not all servers do the same amount of work:
+
+**Static File Servers** (for SSG sites):
+
+- These are simple servers that just deliver pre-built HTML files.
+- When you request a page, the server says "here's the file" and sends it.
+- Examples: Nginx/Apache serving static files, or hosting platforms like Netlify/Vercel (which use CDNs).
+- Think of it like a filing cabinet - you ask for a document, and it hands you the exact file.
+
+**Dynamic Application Servers** (for SSR sites):
+
+- These run programming languages like Node.js, PHP, Python, Ruby, etc.
+- When you request a page, the server runs code, processes data, and _then_ generates the HTML
+- Examples: Node.js servers, PHP servers, Rails applications
+- Think of it like a chef - you place an order, and they cook something fresh based on your request. Let them cook! 
+
+Both types of servers are "always connected and ready to respond," but dynamic servers do much more computational work per request. This is why static sites can handle more traffic with less server resources - there's no cooking involved, just file delivery.
+
+Now, let's understand the pros (and implicitly also the cons) of each approach. These distinctions apply whether you're using request-time SSR or build-time static generation. By that I mean dynamic per-request rendering vs static pre-generated output (both involve server-side code execution, but at different times in the process).
+
+#### Benefits of Server-side Logic:
+- **Data Fetching** - You can pull data from APIs, databases, or CMSs when the page is being built or requested.
+
+  ```javascript
+  // Example (Next.js - server-side)
+  // this runs on every page load
+  export async function getServerSideProps() {
+  const res = await fetch('https://api.example.com/products')
+    const products = await res.json()
+    return { props: { products } }
+  }
+  ```
+
+  ```javascript
+  ---
+  // Astro frontmatter
+  // this only runs on build
+  const res = await fetch('https://api.example.com/posts')
+  const posts = await res.json()
+  ---
+  ```
+
+- **Processing Power** - You can offload heavy work to the server, keeping the browser fast.
+- **Access to Environment Variables** - Keeps secrets secure. For example, API keys for payment systems or databases.
+- **Conditional Component Logic** - You can decide what parts of a page to show based on data (like whether a user is logged in) **without** exposing that logic to the browser.
+
+  ```javascript
+  if (user.isAdmin) {
+    return <AdminPanel />
+  } else {
+    return <LoginForm />
+  }
+  // If this logic ran in the browser, someone could fake being an admin using dev tools.
+  ```
+
+#### Benefits of Static File Output:
+- **Speed** - Static files load very fast because there’s no waiting for server logic — just instant delivery.
+- **Security** - There’s no server code running when users load the page — just files. This removes many possible vulnerabilities.
+- **Easy to Scale** - Static files can be copied across Content Delivery Networks (CDNs) around the world.
+- **Simple Deployment** - You can host static files almost anywhere — even on free services like GitHub Pages or Netlify.
+- **High Reliability** - No server to crash, no database to go down — the site “just works” because it’s made of files.
+- **Lower Cost** - Static hosting is often free or very cheap. No backend, no database, no compute costs.
+
+## Chapter 3: When the Client Got Smarter – Code in the Browser
+
+So far, we’ve talked about servers doing most of the work: storing files, generating pages, fetching data. But over time, browsers (the client) became way more powerful. They didn’t just show content — they started running JavaScript code that could update the page, handle user interactions, and even talk to servers.
+
+This changed everything!
+
+### What Does “Client-Side” Mean?
+
+When people say something happens on the client, they mean it happens in the browser, on your device.
+
+The browser downloads HTML, CSS, and JavaScript, then executes that JavaScript directly — without needing to talk to the server again (in many cases).
+
+#### Why Did This Happen?
+
+Developers wanted web pages to feel more like apps:
+- Click without reloading the whole page.
+- Interact with forms instantly.
+- Load new data without navigating away.
+
+To do this, they started writing more JavaScript that ran in the browser to manage state, UI updates, and data fetching.
+
+#### Key Client-Side Capabilities
+- **DOM Manipulation**: JavaScript can change the HTML and CSS of a page after it loads. This means you can add, remove, or update elements without reloading the page.
+- **Event Handling**: JavaScript can listen for user actions (like clicks, typing, etc.) and respond to them in real-time.
+- **AJAX Requests**: JavaScript can send requests to servers in the background (using `fetch` or `XMLHttpRequest`) and update the page with new data without a full reload.
+
+What Changed in the Developer Workflow?
+- HTML was no longer always built by a server (whether local or remote).
+- Pages could be mostly empty until JavaScript filled them in.
+- The logic moved from the server to the browser.
+
+This approach is known as client-side rendering (CSR).
+
+The benefits of this approach is that it allows for a more interactive and responsive user experience. Users can interact with the page without waiting for the server to respond, making the application feel faster, snappier and more fluid. But there are also downsides to this approach, such as slower initial load times, [SEO challenges](https://www.magnolia-cms.com/blog/spa-seo-mission-impossible.html), increased complexity in managing state and data fetching and the need for more powerful client devices to handle the processing.
+
+Search engines like Google rely on crawling and indexing the HTML content of a page. If the content is generated dynamically using JavaScript, it may not be visible to search engine crawlers, leading to poor indexing and visibility in search results. You basically just ship an empty HTML page to the search engine, and it has no idea what to do with it. This is why SSR is often recommended for SEO-sensitive applications.
+
+### So, What Does CSR Mean, Really?
+
+It means that the browser is responsible for generating the HTML content of a page. The server sends a minimal HTML file, and the browser runs JavaScript to build the rest of the page.
+
+This is different from SSG (Static Site Generation) and SSR (Server-Side Rendering), where the server does the heavy lifting of generating HTML before sending it to the browser.
+
+So, you could say that: **CSR is just the idea of generating or updating the UI in the browser**
+
+Either by sending a minimal HTML file and letting the browser do the rest, through JavaScript, or by sending a fully rendered HTML page and then using JavaScript to update it.
+
+### How CSR Started Simple, Then Got Complicated
+In the beginning, CSR was straightforward. Developers used libraries like [jQuery](https://jquery.com/) to add interactivity - a click here, an AJAX request there, maybe updating a form or loading some content without refreshing the page. This worked great for enhancing mostly server-rendered websites.
+But as web applications became more ambitious, developers wanted to build entire interfaces in the browser. They started creating complex, app-like experiences that managed lots of data, handled user interactions, and dynamically updated large portions of the page.
+This is where things got messy. Without proper structure, client-side code became a tangled web of event handlers, DOM manipulation, and scattered state management. It was hard to maintain, debug, and scale.
+
+### Frameworks to the Rescue
+
+To solve these organizational challenges, frameworks emerged:
+
+<div style="margin-top: 5rem; display: flex; gap: 1rem; align-items: center; justify-content: center;">
+ 
+#### Backbone (2010) 
+</div>
+
+Introduced structure with models, views, and routers — one of the first serious attempts at building SPAs.
+
+<div style="margin-top: 5rem; display: flex; gap: 1rem; align-items: center; justify-content: center;">
+ 
+#### Angular (2010) 
+</div>
+
+Google’s all-in-one tool: two-way data binding, dependency injection, and custom directives. Powerful but heavy.
+
+<div style="margin-top: 5rem; display: flex; gap: 1rem; align-items: center; justify-content: center;">
+ 
+#### Ember (2011) 
+</div>
+
+Focused on convention over configuration. Great for large apps and teams, but not lightweight or flexible.
+
+<div style="margin-top: 5rem; display: flex; gap: 1rem; align-items: center; justify-content: center;">
+ 
+#### React (2013) 
+</div>
+
+Changed everything with components and a virtual DOM. Emphasized UI as a function of state.
+
+<div style="margin-top: 5rem; display: flex; gap: 1rem; align-items: center; justify-content: center;">
+ 
+#### Vue (2014) 
+</div>
+
+Combined the best ideas from Angular and React with a smoother learning curve and optional complexity.
+
+<div style="margin-top: 5rem; display: flex; gap: 1rem; align-items: center; justify-content: center;">
+ 
+#### Angular 2 (2016) 
+</div>
+
+A full rewrite of AngularJS. TypeScript-first, modular, and better suited for modern enterprise apps.
+
+<div style="margin-top: 5rem; display: flex; gap: 1rem; align-items: center; justify-content: center;">
+ 
+#### Svelte (2016) 
+</div>
+
+Compiles components into minimal JavaScript. No virtual DOM — just fast, efficient DOM updates.
+
+<div style="margin-top: 5rem; display: flex; gap: 1rem; align-items: center; justify-content: center;">
+ 
+#### Solid (2018) 
+</div>
+Like React but with fine-grained reactivity and no virtual DOM. Insanely fast and super small.
+
+<hr style="margin-block: 5rem;" />
+
+Plus a **gazillion** more frameworks, libraries, and tools that have come, peaked, and quietly ghosted us like *that one friend who got really into Rust for a month*.
+
+But the core idea remains: frameworks are here to **help** you make sense of the chaos. They **organize** your client-side code, **manage** state so you don’t lose your mind, and help you build shiny, interactive UIs without having to manually wrangle the DOM like it’s 2009.
+
+Of course, this help comes at a price. You now have to **learn the framework**, *fight the framework*, *pray to the documentation gods*, and occasionally write **10 lines of boilerplate just to center a button**.
+
+So yeah — it’s a trade-off. You get **structure**, **reactivity**, and **component magic**… but you also inherit someone else’s **opinions**, **complexity**, and maybe a **dependency on 23 npm packages just to say “Hello, World.”**
+
+### **Where Are We Now?**
+
+So, where does that leave us? We’ve got a world where:
+
+- Servers can be *static file servers* or *dynamic application servers*  
+- Clients can be *simple browsers* or *complex JavaScript applications*  
+- Websites can be *static*, *dynamic*, or a **mix of both**  
+- Frameworks can help us build interactive UIs — but they also add **complexity**  
+- And we’re all just trying to figure out how to make the web work for us *without losing our minds*
+
+And, funny enough, the pendulum seems to be swinging back — toward **Server-Side Rendering (SSR)**, but this time with fancier clothes and a JavaScript accent.
+
+After years of pushing everything to the client (**CSR all the things!**), we realized, *“Oh hey, maybe asking the browser to do literally everything isn’t always the best idea.”* Slow initial loads, SEO nightmares, and shipping **megabytes of JavaScript** just to render a list? Not ideal.
+
+And so, SSR made a comeback — now in the form of *“on-demand rendering,” “edge rendering,” “server components,”* and other shiny terms. But the idea is old-school: let the **server** do the heavy lifting again, at least *some* of the time.
+
+#### **Enter the Meta-Frameworks**
+
+This is where tools like **Next.js**, **Astro**, **Remix**, **Nuxt**, and friends come in. They’re not just frameworks — they’re **meta-frameworks**, meaning they sit on top of React, Vue, or other libraries, and help you decide **where and when** your code runs:
+
+- Do you want to pre-render it once at build time? (**SSG**)  
+- Or generate it fresh on each request? (**SSR**)  
+- Or hydrate it on the client after a blank page loads? (**CSR**)  
+- Or mix and match all three? (**Hell yeah!**)
+
+These meta-frameworks exist because modern web development is now more about choosing **what runs where** — not just writing code, but **architecting the experience** for performance, SEO, interactivity, and *developer sanity*.
+
+So, basically, we've gone from **static HTML pages**, to **dynamic server-side apps**, to **fully client-rendered SPAs**, and now we’re back to a **hybrid approach** where we can pick and choose what runs where — along with all the *headaches* that come with that.
+
+**Choices, Choices, Choices.**
+
+**Confused?**  
+*Same.* But at least now we’re confused together — with some actual understanding under our belts. 🫡

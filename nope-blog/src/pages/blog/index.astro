@@ -1,0 +1,161 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const swatchColors = [
+  "#d4c5b0", // warm sand
+  "#a8b5c4", // dusty blue
+  "#c4b5a8", // terracotta mist
+  "#b5c4b0", // sage
+  "#c4a8b5", // rose mist
+  "#b0b5c4", // slate
+  "#c4c4a8", // olive
+  "#a8c4c0", // seafoam
+];
+---
+
+<BaseLayout title="Blog — NOPE" description="Notes on building, design, and the web.">
+  <Fragment slot="meta">
+    <p class="meta__eyebrow">Blog</p>
+    <h1 class="meta__title">Notes on building, design, and the web.</h1>
+    <p class="meta__count">{posts.length} posts</p>
+  </Fragment>
+
+  <div class="blog-content">
+    <ul class="blog-grid">
+      {
+        posts.map((post, i) => (
+          <li class="blog-card">
+            <a href={`/blog/${post.id.replace(/\/index$/, "")}`} class="blog-card__link">
+              <div
+                class="blog-card__swatch"
+                style={`background: ${swatchColors[i % swatchColors.length]}`}
+              />
+              <div class="blog-card__body">
+                <p class="blog-card__date">
+                  {post.data.date.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </p>
+                <h2 class="blog-card__title">{post.data.title}</h2>
+                {post.data.description && (
+                  <p class="blog-card__desc">{post.data.description}</p>
+                )}
+                {post.data.tags.length > 0 && (
+                  <p class="blog-card__tags">{post.data.tags.join(" / ")}</p>
+                )}
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .meta__eyebrow {
+    margin: 0 0 var(--space-3);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .meta__title {
+    margin: 0;
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+  }
+
+  .meta__count {
+    margin: var(--space-3) 0 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .blog-content {
+    padding: var(--space-8);
+  }
+
+  .blog-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 1100px) {
+    .blog-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .blog-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .blog-card__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .blog-card__swatch {
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    transition: opacity var(--transition-base);
+  }
+
+  .blog-card__link:hover .blog-card__swatch {
+    opacity: 0.85;
+  }
+
+  .blog-card__body {
+    padding: var(--space-4) 0 var(--space-2);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .blog-card__date,
+  .blog-card__tags {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .blog-card__tags {
+    text-transform: lowercase;
+    margin-top: auto;
+    padding-top: var(--space-2);
+  }
+
+  .blog-card__title {
+    margin: 0;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+  }
+
+  .blog-card__desc {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-relaxed);
+  }
+</style>

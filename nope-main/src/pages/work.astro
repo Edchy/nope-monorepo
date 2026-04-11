@@ -1,0 +1,728 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import LiftSurface from "../components/LiftSurface.astro";
+
+function mediaSrc(media: string | { src: string } | undefined) {
+  return typeof media === "string" ? media : media?.src ?? "";
+}
+
+const toneByEffort = {
+  1: "#c8b89a",
+  2: "#b8c4bb",
+  3: "#a9b8c8",
+} as const;
+
+function sortTime(date?: Date) {
+  return date ? date.valueOf() : Number.NEGATIVE_INFINITY;
+}
+
+function displayYear(date?: Date) {
+  return date ? String(date.getFullYear()) : "Undated";
+}
+
+function displayTags(entry: {
+  data: {
+    tech: string[];
+    tags: string[];
+  };
+}) {
+  if (entry.data.tech.length) return entry.data.tech;
+  return entry.data.tags;
+}
+
+const workItems = (await getCollection("work"))
+  .sort((a, b) => sortTime(b.data.date) - sortTime(a.data.date))
+  .map((entry) => ({
+    name: entry.data.title,
+    type: entry.data.type,
+    year: displayYear(entry.data.date),
+    color: toneByEffort[entry.data.effort],
+    desc: entry.data.description ?? "",
+    section: entry.data.section,
+    tags: displayTags(entry),
+    images: entry.data.images.map((image) => mediaSrc(image)).filter(Boolean),
+    href: entry.data.url ?? "#",
+  }));
+
+const featuredProjects = workItems.filter((item) => item.section === "selected");
+const archiveProjects = workItems.filter((item) => item.section !== "selected");
+---
+
+<BaseLayout title="Nope Work" description="Selected work.">
+  <section class="page-shell layout-shell work-page">
+    <div class="page-grid layout-grid">
+      <h1 class="page-title visually-hidden">Work</h1>
+      <div class="work-section work-section-featured">
+        <p class="section-label">Selected work</p>
+        <p class="section-intro">
+          A small edit of recent projects across websites, identities, and
+          digital products.
+        </p>
+        <ul class="work-list work-list-featured">
+          {
+            featuredProjects.map(({ name, type, year, color, desc, tags, images, href }) => (
+              <li class="work-item work-item-featured">
+                <LiftSurface href={href} class="work-item-link">
+                  <span
+                    data-color={color}
+                    data-desc={desc}
+                    data-href={href}
+                    data-images={JSON.stringify(images)}
+                    data-name={name}
+                    data-type={type}
+                    data-year={year}
+                    data-tags={tags.join(",")}
+                    class="work-item-main"
+                  >
+                    <h3 class="project-name">{name}</h3>
+                    <span class="project-meta">
+                      <span class="project-type">{type}</span>
+                      <span class="project-year">{year}</span>
+                    </span>
+                  </span>
+                </LiftSurface>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="work-section work-section-archive">
+        <p class="section-label">Archive</p>
+        <p class="section-intro">
+          Smaller commissions, earlier systems, and work that still belongs in
+          the index.
+        </p>
+        <ul class="work-list">
+          {
+            archiveProjects.map(({ name, type, year }) => (
+              <li class="work-item work-item-archive">
+                <div class="work-item-main">
+                  <h3 class="project-name">{name}</h3>
+                  <span class="project-meta">
+                    <span class="project-type">{type}</span>
+                    <span class="project-year">{year}</span>
+                  </span>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<!-- Floating preview -->
+<div class="preview" id="preview">
+  <div class="preview-media" id="preview-media">
+    <img class="preview-image" id="preview-image" alt="" hidden />
+  </div>
+  <div class="preview-body">
+    <p class="preview-desc" id="preview-desc"></p>
+    <span class="preview-link-icon" id="preview-link-icon" aria-hidden="true"></span>
+  </div>
+</div>
+
+<style>
+  :global([data-theme="experimental"]) .work-page {
+    --color-text-primary: var(--color-text-inverse);
+    --color-text-secondary: var(--color-text-inverse);
+    color: var(--color-text-primary);
+  }
+
+  .work-page .page-grid {
+    row-gap: var(--space-8);
+  }
+
+  .work-page .page-title {
+    grid-column: 1 / 4;
+    align-self: start;
+    min-width: 0;
+    width: 100%;
+    max-width: 42rem;
+    margin-inline: auto;
+    padding-top: 0.2em;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--color-text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .work-page .work-section {
+    grid-column: 3 / 11;
+    display: block;
+  }
+
+  .work-section-archive {
+    margin-top: var(--space-16);
+  }
+
+  .section-label {
+    margin: 0 0 var(--space-2) 0;
+    font-size: var(--font-size-xs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    opacity: 0.65;
+  }
+
+  .section-intro {
+    max-width: 28rem;
+    margin: 0 0 var(--space-8) 0;
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-snug);
+    color: var(--color-text-primary);
+    text-wrap: pretty;
+  }
+
+  .work-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .work-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-6);
+    width: 100%;
+  }
+
+  .work-item-main {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-6);
+    flex: 1;
+    min-width: 0;
+  }
+
+  .work-item-link {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+    outline-offset: var(--space-2);
+  }
+
+  .work-item-archive {
+    color: var(--color-text-secondary);
+  }
+
+  .project-name {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    letter-spacing: 0.06em;
+    line-height: var(--line-height-tight);
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    text-wrap: pretty;
+  }
+
+  .work-item-archive .project-name {
+    font-size: var(--font-size-xs);
+    letter-spacing: 0.06em;
+    color: var(--color-text-secondary);
+    text-decoration: line-through;
+  }
+
+  .project-meta {
+    display: flex;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    opacity: 0.72;
+  }
+
+  .project-type {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    min-width: 4rem;
+  }
+
+  .project-year {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    min-width: 2.5rem;
+    text-align: right;
+  }
+
+  .work-section-featured {
+    position: relative;
+  }
+
+  .work-list-featured {
+    position: relative;
+    isolation: isolate;
+    gap: var(--space-2);
+  }
+
+  :global(.work-list-featured__pill) {
+    position: absolute;
+    inset-inline: calc(var(--space-4) * -1);
+    top: 0;
+    z-index: 0;
+    background: var(--color-background-surface);
+    opacity: 0;
+    pointer-events: none;
+    height: 0;
+    transform: translateY(0);
+    transition:
+      transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+      height 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.16s ease;
+    will-change: transform, height, opacity;
+  }
+
+  :global(.work-list-featured__pill.is-visible) {
+    opacity: 1;
+  }
+
+  .work-item-featured {
+    position: relative;
+    z-index: 1;
+    padding-block: var(--space-3);
+  }
+
+  .work-item-featured.is-hovered .project-name,
+  .work-item-featured.is-hovered .project-type,
+  .work-item-featured.is-hovered .project-year {
+    color: var(--experimental-1);
+  }
+
+
+
+  .preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0;
+    transition:
+      opacity 0.18s ease,
+      transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform, opacity;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-background-surface);
+    color: var(--neutral-900);
+    width: clamp(240px, 22vw, 320px);
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100vh - 3rem);
+    overflow: hidden;
+    padding: var(--space-4);
+  }
+
+  .preview.visible {
+    opacity: 1;
+  }
+
+  .preview-media {
+    position: relative;
+    overflow: hidden;
+    background: var(--neutral-100);
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    padding: var(--space-2);
+  }
+
+  .preview-image {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+  }
+
+  .preview-image[hidden] {
+    display: none;
+  }
+
+  .preview-body {
+    min-width: 0;
+    padding: var(--space-3) 0 var(--space-3) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    position: relative;
+  }
+
+  .preview-link-icon {
+    width: 0.75rem;
+    height: 0.75rem;
+    color: var(--neutral-warm-600);
+    fill: currentColor;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+
+  .preview-link-icon :global(svg) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .preview-desc {
+    margin: 0;
+    padding-right: var(--space-4);
+    font-size: 0.65rem;
+    line-height: var(--line-height-relaxed);
+    color: var(--neutral-warm-600);
+  }
+
+
+  @media (max-width: 768px) {
+    .work-page .page-title {
+      grid-column: 1 / -1;
+    }
+
+    .work-page .work-section {
+      grid-column: 1 / -1;
+    }
+
+    .section-intro {
+      max-width: none;
+      margin-bottom: var(--space-6);
+    }
+
+    .work-item-featured {
+      padding-block: var(--space-2);
+    }
+  }
+
+  @media (max-width: 500px) {
+    .project-year {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  let cleanupWorkPreview: (() => void) | undefined;
+
+  const getPreviewMode = () => {
+    const canHover =
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+    if (!canHover) return "none";
+    if (window.innerWidth >= 1280) return "wide";
+    if (window.innerWidth >= 860) return "medium";
+    return "none";
+  };
+
+  function initWorkPreview() {
+    cleanupWorkPreview?.();
+
+    const items = document.querySelectorAll(
+      ".work-item-featured .work-item-main",
+    );
+    const preview = document.getElementById("preview");
+    const media = document.getElementById("preview-media");
+    const previewImage = document.getElementById("preview-image");
+    const linkIcon = document.getElementById("preview-link-icon");
+    const desc = document.getElementById("preview-desc");
+    const tags = document.getElementById("preview-tags");
+
+    if (!items.length || !preview) {
+      cleanupWorkPreview = undefined;
+      return;
+    }
+
+    preview.classList.remove("visible");
+
+    const featuredList = document.querySelector<HTMLElement>(".work-list-featured");
+    let pill: HTMLElement | null = null;
+    if (featuredList) {
+      pill = document.createElement("div");
+      pill.className = "work-list-featured__pill";
+      featuredList.prepend(pill);
+    }
+
+    const movePillTo = (li: HTMLElement) => {
+      if (!pill || !featuredList) return;
+      const listRect = featuredList.getBoundingClientRect();
+      const liRect = li.getBoundingClientRect();
+      const offsetY = liRect.top - listRect.top + featuredList.scrollTop;
+      pill.style.transform = `translateY(${offsetY}px)`;
+      pill.style.height = `${liRect.height}px`;
+      pill.classList.add("is-visible");
+    };
+
+    const hidePill = () => {
+      pill?.classList.remove("is-visible");
+    };
+
+    let activeItem: HTMLElement | null = null;
+    let mouseX = 0;
+    let mouseY = 0;
+    let rafId: number | null = null;
+    let slideshowId: number | null = null;
+    const controller = new AbortController();
+    const { signal } = controller;
+    const githubIcon = `<svg viewBox="0 0 98 96" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"/></svg>`;
+    const webIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3a14.5 14.5 0 0 1 0 18" /><path d="M12 3a14.5 14.5 0 0 0 0 18" /></svg>`;
+
+    const isGithubUrl = (value: string) => {
+      try {
+        const { hostname } = new URL(value);
+        return hostname === "github.com" || hostname.endsWith(".github.com");
+      } catch {
+        return value.includes("github.com");
+      }
+    };
+
+    const readImages = (value: string | undefined) => {
+      if (!value) return [];
+
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [];
+      } catch {
+        return [];
+      }
+    };
+
+    const stopSlideshow = () => {
+      if (slideshowId) {
+        window.clearInterval(slideshowId);
+        slideshowId = null;
+      }
+    };
+
+    const showPreviewImage = (src: string | undefined, color: string) => {
+      if (!media || !(previewImage instanceof HTMLImageElement)) return;
+
+      if (src) {
+        previewImage.src = src;
+        previewImage.hidden = false;
+        media.style.backgroundColor = "";
+        return;
+      }
+
+      previewImage.hidden = true;
+      previewImage.removeAttribute("src");
+      media.style.backgroundColor = color || "var(--neutral-200)";
+    };
+
+    const startSlideshow = (images: string[], color: string) => {
+      stopSlideshow();
+
+      if (!images.length) {
+        showPreviewImage(undefined, color);
+        return;
+      }
+
+      let index = 0;
+      showPreviewImage(images[index], color);
+
+      if (images.length === 1) return;
+
+      slideshowId = window.setInterval(() => {
+        index = (index + 1) % images.length;
+        showPreviewImage(images[index], color);
+      }, 500);
+    };
+
+    const getLanePosition = (
+      itemRect: DOMRect,
+      pw: number,
+      mode: "wide" | "medium",
+    ) => {
+      const listRect = featuredList?.getBoundingClientRect();
+      const vw = window.innerWidth;
+      const gutter = 16;
+      const laneGap = 24;
+
+      if (!listRect) {
+        return {
+          x: Math.min(
+            Math.max(itemRect.right + laneGap, gutter),
+            vw - pw - gutter,
+          ),
+          side: "right" as const,
+        };
+      }
+
+      const rightMin = listRect.right + laneGap;
+      const rightMax = vw - pw - gutter;
+      const leftMin = gutter;
+      const leftMax = listRect.left - pw - laneGap;
+      const canUseRight = rightMax >= rightMin;
+      const canUseLeft = leftMax >= leftMin;
+
+      if (!canUseRight && !canUseLeft) {
+        const floatingX =
+          mouseX > window.innerWidth / 2 ? mouseX - pw - laneGap : mouseX + laneGap;
+        return {
+          x: floatingX,
+          side: "floating" as const,
+        };
+      }
+
+      const side =
+        canUseRight && (!canUseLeft || vw - listRect.right >= listRect.left)
+          ? "right"
+          : "left";
+
+      if (mode === "medium") {
+        const x = side === "right" ? rightMin : leftMax;
+        return { x, side };
+      }
+
+      if (side === "right") {
+        return {
+          x: Math.min(Math.max(mouseX + laneGap, rightMin), rightMax),
+          side,
+        };
+      }
+
+      return {
+        x: Math.max(Math.min(mouseX - pw - laneGap, leftMax), leftMin),
+        side,
+      };
+    };
+
+    const updatePreviewPosition = () => {
+      if (!activeItem) return;
+
+      const mode = getPreviewMode();
+      if (mode === "none") {
+        preview.classList.remove("visible");
+        activeItem = null;
+        hidePill();
+        return;
+      }
+
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const pw = preview.offsetWidth;
+      const ph = preview.offsetHeight;
+      const itemRect = activeItem.getBoundingClientRect();
+      const lane = getLanePosition(itemRect, pw, mode);
+
+      const yTarget =
+        mode === "wide"
+          ? mouseY - ph / 2
+          : itemRect.top + itemRect.height / 2 - ph / 2;
+      const y = Math.min(
+        Math.max(yTarget, 24),
+        vh - ph - 24,
+      );
+      const x = Math.min(
+        Math.max(lane.x, 16),
+        vw - pw - 16,
+      );
+      preview.style.transform = `translate(${x}px, ${y}px)`;
+      preview.style.left = "0";
+      preview.style.top = "0";
+    };
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+      if (getPreviewMode() !== "wide" || !activeItem) return;
+
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(updatePreviewPosition);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove, { signal });
+    window.addEventListener("resize", updatePreviewPosition, { signal });
+    window.addEventListener("scroll", updatePreviewPosition, { signal, passive: true });
+    featuredList?.addEventListener(
+      "mouseleave",
+      () => {
+        stopSlideshow();
+        preview.classList.remove("visible");
+        activeItem = null;
+        document
+          .querySelectorAll(".work-item-featured.is-hovered")
+          .forEach((el) => el.classList.remove("is-hovered"));
+        hidePill();
+      },
+      { signal },
+    );
+
+    items.forEach((item) => {
+      item.addEventListener(
+        "mouseenter",
+        () => {
+          const el = item as HTMLElement;
+          const mode = getPreviewMode();
+          const color = el.dataset.color ?? "";
+          const href = el.dataset.href ?? "";
+          const name = el.dataset.name ?? "";
+          const type = el.dataset.type ?? "";
+          const year = el.dataset.year ?? "";
+          const text = el.dataset.desc;
+          const tagList = el.dataset.tags?.split(",") ?? [];
+          const images = readImages(el.dataset.images);
+
+          const li = el.closest<HTMLElement>(".work-item-featured");
+          if (li) {
+            document.querySelectorAll(".work-item-featured.is-hovered").forEach((el) => el.classList.remove("is-hovered"));
+            li.classList.add("is-hovered");
+            movePillTo(li);
+          }
+
+          if (mode === "none") {
+            stopSlideshow();
+            preview.classList.remove("visible");
+            activeItem = null;
+            return;
+          }
+
+          startSlideshow(images, color);
+          if (linkIcon) {
+            linkIcon.innerHTML = isGithubUrl(href) ? githubIcon : webIcon;
+          }
+          if (desc) desc.textContent = text ?? "";
+          preview.classList.add("visible");
+
+          if (li) {
+            activeItem = li;
+            updatePreviewPosition();
+          }
+        },
+        { signal },
+      );
+
+      item.addEventListener(
+        "mouseleave",
+        () => {
+          // The shared hover pill should persist while moving between list items.
+        },
+        { signal },
+      );
+    });
+
+    cleanupWorkPreview = () => {
+      controller.abort();
+      stopSlideshow();
+      preview.classList.remove("visible");
+      activeItem = null;
+      if (rafId) cancelAnimationFrame(rafId);
+      hidePill();
+      pill?.remove();
+      pill = null;
+      document.querySelectorAll(".work-item-featured.is-hovered").forEach((el) => el.classList.remove("is-hovered"));
+    };
+  }
+
+  document.addEventListener("astro:page-load", initWorkPreview);
+  initWorkPreview();
+</script>

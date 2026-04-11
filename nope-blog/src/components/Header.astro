@@ -1,0 +1,128 @@
+---
+interface NavLink {
+  href: string;
+  label: string;
+  isExternal?: boolean;
+}
+
+interface Props {
+  siteTitle: string;
+  navLinks: NavLink[];
+}
+
+const { siteTitle, navLinks } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<header class="blog-header">
+  <div class="blog-header__inner">
+    <a href="/" class="blog-header__title">{siteTitle}</a>
+    <nav aria-label="Main navigation">
+      <ul class="blog-header__links">
+        {navLinks.map(({ href, label, isExternal }) => (
+          <li>
+            <a
+              href={href}
+              class:list={[
+                "blog-header__link",
+                { "blog-header__link--active": currentPath === href },
+              ]}
+            >
+              <span>{label}</span>
+              {isExternal && (
+                <span class="blog-header__external-indicator" aria-hidden="true">
+                  ↗
+                </span>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .blog-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    view-transition-name: header;
+  }
+
+  .blog-header.hidden {
+    transform: translateY(-100%);
+  }
+
+  .blog-header__inner {
+    max-width: var(--max-width-content);
+    margin-inline: auto;
+    min-height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .blog-header__title {
+    font-weight: var(--font-weight-heading);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    transition: opacity var(--transition-fast);
+  }
+
+  .blog-header__title:hover {
+    opacity: 0.8;
+  }
+
+  .blog-header__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: var(--space-6);
+    row-gap: var(--space-2);
+  }
+
+  .blog-header__link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-1);
+    font-size: var(--font-size-sm);
+    text-decoration: none;
+    color: var(--color-text-secondary);
+    text-transform: none;
+  }
+
+  .blog-header__external-indicator {
+    font-size: 0.95em;
+    line-height: 1;
+    transform: translateY(-0.08em);
+  }
+
+  .blog-header__link:hover,
+  .blog-header__link--active {
+    color: var(--color-text-primary);
+  }
+</style>
+
+<script>
+  {
+    const header = document.querySelector<HTMLElement>(".blog-header");
+    let lastY = window.scrollY;
+
+    if (header) {
+      window.addEventListener(
+        "scroll",
+        () => {
+          const y = window.scrollY;
+          header.classList.toggle("hidden", y > lastY && y > 80);
+          lastY = y;
+        },
+        { passive: true },
+      );
+    }
+  }
+</script>

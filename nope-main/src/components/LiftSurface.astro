@@ -1,0 +1,118 @@
+---
+interface Props {
+  href: string;
+  class?: string;
+  max?: number;
+}
+
+const { href, class: className = "", max = 8 } = Astro.props;
+---
+
+<span class="lift-surface-wrap" data-max={max}>
+  <a href={href} class:list={["lift-surface", className]}>
+    <slot />
+  </a>
+</span>
+
+<script>
+  let cleanupLiftSurfaces: (() => void) | undefined;
+
+  const canUseLift = () =>
+    window.matchMedia("(min-width: 769px)").matches &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  const resetStyles = (el: HTMLElement) => {
+    el.style.setProperty("--_tx", "0px");
+    el.style.setProperty("--_ty", "0px");
+    el.style.setProperty("--_scale", "1");
+  };
+
+  function init() {
+    cleanupLiftSurfaces?.();
+
+    const wraps = document.querySelectorAll<HTMLElement>(".lift-surface-wrap");
+    if (!wraps.length) {
+      cleanupLiftSurfaces = undefined;
+      return;
+    }
+
+    if (!canUseLift()) {
+      wraps.forEach((wrap) => {
+        const el = wrap.querySelector<HTMLElement>(".lift-surface");
+        if (el) resetStyles(el);
+      });
+      cleanupLiftSurfaces = undefined;
+      return;
+    }
+
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    wraps.forEach((wrap) => {
+      const el = wrap.querySelector<HTMLElement>(".lift-surface")!;
+      const MAX = Number(wrap.dataset.max ?? 8);
+
+      wrap.addEventListener("mousemove", (e) => {
+        const rect = wrap.getBoundingClientRect();
+        const nx = (e.clientX - rect.left) / rect.width - 0.5;
+        const ny = (e.clientY - rect.top) / rect.height - 0.5;
+
+        el.style.setProperty("--_tx", `${nx * MAX * 2}px`);
+        el.style.setProperty("--_ty", `${ny * MAX}px`);
+        el.style.setProperty("--_scale", "1.01");
+      }, { signal });
+
+      wrap.addEventListener("mouseleave", () => {
+        resetStyles(el);
+      }, { signal });
+    });
+
+    cleanupLiftSurfaces = () => {
+      controller.abort();
+      wraps.forEach((wrap) => {
+        const el = wrap.querySelector<HTMLElement>(".lift-surface");
+        if (el) resetStyles(el);
+      });
+    };
+  }
+
+  document.addEventListener("astro:page-load", init);
+  init();
+</script>
+
+<style>
+  .lift-surface-wrap {
+    display: block;
+    width: 100%;
+  }
+
+  .lift-surface {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+    transform: translate(var(--_tx, 0px), var(--_ty, 0px)) scale(var(--_scale, 1));
+    transition:
+      transform 0.15s ease;
+  }
+
+  .lift-surface:hover,
+  .lift-surface:focus-visible {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  @media (max-width: 768px) {
+    .lift-surface {
+      transform: none;
+      transition: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lift-surface {
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

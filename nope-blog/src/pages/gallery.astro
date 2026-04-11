@@ -1,0 +1,1791 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+function mediaSrc(media: string | { src: string } | undefined) {
+  return typeof media === "string" ? media : media?.src ?? "";
+}
+
+const workItems = (await getCollection("work")).map((item) => ({
+  id: item.id.replace(/\/index$/, ""),
+  title: item.data.title,
+  description: item.data.description ?? "",
+  type: item.data.type,
+  images: (item.data.images ?? []).map((image) => mediaSrc(image)).filter(Boolean),
+  effort: item.data.effort ?? 2,
+  tags: item.data.tags,
+  tech: item.data.tech,
+  date: item.data.date,
+  url: item.data.url ?? "",
+}));
+
+const effortSizes = {
+  1: { width: 1.8, height: 1.35 },
+  2: { width: 2.7, height: 1.95 },
+  3: { width: 4.8, height: 3.3 },
+};
+type WallFacing = "positive" | "negative";
+
+function wallSlot(
+  x: number,
+  z: number,
+  rotY: number,
+  wallLen: number,
+  room: string,
+  facing: WallFacing = "positive"
+) {
+  return { x, z, rotY, wallLen, room, facing };
+}
+
+function offsetAlongWall(
+  slot: ReturnType<typeof wallSlot>,
+  cycleIndex: number
+) {
+  if (cycleIndex === 0) return { x: slot.x, z: slot.z, scale: 1 };
+
+  const lanePattern = [-0.24, 0.24, -0.4, 0.4];
+  const lane = lanePattern[(cycleIndex - 1) % lanePattern.length] ?? 0;
+  const offset = slot.wallLen * lane;
+  const cos = Math.cos(slot.rotY);
+  const sin = Math.sin(slot.rotY);
+
+  return {
+    x: slot.x + offset * cos,
+    z: slot.z - offset * sin,
+    scale: cycleIndex === 1 ? 0.88 : 0.8,
+  };
+}
+
+const wallSlots = [
+  // Main Hall (3 walls)
+  wallSlot(0, 11.9, Math.PI, 12, "main-hall"),
+  wallSlot(-5.9, 6, Math.PI / 2, 12, "main-hall"),
+  wallSlot(5.9, 6, -Math.PI / 2, 12, "main-hall"),
+  // Room A (3 walls)
+  wallSlot(-4.9, -21, Math.PI / 2, 10, "room-a"),
+  wallSlot(4.9, -21, -Math.PI / 2, 10, "room-a"),
+  // Room B (3 walls)
+  wallSlot(-8, -12.9, Math.PI, 12, "room-b", "negative"),
+  wallSlot(-8, -3.1, 0, 12, "room-b", "negative"),
+  wallSlot(-13.9, -8, Math.PI / 2, 10, "room-b"),
+  // Room C (3 walls)
+  wallSlot(8, -12.9, Math.PI, 12, "room-c", "negative"),
+  wallSlot(8, -3.1, 0, 12, "room-c", "negative"),
+  wallSlot(13.9, -8, -Math.PI / 2, 10, "room-c"),
+  // Room D (3 walls)
+  wallSlot(0, -35.9, 0, 10, "room-d"),
+  wallSlot(-4.9, -31, Math.PI / 2, 10, "room-d"),
+  wallSlot(4.9, -31, -Math.PI / 2, 10, "room-d"),
+];
+
+const roomsByOrder = ["main-hall", "room-a", "room-b", "room-c", "room-d"] as const;
+const roomSlotsMap: Record<string, typeof wallSlots> = {};
+for (const slot of wallSlots) {
+  if (!roomSlotsMap[slot.room]) roomSlotsMap[slot.room] = [];
+  roomSlotsMap[slot.room].push(slot);
+}
+
+const orderedSlots = roomsByOrder.flatMap((roomName) => roomSlotsMap[roomName]);
+const ecommerceReservedSlot = roomSlotsMap["room-d"][0];
+const availableSlots = orderedSlots.filter((slot) => slot !== ecommerceReservedSlot);
+
+const ecommerceItem = workItems.find((item) => item.id === "ecommerce-platform");
+const regularItems = workItems.filter((item) => item.id !== "ecommerce-platform");
+
+const assignedItems = ecommerceItem
+  ? [{ item: ecommerceItem, slot: ecommerceReservedSlot }]
+  : [];
+
+regularItems.forEach((item, index) => {
+  const slotIndex = index % availableSlots.length;
+  const cycleIndex = Math.floor(index / availableSlots.length);
+  const slot = availableSlots[slotIndex];
+  assignedItems.push({ item, slot, cycleIndex });
+});
+
+type DisplayKind = "wall-panel" | "wall-monitor" | "crt-stack";
+type DisplayMediaKind = "image" | "slideshow";
+
+function getDisplayKind(room: string, index: number): DisplayKind {
+  if (room === "main-hall" || room === "room-d") return "wall-panel";
+  if (room === "room-a") return "wall-monitor";
+  return index % 2 === 0 ? "crt-stack" : "wall-monitor";
+}
+
+function getDisplayMedia(item: typeof workItems[number]) {
+  if (item.images.length > 0) {
+    return {
+      mediaKind: item.images.length > 1 ? "slideshow" as const : "image" as const,
+      image: item.images[0] || "",
+      images: item.images,
+    };
+  }
+
+  return {
+    mediaKind: "image" as const,
+    image: "",
+    images: [],
+  };
+}
+
+const displayData = assignedItems.map(({ item, slot, cycleIndex = 0 }, index) => {
+  const baseSize = effortSizes[item.effort as keyof typeof effortSizes] ?? effortSizes[2];
+  const kind = getDisplayKind(slot.room, index);
+  const media = getDisplayMedia(item);
+  const placement = offsetAlongWall(slot, cycleIndex);
+  const repeatScale = placement.scale;
+  const size =
+    kind === "wall-panel"
+      ? { width: baseSize.width * repeatScale, height: baseSize.height * repeatScale }
+      : kind === "wall-monitor"
+        ? {
+            width: Math.max(baseSize.width * 0.82 * repeatScale, 1.45),
+            height: Math.max(baseSize.height * 0.8 * repeatScale, 1.05),
+          }
+        : {
+            width: Math.max(baseSize.width * 0.72 * repeatScale, 1.3),
+            height: Math.max(baseSize.height * 0.7 * repeatScale, 0.95),
+          };
+  return {
+    title: item.title,
+    description: item.description,
+    image: media.image,
+    images: media.images,
+    mediaKind: media.mediaKind,
+    effort: item.effort,
+    tags: item.tags,
+    tech: item.tech,
+    date: item.date instanceof Date ? item.date.toISOString() : String(item.date),
+    kind,
+    room: slot.room,
+    width: size.width,
+    height: size.height,
+    x: placement.x,
+    z: placement.z,
+    rotY: slot.rotY,
+    facing: slot.facing,
+    url: item.url,
+  };
+});
+
+const displayDataJson = JSON.stringify(displayData);
+---
+
+<BaseLayout title="Digital Gallery" noFooter>
+  <div class="gallery-wrapper">
+    <canvas id="gallery-canvas"></canvas>
+    <div id="display-labels"></div>
+    <div class="gallery-overlay" id="gallery-overlay">
+      <h1>Digital Gallery</h1>
+      <p>Click to explore the exhibition</p>
+      <span class="hint">WASD to move · Mouse to look</span>
+    </div>
+  </div>
+  <script type="application/json" id="gallery-data" set:html={displayDataJson} />
+</BaseLayout>
+
+<style is:global>
+  .gallery-wrapper {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  #gallery-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  #display-labels {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: visible;
+    display: none;
+  }
+
+  #display-labels.active {
+    display: block;
+  }
+
+  .display-label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: min(460px, calc(100vw - 32px));
+    padding: 26px 28px 28px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08)),
+      linear-gradient(180deg, rgba(33, 38, 48, 0.7), rgba(18, 22, 30, 0.58));
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow:
+      0 24px 64px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.26),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(18px) saturate(145%);
+    -webkit-backdrop-filter: blur(18px) saturate(145%);
+    color: #f6f7fb;
+    font-size: 1.04rem;
+    line-height: 1.55;
+    border-radius: 28px;
+    transform: translate(calc(-100% + 18px), calc(-100% + 18px)) scale(0.94);
+    opacity: 0;
+    transition: opacity 0.36s ease, transform 0.36s ease;
+    pointer-events: none;
+  }
+
+  .display-label.visible {
+    opacity: 1;
+    transform: translate(-100%, -100%) scale(1);
+  }
+
+  .display-label-accent {
+    display: block;
+    width: 52px;
+    height: 5px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    box-shadow: 0 0 24px rgba(255, 255, 255, 0.22);
+  }
+
+  .display-label-title {
+    font-size: 1.36rem;
+    font-weight: 650;
+    display: block;
+    margin-bottom: 8px;
+    color: #fbfcff;
+    letter-spacing: -0.02em;
+  }
+
+  .display-label-meta {
+    color: rgba(246, 247, 251, 0.58);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .display-label-desc {
+    color: rgba(246, 247, 251, 0.8);
+    font-size: 1rem;
+    line-height: 1.6;
+    display: block;
+  }
+  .display-label-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .display-label-tech-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(246, 247, 251, 0.7);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 6px;
+    padding: 3px 8px;
+  }
+  .display-label-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 14px;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(246, 247, 251, 0.7);
+  }
+  .display-label-link kbd {
+    font-family: inherit;
+    font-size: 0.72rem;
+    color: #f4f4f5;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 5px;
+    padding: 2px 7px;
+    letter-spacing: 0;
+  }
+
+  .gallery-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background:
+      radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 45%),
+      linear-gradient(180deg, rgba(19, 21, 24, 0.88), rgba(11, 12, 14, 0.94));
+    cursor: pointer;
+    transition: opacity 0.4s;
+  }
+
+  .gallery-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .gallery-overlay h1 {
+    font-family: var(--font-jost), system-ui, sans-serif;
+    font-size: 2.5rem;
+    font-weight: var(--font-weight-heading);
+    letter-spacing: -0.02em;
+    color: #f7f3eb;
+    margin: 0;
+  }
+
+  .gallery-overlay p {
+    font-family: var(--font-jost), system-ui, sans-serif;
+    font-weight: var(--font-weight-body);
+    color: rgba(247, 243, 235, 0.78);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .gallery-overlay .hint {
+    color: rgba(247, 243, 235, 0.48);
+    font-size: 0.8rem;
+    margin-top: 16px;
+  }
+</style>
+
+<script>
+  import type { Group, MeshBasicMaterial, Side, Texture, Vector3 } from 'three';
+
+  type WallFacing = 'positive' | 'negative';
+  type DisplayKind = 'wall-panel' | 'wall-monitor' | 'crt-stack';
+  type DisplayMediaKind = 'image' | 'slideshow';
+
+  async function init() {
+  const {
+    ACESFilmicToneMapping,
+    BoxGeometry,
+    CanvasTexture,
+    CatmullRomCurve3,
+    Color,
+    DirectionalLight,
+    DoubleSide,
+    Euler,
+    Fog,
+    Group,
+    HemisphereLight,
+    Mesh,
+    MeshBasicMaterial,
+    MeshStandardMaterial,
+    NoColorSpace,
+    Object3D,
+    PerspectiveCamera,
+    PlaneGeometry,
+    RepeatWrapping,
+    Scene,
+    SpotLight,
+    SRGBColorSpace,
+    Texture,
+    TextureLoader,
+    TubeGeometry,
+    Vector3,
+    WebGLRenderer,
+  } = await import('three');
+  const { PointerLockControls } = await import('three/addons/controls/PointerLockControls.js');
+  const displayData = JSON.parse(document.getElementById('gallery-data')?.textContent || '[]');
+
+  const canvas = document.getElementById('gallery-canvas') as HTMLCanvasElement;
+  const overlay = document.getElementById('gallery-overlay') as HTMLElement;
+  if (!canvas || !overlay) return;
+
+  // Scene
+  const scene = new Scene();
+  scene.background = new Color(0x111417);
+  scene.fog = new Fog(0x111417, 16, 45);
+
+  // Camera
+  const camera = new PerspectiveCamera(70, 1, 0.1, 100);
+  camera.position.set(0, 1.7, 6);
+
+  // Renderer
+  const renderer = new WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1));
+  renderer.outputColorSpace = SRGBColorSpace;
+  renderer.toneMapping = ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1;
+  renderer.shadowMap.enabled = false;
+  const maxAnisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 2);
+  const textureLoader = new TextureLoader();
+  textureLoader.setCrossOrigin('anonymous');
+
+  function resize() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Lighting
+  const hemisphereLight = new HemisphereLight(0xf3eee3, 0x2b2a28, 0.55);
+  scene.add(hemisphereLight);
+
+  const fillLight = new DirectionalLight(0xcdd8e5, 1.35);
+  fillLight.position.set(8, 11, 6);
+  scene.add(fillLight);
+
+  const backLight = new DirectionalLight(0xfff2d8, 0.42);
+  backLight.position.set(-10, 7, -6);
+  scene.add(backLight);
+
+  // Room height
+  const H = 7;
+
+  function canvasTexture(
+    size: number,
+    draw: (ctx: CanvasRenderingContext2D, size: number) => void
+  ) {
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Unable to create texture context');
+    draw(ctx, size);
+    const texture = new CanvasTexture(canvas);
+    texture.colorSpace = SRGBColorSpace;
+    texture.wrapS = RepeatWrapping;
+    texture.wrapT = RepeatWrapping;
+    texture.anisotropy = maxAnisotropy;
+    return texture;
+  }
+
+  function monochromeTexture(
+    size: number,
+    draw: (ctx: CanvasRenderingContext2D, size: number) => void
+  ) {
+    const texture = canvasTexture(size, draw);
+    texture.colorSpace = NoColorSpace;
+    return texture;
+  }
+
+  function fillNoise(
+    ctx: CanvasRenderingContext2D,
+    size: number,
+    count: number,
+    gray: [number, number],
+    alpha: [number, number],
+    maxRadius: number
+  ) {
+    for (let i = 0; i < count; i += 1) {
+      const x = Math.random() * size;
+      const y = Math.random() * size;
+      const radius = Math.random() * maxRadius + 0.35;
+      const tone = Math.round(gray[0] + Math.random() * (gray[1] - gray[0]));
+      ctx.fillStyle = `rgba(${tone}, ${tone}, ${tone}, ${alpha[0] + Math.random() * (alpha[1] - alpha[0])})`;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  interface MaterialRecipe {
+    map: Texture;
+    roughnessMap?: Texture;
+    bumpMap?: Texture;
+    color?: number;
+    roughness: number;
+    metalness: number;
+    bumpScale?: number;
+    side?: Side;
+  }
+
+  function buildMaterial(recipe: MaterialRecipe) {
+    return new MeshStandardMaterial({
+      color: recipe.color ?? 0xffffff,
+      map: recipe.map,
+      roughnessMap: recipe.roughnessMap,
+      bumpMap: recipe.bumpMap,
+      roughness: recipe.roughness,
+      metalness: recipe.metalness,
+      bumpScale: recipe.bumpScale ?? 0,
+      side: recipe.side,
+    });
+  }
+
+  const floorColorTexture = canvasTexture(256, (ctx, size) => {
+    const gradient = ctx.createLinearGradient(0, 0, size, size);
+    gradient.addColorStop(0, '#4e5358');
+    gradient.addColorStop(1, '#34383c');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    fillNoise(ctx, size, 4200, [58, 112], [0.03, 0.1], 1.4);
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = size * 0.0035;
+    for (let i = 1; i < 4; i += 1) {
+      const offset = (size / 4) * i;
+      ctx.beginPath();
+      ctx.moveTo(offset, 0);
+      ctx.lineTo(offset, size);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, offset);
+      ctx.lineTo(size, offset);
+      ctx.stroke();
+    }
+  });
+
+  const floorRoughnessTexture = monochromeTexture(256, (ctx, size) => {
+    ctx.fillStyle = '#d7d7d7';
+    ctx.fillRect(0, 0, size, size);
+    fillNoise(ctx, size, 5000, [140, 245], [0.02, 0.08], 1.2);
+  });
+
+  const floorBumpTexture = monochromeTexture(256, (ctx, size) => {
+    ctx.fillStyle = '#7b7b7b';
+    ctx.fillRect(0, 0, size, size);
+    fillNoise(ctx, size, 5400, [110, 170], [0.03, 0.12], 1.1);
+    ctx.strokeStyle = 'rgba(220,220,220,0.18)';
+    ctx.lineWidth = size * 0.0025;
+    for (let i = 1; i < 4; i += 1) {
+      const offset = (size / 4) * i;
+      ctx.beginPath();
+      ctx.moveTo(offset, 0);
+      ctx.lineTo(offset, size);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, offset);
+      ctx.lineTo(size, offset);
+      ctx.stroke();
+    }
+  });
+
+  const wallColorTexture = canvasTexture(256, (ctx, size) => {
+    const gradient = ctx.createLinearGradient(0, 0, size, 0);
+    gradient.addColorStop(0, '#d2cec5');
+    gradient.addColorStop(1, '#c7c2b7');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    fillNoise(ctx, size, 7600, [180, 230], [0.015, 0.06], 1.8);
+    const grime = ctx.createLinearGradient(0, size, 0, size * 0.68);
+    grime.addColorStop(0, 'rgba(94, 84, 68, 0.18)');
+    grime.addColorStop(1, 'rgba(94, 84, 68, 0)');
+    ctx.fillStyle = grime;
+    ctx.fillRect(0, 0, size, size);
+  });
+
+  const wallRoughnessTexture = monochromeTexture(256, (ctx, size) => {
+    ctx.fillStyle = '#ededed';
+    ctx.fillRect(0, 0, size, size);
+    fillNoise(ctx, size, 7000, [150, 250], [0.02, 0.08], 1.4);
+  });
+
+  const wallBumpTexture = monochromeTexture(256, (ctx, size) => {
+    ctx.fillStyle = '#838383';
+    ctx.fillRect(0, 0, size, size);
+    fillNoise(ctx, size, 8600, [112, 148], [0.025, 0.08], 1.2);
+  });
+
+  const ceilingColorTexture = canvasTexture(256, (ctx, size) => {
+    const gradient = ctx.createLinearGradient(0, 0, 0, size);
+    gradient.addColorStop(0, '#52565a');
+    gradient.addColorStop(1, '#3a3d41');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    fillNoise(ctx, size, 3400, [70, 118], [0.02, 0.08], 1.2);
+  });
+
+  const ceilingRoughnessTexture = monochromeTexture(256, (ctx, size) => {
+    ctx.fillStyle = '#f1f1f1';
+    ctx.fillRect(0, 0, size, size);
+    fillNoise(ctx, size, 2800, [160, 255], [0.02, 0.06], 1.4);
+  });
+
+  const ceilingBumpTexture = monochromeTexture(256, (ctx, size) => {
+    ctx.fillStyle = '#7c7c7c';
+    ctx.fillRect(0, 0, size, size);
+    fillNoise(ctx, size, 3000, [116, 148], [0.02, 0.08], 1.1);
+  });
+
+  const frameColorTexture = canvasTexture(256, (ctx, size) => {
+    const gradient = ctx.createLinearGradient(0, 0, size, size * 0.2);
+    gradient.addColorStop(0, '#33271f');
+    gradient.addColorStop(0.5, '#251b16');
+    gradient.addColorStop(1, '#160f0d');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    for (let i = 0; i < 220; i += 1) {
+      const y = (i / 220) * size;
+      const wobble = Math.sin(i * 0.35) * size * 0.01;
+      ctx.strokeStyle = `rgba(106, 80, 59, ${0.08 + Math.random() * 0.08})`;
+      ctx.lineWidth = 1 + Math.random() * 2;
+      ctx.beginPath();
+      ctx.moveTo(0, y + wobble);
+      ctx.bezierCurveTo(size * 0.3, y + wobble + 4, size * 0.7, y + wobble - 4, size, y + wobble);
+      ctx.stroke();
+    }
+    fillNoise(ctx, size, 1800, [40, 90], [0.03, 0.12], 1.1);
+  });
+
+  const frameRoughnessTexture = monochromeTexture(256, (ctx, size) => {
+    ctx.fillStyle = '#8b8b8b';
+    ctx.fillRect(0, 0, size, size);
+    fillNoise(ctx, size, 3600, [70, 180], [0.025, 0.12], 1.2);
+  });
+
+  const frameBumpTexture = monochromeTexture(256, (ctx, size) => {
+    ctx.fillStyle = '#7c7c7c';
+    ctx.fillRect(0, 0, size, size);
+    for (let i = 0; i < 260; i += 1) {
+      const y = (i / 260) * size;
+      const wobble = Math.cos(i * 0.23) * size * 0.005;
+      ctx.strokeStyle = `rgba(150, 150, 150, ${0.03 + Math.random() * 0.06})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, y + wobble);
+      ctx.lineTo(size, y - wobble);
+      ctx.stroke();
+    }
+  });
+
+  const floorRecipe: MaterialRecipe = {
+    map: floorColorTexture,
+    roughnessMap: floorRoughnessTexture,
+    bumpMap: floorBumpTexture,
+    roughness: 0.64,
+    metalness: 0.04,
+    bumpScale: 0.045,
+  };
+
+  const ceilingRecipe: MaterialRecipe = {
+    map: ceilingColorTexture,
+    roughnessMap: ceilingRoughnessTexture,
+    bumpMap: ceilingBumpTexture,
+    roughness: 0.92,
+    metalness: 0.02,
+    bumpScale: 0.018,
+  };
+
+  const wallRecipe: MaterialRecipe = {
+    map: wallColorTexture,
+    roughnessMap: wallRoughnessTexture,
+    bumpMap: wallBumpTexture,
+    roughness: 0.94,
+    metalness: 0.01,
+    bumpScale: 0.03,
+  };
+
+  const trimRecipe: MaterialRecipe = {
+    map: wallColorTexture,
+    roughnessMap: wallRoughnessTexture,
+    bumpMap: wallBumpTexture,
+    color: 0xbdb5a8,
+    roughness: 0.88,
+    metalness: 0.01,
+    bumpScale: 0.02,
+  };
+
+  const woodRecipe: MaterialRecipe = {
+    map: frameColorTexture,
+    roughnessMap: frameRoughnessTexture,
+    bumpMap: frameBumpTexture,
+    roughness: 0.62,
+    metalness: 0.08,
+    bumpScale: 0.03,
+  };
+
+  const trackMaterial = new MeshStandardMaterial({
+    color: 0x26282b,
+    roughness: 0.48,
+    metalness: 0.72,
+  });
+
+  floorRecipe.map.repeat.set(4, 4);
+  floorRecipe.roughnessMap?.repeat.set(4, 4);
+  floorRecipe.bumpMap?.repeat.set(4, 4);
+  ceilingRecipe.map.repeat.set(3, 3);
+  ceilingRecipe.roughnessMap?.repeat.set(3, 3);
+  ceilingRecipe.bumpMap?.repeat.set(3, 3);
+  wallRecipe.map.repeat.set(3, 2);
+  wallRecipe.roughnessMap?.repeat.set(3, 2);
+  wallRecipe.bumpMap?.repeat.set(3, 2);
+  trimRecipe.map.repeat.set(3, 1);
+  trimRecipe.roughnessMap?.repeat.set(3, 1);
+  trimRecipe.bumpMap?.repeat.set(3, 1);
+  woodRecipe.map.repeat.set(2, 2);
+  woodRecipe.roughnessMap?.repeat.set(2, 2);
+  woodRecipe.bumpMap?.repeat.set(2, 2);
+
+  const floorMaterial = buildMaterial(floorRecipe);
+  const ceilingMaterial = buildMaterial(ceilingRecipe);
+  const wallMaterial = buildMaterial(wallRecipe);
+  const trimMaterial = buildMaterial(trimRecipe);
+  const woodMaterial = buildMaterial(woodRecipe);
+  const bezelMaterial = new MeshStandardMaterial({
+    color: 0x101217,
+    roughness: 0.42,
+    metalness: 0.48,
+  });
+  const shellMaterial = new MeshStandardMaterial({
+    color: 0xd2cabf,
+    roughness: 0.9,
+    metalness: 0.04,
+  });
+  const darkShellMaterial = new MeshStandardMaterial({
+    color: 0x3a322f,
+    roughness: 0.88,
+    metalness: 0.03,
+  });
+  const metalStandMaterial = new MeshStandardMaterial({
+    color: 0x585f67,
+    roughness: 0.45,
+    metalness: 0.7,
+  });
+  const cableMaterial = new MeshStandardMaterial({
+    color: 0x191919,
+    roughness: 0.92,
+    metalness: 0.02,
+  });
+  const jackPlateMaterial = new MeshStandardMaterial({
+    color: 0xd8d1c6,
+    roughness: 0.88,
+    metalness: 0.03,
+  });
+  const jackSocketMaterial = new MeshStandardMaterial({
+    color: 0x2c2c2c,
+    roughness: 0.85,
+    metalness: 0.08,
+  });
+  const glassMaterial = new MeshBasicMaterial({
+    color: 0xd7e4ff,
+    transparent: true,
+    opacity: 0.08,
+    depthWrite: false,
+  });
+  trimMaterial.polygonOffset = true;
+  trimMaterial.polygonOffsetFactor = -1;
+  trimMaterial.polygonOffsetUnits = -1;
+
+  // Helper functions
+  function addFloor(x: number, z: number, w: number, d: number) {
+    const mesh = new Mesh(
+      new PlaneGeometry(w, d),
+      floorMaterial
+    );
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.position.set(x, 0, z);
+    scene.add(mesh);
+  }
+
+  function addCeiling(x: number, z: number, w: number, d: number) {
+    const mesh = new Mesh(
+      new PlaneGeometry(w, d),
+      ceilingMaterial
+    );
+    mesh.rotation.x = Math.PI / 2;
+    mesh.position.set(x, H, z);
+    scene.add(mesh);
+  }
+
+  const WALL_THICKNESS = 0.2;
+  const BASEBOARD_HEIGHT = 0.18;
+  const BASEBOARD_DEPTH = 0.12;
+  const CROWN_HEIGHT = 0.14;
+  const CROWN_DEPTH = 0.12;
+  const TRIM_CLEARANCE = 0.02;
+  const TRIM_END_INSET = 0.06;
+
+  function addWall(x: number, z: number, w: number, rotY: number) {
+    const mesh = new Mesh(
+      new BoxGeometry(w, H, WALL_THICKNESS),
+      wallMaterial
+    );
+    mesh.position.set(x, H / 2, z);
+    mesh.rotation.y = rotY;
+    scene.add(mesh);
+
+    const trimLength = Math.max(w - TRIM_END_INSET * 2, 0.2);
+
+    const baseboard = new Mesh(
+      new BoxGeometry(trimLength, BASEBOARD_HEIGHT, BASEBOARD_DEPTH),
+      trimMaterial
+    );
+    baseboard.position.set(x, BASEBOARD_HEIGHT / 2 + TRIM_CLEARANCE, z);
+    baseboard.rotation.y = rotY;
+    scene.add(baseboard);
+
+    const crown = new Mesh(
+      new BoxGeometry(trimLength, CROWN_HEIGHT, CROWN_DEPTH),
+      trimMaterial
+    );
+    crown.position.set(x, H - CROWN_HEIGHT / 2 - TRIM_CLEARANCE, z);
+    crown.rotation.y = rotY;
+    scene.add(crown);
+
+    wallColliders.push(createWallCollider(x, z, w, rotY));
+  }
+
+  interface WallCollider {
+    minX: number; maxX: number;
+    minZ: number; maxZ: number;
+  }
+
+  const wallColliders: WallCollider[] = [];
+
+  function createBoxCollider(
+    x: number,
+    z: number,
+    length: number,
+    depth: number,
+    rotY: number
+  ): WallCollider {
+    const halfLen = length / 2;
+    const halfDepth = depth / 2;
+    const cos = Math.cos(rotY);
+    const sin = Math.sin(rotY);
+    const corners = [
+      { dx: -halfLen, dz: -halfDepth },
+      { dx: halfLen, dz: -halfDepth },
+      { dx: -halfLen, dz: halfDepth },
+      { dx: halfLen, dz: halfDepth },
+    ];
+    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+    for (const c of corners) {
+      const wx = x + c.dx * cos - c.dz * sin;
+      const wz = z + c.dx * sin + c.dz * cos;
+      if (wx < minX) minX = wx;
+      if (wx > maxX) maxX = wx;
+      if (wz < minZ) minZ = wz;
+      if (wz > maxZ) maxZ = wz;
+    }
+    return { minX, maxX, minZ, maxZ };
+  }
+
+  function createWallCollider(x: number, z: number, length: number, rotY: number): WallCollider {
+    return createBoxCollider(x, z, length, WALL_THICKNESS, rotY);
+  }
+
+  const PLAYER_RADIUS = 0.3;
+
+  function addLightTrack(
+    x: number,
+    z: number,
+    length: number,
+    rotY: number,
+    targetPoints: Array<{ x: number; y: number; z: number }>
+  ) {
+    const track = new Mesh(
+      new BoxGeometry(length, 0.08, 0.12),
+      trackMaterial
+    );
+    track.position.set(x, H - 0.35, z);
+    track.rotation.y = rotY;
+    scene.add(track);
+
+    targetPoints.forEach((targetPoint, index) => {
+      const t = targetPoints.length === 1 ? 0.5 : index / (targetPoints.length - 1);
+      const localOffset = (t - 0.5) * (length - 0.8);
+      const cos = Math.cos(rotY);
+      const sin = Math.sin(rotY);
+      const lightX = x + localOffset * cos;
+      const lightZ = z + localOffset * sin;
+
+      const spot = new SpotLight(0xfff1dc, 14, 14, 0.5, 0.9, 1.5);
+      spot.position.set(lightX, H - 0.55, lightZ);
+
+      const target = new Object3D();
+      target.position.set(targetPoint.x, targetPoint.y, targetPoint.z);
+      spot.target = target;
+      scene.add(target);
+      scene.add(spot);
+    });
+  }
+
+  function checkWallCollision(px: number, pz: number): boolean {
+    for (const wall of wallColliders) {
+      const closestX = Math.max(wall.minX, Math.min(px, wall.maxX));
+      const closestZ = Math.max(wall.minZ, Math.min(pz, wall.maxZ));
+      const dx = px - closestX;
+      const dz = pz - closestZ;
+      if (dx * dx + dz * dz < PLAYER_RADIUS * PLAYER_RADIUS) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // =====================
+  // MAIN HALL (12 x 12)
+  // =====================
+  const mhW = 12, mhD = 12;
+  const mhX = 0, mhZ = 6;
+
+  addFloor(mhX, mhZ, mhW, mhD);
+  addCeiling(mhX, mhZ, mhW, mhD);
+
+  addWall(mhX, mhZ + mhD/2, mhW, Math.PI);
+  addWall(mhX - mhW/2, mhZ, mhD, Math.PI/2);
+  addWall(mhX + mhW/2, mhZ, mhD, -Math.PI/2);
+  addWall(mhX - 4, mhZ - mhD/2, 4, 0);
+  addWall(mhX + 4, mhZ - mhD/2, 4, 0);
+
+  // =====================
+  // CORRIDOR (4 x 16)
+  // =====================
+  const coW = 4, coD = 16;
+  const coX = 0, coZ = -8;
+
+  addFloor(coX, coZ, coW, coD);
+  addCeiling(coX, coZ, coW, coD);
+
+  addWall(coX - coW/2, coZ + 6, 4, Math.PI/2);
+  addWall(coX - coW/2, coZ - 6, 4, Math.PI/2);
+  addWall(coX + coW/2, coZ + 6, 4, -Math.PI/2);
+  addWall(coX + coW/2, coZ - 6, 4, -Math.PI/2);
+
+  // =====================
+  // ROOM A (10 x 10) - North end
+  // =====================
+  const raW = 10, raD = 10;
+  const raX = 0, raZ = -21;
+
+  addFloor(raX, raZ, raW, raD);
+  addCeiling(raX, raZ, raW, raD);
+
+  addWall(raX - 4, raZ - raD/2, 2, 0);
+  addWall(raX + 4, raZ - raD/2, 2, 0);
+  addWall(raX - raW/2, raZ, raD, Math.PI/2);
+  addWall(raX + raW/2, raZ, raD, -Math.PI/2);
+  addWall(raX - 4, raZ + raD/2, 2, Math.PI);
+  addWall(raX + 4, raZ + raD/2, 2, Math.PI);
+
+  // =====================
+  // ROOM D (10 x 10) - Beyond Room A
+  // =====================
+  const rdW = 10, rdD = 10;
+  const rdX = 0, rdZ = -31;
+
+  addFloor(rdX, rdZ, rdW, rdD);
+  addCeiling(rdX, rdZ, rdW, rdD);
+
+  addWall(rdX, rdZ - rdD/2, rdW, 0);
+  addWall(rdX - rdW/2, rdZ, rdD, Math.PI/2);
+  addWall(rdX + rdW/2, rdZ, rdD, -Math.PI/2);
+  addWall(rdX - 4, rdZ + rdD/2, 2, Math.PI);
+  addWall(rdX + 4, rdZ + rdD/2, 2, Math.PI);
+
+  // =====================
+  // ROOM B (12 x 10) - West
+  // =====================
+  const rbW = 12, rbD = 10;
+  const rbX = -8, rbZ = -8;
+
+  addFloor(rbX, rbZ, rbW, rbD);
+  addCeiling(rbX, rbZ, rbW, rbD);
+
+  addWall(rbX, rbZ - rbD/2, rbW, 0);
+  addWall(rbX, rbZ + rbD/2, rbW, Math.PI);
+  addWall(rbX - rbW/2, rbZ, rbD, Math.PI/2);
+
+  // =====================
+  // ROOM C (12 x 10) - East
+  // =====================
+  const rcW = 12, rcD = 10;
+  const rcX = 8, rcZ = -8;
+
+  addFloor(rcX, rcZ, rcW, rcD);
+  addCeiling(rcX, rcZ, rcW, rcD);
+
+  addWall(rcX, rcZ - rcD/2, rcW, 0);
+  addWall(rcX, rcZ + rcD/2, rcW, Math.PI);
+  addWall(rcX + rcW/2, rcZ, rcD, -Math.PI/2);
+
+  addLightTrack(0, 8.5, 8.4, 0, [
+    { x: -4.2, y: 3.1, z: 11.6 },
+    { x: 0, y: 3.1, z: 11.6 },
+    { x: 4.2, y: 3.1, z: 11.6 },
+  ]);
+  addLightTrack(0, -8, 10.5, 0, [
+    { x: 0, y: 2.8, z: -2.8 },
+    { x: 0, y: 2.8, z: -13.4 },
+  ]);
+  addLightTrack(0, -20, 5.2, 0, [
+    { x: -3.7, y: 3.1, z: -20 },
+    { x: 3.7, y: 3.1, z: -20 },
+  ]);
+  addLightTrack(0, -28, 5.2, 0, [
+    { x: 0, y: 3.2, z: -31.7 },
+  ]);
+  addLightTrack(-7, -8, 5.4, Math.PI / 2, [
+    { x: -11.6, y: 3.1, z: -8 },
+    { x: -7, y: 3.2, z: -11.6 },
+  ]);
+  addLightTrack(7, -8, 5.4, -Math.PI / 2, [
+    { x: 11.6, y: 3.1, z: -8 },
+    { x: 7, y: 3.2, z: -11.6 },
+  ]);
+
+  // =====================
+  // DISPLAYS FROM WORK COLLECTION
+  // =====================
+  interface DisplayMarker {
+    position: Vector3;
+    labelPosition: Vector3;
+    title: string;
+    desc: string;
+    tech: string[];
+    date: string;
+    accent: string;
+    meta: string;
+    url: string;
+  }
+
+  interface AnimatedScreen {
+    kind: DisplayMediaKind;
+    pos: Vector3;
+    material: MeshBasicMaterial;
+    textures?: Texture[];
+    currentIndex?: number;
+    lastSwapAt?: number;
+  }
+
+  const displays: DisplayMarker[] = [];
+  const animatedScreens: AnimatedScreen[] = [];
+
+  function localOffsetToWorld(x: number, z: number, rotY: number, localX: number, localZ: number) {
+    const cos = Math.cos(rotY);
+    const sin = Math.sin(rotY);
+    return {
+      x: x + localX * cos + localZ * sin,
+      z: z - localX * sin + localZ * cos,
+    };
+  }
+
+  function loadTexture(url: string, onLoad: (texture: Texture) => void, onError?: () => void) {
+    textureLoader.load(
+      encodeURI(url),
+      (texture) => {
+      texture.colorSpace = SRGBColorSpace;
+      texture.anisotropy = maxAnisotropy;
+        onLoad(texture);
+      },
+      undefined,
+      () => {
+        onError?.();
+      }
+    );
+  }
+
+  function contentMeta(kind: DisplayMediaKind) {
+    if (kind === 'slideshow') return 'Image Sequence';
+    return 'Still Image';
+  }
+
+  function createScreenMaterial(
+    accentColor: string,
+    mediaKind: DisplayMediaKind,
+    imageSrc: string,
+    imageSources: string[],
+    title: string,
+    position: Vector3
+  ) {
+    const material = new MeshBasicMaterial({
+      color: imageSrc ? 0xffffff : accentColor,
+      side: DoubleSide,
+    });
+
+    if (mediaKind === 'slideshow' && imageSources.length > 0) {
+      const textures: Texture[] = [];
+      imageSources.forEach((source, index) => {
+        loadTexture(
+          source,
+          (texture) => {
+            textures[index] = texture;
+            if (!material.map) {
+              material.map = texture;
+              material.color.set(0xffffff);
+              material.needsUpdate = true;
+            }
+          },
+          () => {
+            console.error(`Failed to load gallery slideshow image for "${title}"`);
+          }
+        );
+      });
+
+      animatedScreens.push({
+        kind: 'slideshow',
+        pos: position.clone(),
+        material,
+        textures,
+        currentIndex: 0,
+        lastSwapAt: performance.now(),
+      });
+
+      return material;
+    }
+
+    if (imageSrc) {
+      loadTexture(
+        imageSrc,
+        (texture) => {
+          material.map = texture;
+          material.color.set(0xffffff);
+          material.needsUpdate = true;
+        },
+        () => {
+          console.error(`Failed to load gallery image for "${title}"`);
+          material.color.set(accentColor);
+          material.needsUpdate = true;
+        }
+      );
+    }
+
+    return material;
+  }
+
+  function displayMeta(kind: DisplayKind, mediaKind: DisplayMediaKind) {
+    const hardware = kind === 'wall-panel'
+      ? 'Wall Panel'
+      : kind === 'wall-monitor'
+        ? 'Studio Monitor'
+        : 'CRT Installation';
+    return `${hardware} · ${contentMeta(mediaKind)}`;
+  }
+
+  function wiringSeed(title: string) {
+    let hash = 0;
+    for (let i = 0; i < title.length; i += 1) {
+      hash = ((hash << 5) - hash) + title.charCodeAt(i);
+      hash |= 0;
+    }
+    return Math.abs(hash);
+  }
+
+  function addWallJack(
+    group: Group,
+    x: number,
+    y: number,
+    z: number,
+    normalSign: number
+  ) {
+    const plate = new Mesh(
+      new BoxGeometry(0.18, 0.26, 0.02),
+      jackPlateMaterial
+    );
+    plate.position.set(x, y, z);
+    group.add(plate);
+
+    const socket = new Mesh(
+      new BoxGeometry(0.06, 0.1, 0.012),
+      jackSocketMaterial
+    );
+    socket.position.set(x, y - 0.015, z + 0.011 * normalSign);
+    group.add(socket);
+  }
+
+  function addCableRun(
+    group: Group,
+    points: Array<[number, number, number]>,
+    radius = 0.012
+  ) {
+    const curve = new CatmullRomCurve3(
+      points.map(([x, y, z]) => new Vector3(x, y, z))
+    );
+    const cable = new Mesh(
+      new TubeGeometry(curve, 22, radius, 8, false),
+      cableMaterial
+    );
+    group.add(cable);
+  }
+
+  function addDisplayWiring(group: Group, options: {
+    origin: [number, number, number];
+    shellWidth: number;
+    shellHeight: number;
+    normalSign: number;
+    title: string;
+    preferLowJack?: boolean;
+    minCableY?: number;
+  }) {
+    const { origin, shellWidth, shellHeight, normalSign, title, preferLowJack = false, minCableY = 0.08 } = options;
+    const seed = wiringSeed(title);
+    const sideSign = seed % 2 === 0 ? 1 : -1;
+    const lateralBase = Math.min(shellWidth * 0.28, 0.62);
+    const lateral = (lateralBase + (seed % 4) * 0.06) * sideSign;
+    const wallZ = (WALL_THICKNESS / 2 + 0.015) * normalSign;
+    const rawDropY = preferLowJack
+      ? origin[1] - (0.32 + (seed % 3) * 0.08)
+      : -shellHeight / 2 - 0.08 - (seed % 3) * 0.06;
+    const dropY = Math.max(rawDropY, minCableY);
+    const wallJackY = preferLowJack
+      ? 0.26 + (seed % 4) * 0.07
+      : -shellHeight / 2 - 0.28 - (seed % 5) * 0.07;
+    const wallJackX = lateral;
+    const bendX = wallJackX * (0.4 + (seed % 3) * 0.12);
+    const bendY = wallJackY + 0.16 + (seed % 3) * 0.05;
+    const bendZ = wallZ + (0.03 + (seed % 2) * 0.025) * normalSign;
+
+    addWallJack(group, wallJackX, wallJackY, wallZ, normalSign);
+    addCableRun(group, [
+      origin,
+      [origin[0], dropY, origin[2] - 0.04 * normalSign],
+      [bendX, bendY, bendZ],
+      [wallJackX, wallJackY, wallZ + 0.02 * normalSign],
+    ], 0.012);
+  }
+
+  function createWallDisplay(
+    x: number,
+    y: number,
+    z: number,
+    rotY: number,
+    width: number,
+    height: number,
+    title: string,
+    desc: string,
+    mediaKind: DisplayMediaKind,
+    imageSrc: string,
+    imageSources: string[],
+    tags: string[],
+    tech: string[],
+    date: string,
+    url: string,
+    kind: 'wall-panel' | 'wall-monitor',
+    facing: WallFacing = 'positive'
+  ) {
+    const group = new Group();
+    const accentColor = tagToColor(tags);
+    const normalSign = facing === 'negative' ? -1 : 1;
+    const bodyDepth = kind === 'wall-panel' ? 0.22 : 0.34;
+    const bezel = kind === 'wall-panel' ? 0.1 : 0.14;
+    const shellWidth = width + bezel * 1.35;
+    const shellHeight = height + bezel * 1.25;
+    const mountDepth = WALL_THICKNESS / 2 + bodyDepth / 2 + 0.035;
+    const faceDepth = mountDepth + bodyDepth / 2;
+    const displayPosition = new Vector3(x, y, z);
+    const screenMat = createScreenMaterial(
+      accentColor,
+      mediaKind,
+      imageSrc,
+      imageSources,
+      title,
+      displayPosition
+    );
+
+    const shell = new Mesh(
+      new BoxGeometry(shellWidth, shellHeight, bodyDepth),
+      darkShellMaterial
+    );
+    shell.position.z = mountDepth * normalSign;
+    group.add(shell);
+
+    const mount = new Mesh(
+      new BoxGeometry(Math.max(width * 0.22, 0.24), Math.max(height * 0.18, 0.2), 0.08),
+      metalStandMaterial
+    );
+    mount.position.z = (WALL_THICKNESS / 2 + 0.05) * normalSign;
+    group.add(mount);
+
+    const screenHousing = new Mesh(
+      new BoxGeometry(width + bezel * 0.75, height + bezel * 0.75, 0.05),
+      bezelMaterial
+    );
+    screenHousing.position.z = (faceDepth - 0.03) * normalSign;
+    group.add(screenHousing);
+
+    const screen = new Mesh(
+      new PlaneGeometry(width, height),
+      screenMat
+    );
+    screen.position.z = (faceDepth + 0.003) * normalSign;
+    if (normalSign < 0) {
+      screen.rotation.y = Math.PI;
+    }
+    group.add(screen);
+
+    const glass = new Mesh(
+      new PlaneGeometry(width * 0.985, height * 0.985),
+      glassMaterial
+    );
+    glass.position.z = screen.position.z + 0.006 * normalSign;
+    if (normalSign < 0) {
+      glass.rotation.y = Math.PI;
+    }
+    group.add(glass);
+
+    const indicator = new Mesh(
+      new BoxGeometry(0.08, 0.02, 0.015),
+      new MeshStandardMaterial({
+        color: accentColor,
+        emissive: accentColor,
+        emissiveIntensity: 0.9,
+      })
+    );
+    indicator.position.set(0, -shellHeight / 2 + 0.08, (faceDepth + 0.01) * normalSign);
+    group.add(indicator);
+
+    addDisplayWiring(
+      group,
+      {
+        origin: [0, -shellHeight / 2 + 0.06, (mountDepth - bodyDepth * 0.12) * normalSign],
+        shellWidth,
+        shellHeight,
+        normalSign,
+        title,
+      }
+    );
+
+    group.position.set(x, y, z);
+    group.rotation.y = rotY;
+    scene.add(group);
+
+    const markerPos = localOffsetToWorld(x, z, rotY, 0, (faceDepth + 0.16) * normalSign);
+    const labelAnchor = localOffsetToWorld(
+      x,
+      z,
+      rotY,
+      shellWidth / 2 + 0.95,
+      (faceDepth + 0.12) * normalSign
+    );
+    displays.push({
+      position: new Vector3(markerPos.x, y, markerPos.z),
+      labelPosition: new Vector3(labelAnchor.x, y + 0.08, labelAnchor.z),
+      title,
+      desc,
+      tech,
+      date,
+      accent: accentColor,
+      meta: displayMeta(kind, mediaKind),
+      url,
+    });
+  }
+
+  function createCrtDisplay(
+    x: number,
+    z: number,
+    rotY: number,
+    width: number,
+    height: number,
+    title: string,
+    desc: string,
+    mediaKind: DisplayMediaKind,
+    imageSrc: string,
+    imageSources: string[],
+    tags: string[],
+    tech: string[],
+    date: string,
+    url: string,
+    facing: WallFacing = 'positive'
+  ) {
+    const group = new Group();
+    const accentColor = tagToColor(tags);
+    const normalSign = facing === 'negative' ? -1 : 1;
+    const stoolHeight = 0.82;
+    const stoolTopWidth = Math.max(width * 0.78, 1.1);
+    const stoolTopDepth = 0.62;
+    const tvWidth = width + 0.42;
+    const tvHeight = height + 0.5;
+    const tvDepth = 0.78;
+    const frontOffset = WALL_THICKNESS / 2 + tvDepth / 2 + 0.74;
+    const tvCenterY = stoolHeight + tvHeight / 2 + 0.08;
+    const screenInset = tvDepth / 2 + 0.006;
+    const displayPosition = new Vector3(x, tvCenterY, z);
+    const screenMat = createScreenMaterial(
+      accentColor,
+      mediaKind,
+      imageSrc,
+      imageSources,
+      title,
+      displayPosition
+    );
+
+    const stoolTop = new Mesh(
+      new BoxGeometry(stoolTopWidth, 0.08, stoolTopDepth),
+      woodMaterial
+    );
+    stoolTop.position.set(0, stoolHeight, frontOffset * normalSign);
+    group.add(stoolTop);
+
+    const legHeight = stoolHeight;
+    const legGeometry = new BoxGeometry(0.08, legHeight, 0.08);
+    const legOffsets = [
+      [-stoolTopWidth / 2 + 0.08, stoolTopDepth / 2 - 0.08],
+      [stoolTopWidth / 2 - 0.08, stoolTopDepth / 2 - 0.08],
+      [-stoolTopWidth / 2 + 0.08, -stoolTopDepth / 2 + 0.08],
+      [stoolTopWidth / 2 - 0.08, -stoolTopDepth / 2 + 0.08],
+    ];
+    legOffsets.forEach(([lx, lz]) => {
+      const leg = new Mesh(legGeometry, woodMaterial);
+      leg.position.set(lx, legHeight / 2, frontOffset * normalSign + lz);
+      group.add(leg);
+    });
+
+    const tvBody = new Mesh(
+      new BoxGeometry(tvWidth, tvHeight, tvDepth),
+      shellMaterial
+    );
+    tvBody.position.set(0, tvCenterY, frontOffset * normalSign);
+    group.add(tvBody);
+
+    const screenBezel = new Mesh(
+      new BoxGeometry(width + 0.22, height + 0.22, 0.08),
+      bezelMaterial
+    );
+    screenBezel.position.set(0, tvCenterY + 0.02, (frontOffset + (tvDepth / 2 - 0.035)) * normalSign);
+    group.add(screenBezel);
+
+    const screen = new Mesh(
+      new PlaneGeometry(width, height),
+      screenMat
+    );
+    screen.position.set(0, tvCenterY + 0.02, (frontOffset + screenInset) * normalSign);
+    if (normalSign < 0) {
+      screen.rotation.y = Math.PI;
+    }
+    group.add(screen);
+
+    const glass = new Mesh(
+      new PlaneGeometry(width * 0.98, height * 0.98),
+      glassMaterial
+    );
+    glass.position.set(0, tvCenterY + 0.02, screen.position.z + 0.008 * normalSign);
+    if (normalSign < 0) {
+      glass.rotation.y = Math.PI;
+    }
+    group.add(glass);
+
+    addDisplayWiring(
+      group,
+      {
+        origin: [0, tvCenterY - tvHeight * 0.22, (frontOffset - tvDepth / 2 + 0.02) * normalSign],
+        shellWidth: tvWidth,
+        shellHeight: tvHeight,
+        normalSign,
+        title,
+        preferLowJack: true,
+      }
+    );
+
+    group.position.set(x, 0, z);
+    group.rotation.y = rotY;
+    scene.add(group);
+
+    const colliderPos = localOffsetToWorld(x, z, rotY, 0, frontOffset * normalSign);
+    wallColliders.push(
+      createBoxCollider(
+        colliderPos.x,
+        colliderPos.z,
+        Math.max(tvWidth, stoolTopWidth),
+        tvDepth + 0.24,
+        rotY
+      )
+    );
+
+    const markerPos = localOffsetToWorld(x, z, rotY, 0, (frontOffset + tvDepth / 2 + 0.16) * normalSign);
+    const labelAnchor = localOffsetToWorld(
+      x,
+      z,
+      rotY,
+      tvWidth / 2 + 1.05,
+      (frontOffset + tvDepth / 2 - 0.02) * normalSign
+    );
+    displays.push({
+      position: new Vector3(markerPos.x, tvCenterY, markerPos.z),
+      labelPosition: new Vector3(labelAnchor.x, tvCenterY + 0.04, labelAnchor.z),
+      title,
+      desc,
+      tech,
+      date,
+      accent: accentColor,
+      meta: displayMeta('crt-stack', mediaKind),
+      url,
+    });
+  }
+
+  function tagToColor(tags: string[]): string {
+    const palette = [
+      '#e63946', '#457b9d', '#2a9d8f', '#e9c46a',
+      '#9b5de5', '#00b4d8', '#06d6a0', '#f4a261',
+      '#ef476f', '#118ab2', '#073b4c', '#f78c6b',
+    ];
+    if (tags.length === 0) return palette[0];
+    let hash = 0;
+    for (const tag of tags) {
+      for (let i = 0; i < tag.length; i++) {
+        hash = tag.charCodeAt(i) + ((hash << 5) - hash);
+      }
+    }
+    return palette[Math.abs(hash) % palette.length];
+  }
+
+  // Create displays from work collection data
+  const data = displayData as Array<{
+    title: string;
+    description: string;
+    mediaKind: DisplayMediaKind;
+    image: string;
+    images: string[];
+    effort: number;
+    tags: string[];
+    tech: string[];
+    date: string | undefined;
+    url: string;
+    kind: DisplayKind;
+    room: string;
+    width: number;
+    height: number;
+    x: number;
+    z: number;
+    rotY: number;
+    facing: WallFacing;
+  }>;
+
+  data.forEach((item) => {
+    if (item.kind === 'crt-stack') {
+    createCrtDisplay(
+      item.x,
+      item.z,
+      item.rotY,
+      item.width,
+      item.height,
+      item.title,
+      item.description,
+      item.mediaKind,
+      item.image,
+      item.images,
+      item.tags,
+      item.tech,
+      item.date,
+      item.url,
+      item.facing
+    );
+      return;
+    }
+
+    const y = item.kind === 'wall-panel' ? item.height / 2 + 1.02 : item.height / 2 + 1.2;
+    createWallDisplay(
+      item.x,
+      y,
+      item.z,
+      item.rotY,
+      item.width,
+      item.height,
+      item.title,
+      item.description,
+      item.mediaKind,
+      item.image,
+      item.images,
+      item.tags,
+      item.tech,
+      item.date,
+      item.url,
+      item.kind,
+      item.facing
+    );
+  });
+
+  // Label system
+  const labelsContainer = document.getElementById('display-labels')!;
+  const labelEls: { el: HTMLDivElement; pos: Vector3; url: string }[] = [];
+
+  displays.forEach((display) => {
+    const el = document.createElement('div');
+    el.className = 'display-label';
+    const year = display.date ? new Date(display.date).getFullYear() : '';
+    const techHtml = display.tech?.length
+      ? `<span class="display-label-tech">${display.tech.map((t: string) => `<span class="display-label-tech-tag">${t}</span>`).join('')}</span>`
+      : '';
+    const linkHtml = display.url
+      ? `<span class="display-label-link"><kbd>E</kbd> Visit</span>`
+      : "";
+    el.innerHTML = `
+      <span class="display-label-accent" style="background: ${display.accent}"></span>
+      <span class="display-label-meta">${display.meta}${year ? ` · ${year}` : ''}</span>
+      <span class="display-label-title">${display.title}</span>
+      <span class="display-label-desc">${display.desc}</span>
+      ${techHtml}
+      ${linkHtml}
+    `;
+    labelsContainer.appendChild(el);
+    labelEls.push({ el, pos: display.labelPosition.clone(), url: display.url });
+  });
+
+  // Controls
+  const controls = new PointerLockControls(camera, document.body);
+
+  const MOUSE_SENSITIVITY = 0.2;
+  const euler = new Euler(0, 0, 0, 'YXZ');
+
+  document.addEventListener('mousemove', (e) => {
+    if (!controls.isLocked) return;
+    euler.setFromQuaternion(camera.quaternion);
+    euler.y -= e.movementX * MOUSE_SENSITIVITY * 0.002;
+    euler.x -= e.movementY * MOUSE_SENSITIVITY * 0.002;
+    euler.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, euler.x));
+    camera.quaternion.setFromEuler(euler);
+  });
+
+  overlay.addEventListener('click', () => controls.lock());
+  controls.addEventListener('lock', () => {
+    overlay.classList.add('hidden');
+    labelsContainer.classList.add('active');
+  });
+  controls.addEventListener('unlock', () => {
+    overlay.classList.remove('hidden');
+    labelsContainer.classList.remove('active');
+    labelEls.forEach(({ el }) => el.classList.remove('visible'));
+  });
+
+  // WASD movement
+  const keys = { forward: false, backward: false, left: false, right: false };
+
+  document.addEventListener('keydown', (e) => {
+    switch (e.code) {
+      case 'KeyW': case 'ArrowUp': keys.forward = true; break;
+      case 'KeyS': case 'ArrowDown': keys.backward = true; break;
+      case 'KeyA': case 'ArrowLeft': keys.left = true; break;
+      case 'KeyD': case 'ArrowRight': keys.right = true; break;
+      case 'KeyE':
+        if (controls.isLocked && activeLabel?.url) {
+          window.open(activeLabel.url, '_blank', 'noopener,noreferrer');
+        }
+        break;
+    }
+  });
+  document.addEventListener('keyup', (e) => {
+    switch (e.code) {
+      case 'KeyW': case 'ArrowUp': keys.forward = false; break;
+      case 'KeyS': case 'ArrowDown': keys.backward = false; break;
+      case 'KeyA': case 'ArrowLeft': keys.left = false; break;
+      case 'KeyD': case 'ArrowRight': keys.right = false; break;
+    }
+  });
+
+  // Animation
+  let activeLabel: { el: HTMLDivElement; pos: Vector3; dist: number; screenPos: Vector3; url: string } | null = null;
+  const velocity = new Vector3();
+  const direction = new Vector3();
+  const speed = 1;
+  let rafId: number;
+  let prevTime = performance.now();
+
+  const animate = () => {
+    rafId = requestAnimationFrame(animate);
+    const time = performance.now();
+    const delta = (time - prevTime) / 1000;
+    prevTime = time;
+
+    if (controls.isLocked) {
+      velocity.x -= velocity.x * 10 * delta;
+      velocity.z -= velocity.z * 10 * delta;
+
+      direction.z = Number(keys.forward) - Number(keys.backward);
+      direction.x = Number(keys.right) - Number(keys.left);
+      direction.normalize();
+
+      if (keys.forward || keys.backward) velocity.z -= direction.z * speed * delta;
+      if (keys.left || keys.right) velocity.x -= direction.x * speed * delta;
+
+      const oldX = camera.position.x;
+      const oldZ = camera.position.z;
+
+      const forward = new Vector3();
+      camera.getWorldDirection(forward);
+      forward.y = 0;
+      forward.normalize();
+      const right = new Vector3();
+      right.crossVectors(forward, new Vector3(0, 1, 0)).normalize();
+
+      const worldMove = new Vector3();
+      worldMove.addScaledVector(right, -velocity.x);
+      worldMove.addScaledVector(forward, -velocity.z);
+
+      const newX = oldX + worldMove.x;
+      const newZ = oldZ + worldMove.z;
+
+      if (!checkWallCollision(newX, newZ)) {
+        camera.position.x = newX;
+        camera.position.z = newZ;
+      } else {
+        if (!checkWallCollision(newX, oldZ)) {
+          camera.position.x = newX;
+        }
+        if (!checkWallCollision(camera.position.x, newZ)) {
+          camera.position.z = newZ;
+        }
+      }
+
+      camera.position.y = 1.7;
+    }
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const showDist = 5;
+    const activeMediaDist = 7;
+
+    activeLabel = null;
+
+    labelEls.forEach(({ el, pos, url }) => {
+      el.classList.remove('visible');
+      const dist = camera.position.distanceTo(pos);
+      if (dist >= showDist) return;
+
+      const screenPos = pos.clone().project(camera);
+      if (screenPos.z > 1) return;
+
+      if (!activeLabel || dist < activeLabel.dist) {
+        activeLabel = { el, pos, dist, screenPos, url };
+      }
+    });
+
+    if (activeLabel) {
+      const parallaxX = activeLabel.screenPos.x * 18;
+      const parallaxY = activeLabel.screenPos.y * 12;
+      activeLabel.el.style.left = `${vw - 28 + parallaxX}px`;
+      activeLabel.el.style.top = `${vh - 28 + parallaxY}px`;
+      activeLabel.el.classList.add('visible');
+    }
+
+    animatedScreens.forEach((screen) => {
+      const dist = camera.position.distanceTo(screen.pos);
+
+      if (screen.kind === 'slideshow' && screen.textures && screen.textures.length > 1) {
+        if (dist < activeMediaDist && time - (screen.lastSwapAt ?? 0) > 3200) {
+          let nextIndex = ((screen.currentIndex ?? 0) + 1) % screen.textures.length;
+          let guard = 0;
+          while (!screen.textures[nextIndex] && guard < screen.textures.length) {
+            nextIndex = (nextIndex + 1) % screen.textures.length;
+            guard += 1;
+          }
+          if (screen.textures[nextIndex]) {
+            screen.material.map = screen.textures[nextIndex];
+            screen.material.needsUpdate = true;
+            screen.currentIndex = nextIndex;
+            screen.lastSwapAt = time;
+          }
+        }
+      }
+    });
+
+    renderer.render(scene, camera);
+  };
+
+  animate();
+
+  document.addEventListener('astro:before-swap', () => {
+    cancelAnimationFrame(rafId);
+    animatedScreens.forEach((screen) => {
+      screen.material.map?.dispose();
+      if (screen.kind === 'slideshow') {
+        screen.textures?.forEach((texture) => texture?.dispose());
+      }
+    });
+    controls.dispose();
+    renderer.dispose();
+  }, { once: true });
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

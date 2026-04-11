@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import VoxelWork from '../../components/VoxelWork.astro';
+---
+
+<BaseLayout title="Work — edch">
+  <div class="work-hero">
+    <VoxelWork />
+  </div>
+</BaseLayout>
+
+<style>
+  .work-hero {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
+</style>

@@ -1,0 +1,252 @@
+---
+title: SSH - The Secret Handshake of the Internet
+subtitle: A little guide to the invisible tech behind your Git pushes
+date: 2025-05-14
+description: Ever wondered what SSH actually *does* when you push to GitHub? This guide breaks it down — keys, tunnels, trust, and why your terminal doesn't ask for your password anymore.
+author: ""
+tags: ["nerdstuff", "life"]
+draft: false
+---
+Hey! if you’ve ever used GitHub, you’ve probably heard of **SSH**.
+Maybe you've even gone through the process of setting it up. But do you know what it actually is? 
+
+I had a shallow understanding of it when i first started using GitHub, and I think a lot of people do. So I wanted to take a moment to break it down in simple terms.
+
+SSH stands for **Secure Shell**, but what does that _actually_ mean? Well, it’s right there in the name — a **protective shell** that wraps around your data as it sails through the murky, pirate-infested waters of the internet. Without it, digital pirates could plunder your ship and steal your treasure (read: your credentials). But with SSH, even if they intercept your data, they’re left staring at a locked chest — encrypted and unreadable.
+
+##  Why Developers Use SSH
+
+When you use GitHub with SSH:
+
+- You don’t need to enter your username or token every time.
+- Your identity is confirmed automatically.
+- Your connection is encrypted so nobody can eavesdrop.
+
+It’s fast, safe, and feels like magic once it’s set up.
+
+##  So What Does SSH Actually Do?
+
+SSH has **two jobs**:
+
+1. **Authentication** – Prove that you are who you say you are (using a key pair).
+2. **Encryption** – Wrap the entire connection in secrecy so no one can spy on it.
+
+So, it sort of acts like a **lock** and a **tunnel** at the same time:
+
+- **Lock**: Only you and the server can open it.
+- **Tunnel**: Everything inside is hidden from prying eyes.
+
+##  How SSH Authentication Works
+
+It’s all built on [public key cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography). Here’s the flow:
+
+You generate a **key pair**:
+   - **Public key** = the lock (safe to share)
+   - **Private key** = the key (keep it secret, keep it safe 💍)
+
+You give your **public key** to GitHub.
+
+When you run something like `git push`, GitHub:
+   - Sends a random [**challenge**](https://en.wikipedia.org/wiki/Challenge%E2%80%93response_authentication) to your computer.
+   - Your machine signs it with your **private key**.
+   - GitHub checks that signature using your **public key**.
+
+If it matches, GitHub knows:  
+**“Only the real you could’ve answered that.”**
+
+Boom. You’re in — and your private key never left your machine.
+
+##  What Gets Encrypted?
+
+**Everything sent through the SSH connection is encrypted**:
+
+- Your Git commands
+- Your commit data
+- File diffs, branches, metadata — all of it
+
+But to be clear:
+
+-  **In transit?** Yes, fully encrypted
+-  **On GitHub?** Nope — your code is stored as-is (unless it’s in a private repo)
+
+So SSH protects the journey, not the destination.
+
+##  Real-World Analogy
+
+SSH is like shipping your code in a bulletproof armored van. Nobody can see inside or tamper with it while it’s moving.
+
+Once it arrives at GitHub, it’s unpacked and put on the shelf.  
+Whether others can see it depends on your repo’s privacy settings — not SSH.
+
+## SSH vs HTTPS
+
+Both encrypt your connection and are safe to use
+
+But here is how they differ:
+
+	### **Auth Method**
+	- SSH: Uses a key pair (no password needed after setup)
+	- HTTPS: Uses a username + token (or password)
+
+	### **Good For**
+	- SSH: Automation and development workflows
+	- HTTPS: Quick clone via browser or when you don’t want to set up keys
+
+	### **Prompts**
+	- SSH: No prompts after it’s set up
+	- HTTPS: Prompts for credentials (token/password) regularly unless cached
+
+##  Why SSH Is Cool
+
+-  You never send a password
+-  Your private key stays private
+-  You only authenticate once per session
+-  Your connection is encrypted end-to-end
+
+## How to Set It Up
+
+First, of all. Let's check if you already have some keys.
+
+In a terminal, type:
+
+```bash
+ls ~/.ssh
+```
+
+This just means: 
+
+"List all files in the ssh folder in my home directory ". 
+
+`.ssh` is a **hidden folder** (notice the dot) inside your home directory where SSH keys and configurations are typically stored.
+
+`~` This little guy is called a _tilde_. 
+
+It’s a shortcut to your home directory on Unix-based systems (like macOS and Linux). So `~/.ssh` means “the `.ssh` folder in my home directory”, which on macOS is `/Users/yourusername/.ssh`. 
+
+This convention dates back to early Unix shell design in the 1970s and 80s, where developers needed a fast, one-character way to refer to a user’s personal space on the system.
+
+When i run this command, I see the following:
+```bash
+id_ed25519
+id_ed25519.pub
+```
+
+This means i already have a key that i can use. Or i could choose to create another one (i'd just have to make sure to not overwrite the old one, by giving the new key a different name).
+
+### Generate a New Key
+
+```bash
+ssh-keygen -t ed25519 -C "your-email@example.com" -f ~/.ssh/gitlab_key
+```
+
+- **ssh-keygen:** this command comes pre-installed as part of OpenSSH that comes with macOS and Linux (i dont know about Windows, look it up or change to a mac)
+
+ - **-t** ed25519: [key type](https://en.wikipedia.org/wiki/EdDSA) (modern and secure)
+
+ - **-C:** optional label (your email for example, used for reference)
+
+ - **-f:** filename — this is crucial! This is where you **avoid overwriting** your old key.
+
+You’ll be prompted to enter a passphrase (you can leave it empty, but adding one adds security).
+
+Running `ls ~/.ssh`again now gives me this output:
+
+```bash
+id_ed25519
+id_ed25519.pub
+gitlab_key
+gitlab_key.pub
+```
+
+As you might notice, the newly created keys have much more descriptive names than my old keys. This is because when i created the old key i didn't add the `-f ~/.ssh/gitlab_key`. So it just defaulted to a generic name. So make sure to give your keys good, descriptive names.
+
+Also - as you might understand the - the `.pub` extension means the key is safe to share to the public. While the other one is **private** and should **never** leave your computer.
+
+### Config it
+
+If you use more than one SSH key — say, one for GitHub and another for GitLab — an SSH config file helps your computer know which key to use for each. Without it, things _might_ still work, but you could run into confusing errors or failed logins. The config just makes everything smoother and more reliable.
+
+``nano ~/.ssh/config`` will create/open a config file in your ssh dir. 
+
+Now, with my current setup, i would add something like this to my config file:
+
+```nano
+# GitHub
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_ed25519
+  IdentitiesOnly yes
+
+# GitLab
+Host gitlab.com
+  HostName gitlab.com
+  User git
+  IdentityFile ~/.ssh/gitlab_key
+  IdentitiesOnly yes
+  ```
+
+ **Host github.com:** This matches any command involving github.com, like git clone git@github.com:user/repo.git.
+    
+ **HostName github.com:** The actual hostname to connect to (can be different if using aliases).
+    
+ **User git:** This is the username you connect with. Git services use a shared user called git.
+    
+**IdentityFile** ~/.ssh/github_key: The **private key** file you want to use for this host.
+    
+**IdentitiesOnly** yes: Forces SSH to only try the key you specify, instead of cycling through all your keys (which can cause “Permission denied” errors).
+
+### Test it
+To test the connection i can type `ssh -T github.com`. If all is well you should see a message like "Hi username! You've successfully connected".  
+
+**Note:** I have already set up my public key on github. If you haven't. Here is what to do (i will use gitlab as an example):
+
+- Copy your public key (be sure to not copy the private key):
+
+   ```bash
+   cat ~/.ssh/gitlab_key.pub
+   ```
+   The output should look something like this:
+   ```bash
+   ssh-ed25519 AAAAC3... the_label_you_provided
+   ```
+
+- Select and copy it.
+- Add it to the _key field_ in your SSH settings on gitlab. 
+- Done.
+
+( on mac you can run ```pbcopy < ~/.ssh/gitlab_key.pub```
+instead - to get the whole key to your clipboard in one command)
+
+### Test again
+```bash
+ssh -T git@gitlab.com
+```
+
+Now, if this is the first time you connect you should see something like this:
+```bash
+The authenticity of host 'gitlab.com (172.65.251.78)' can't be established.
+
+ED25519 key fingerprint is SHA256:eUXGGm1YGsMAS7vkcx6JOJdOGHPem5gQp4taiCfASD8.
+
+This key is not known by any other names.
+
+Are you sure you want to continue connecting (yes/no/[fingerprint])?
+```
+
+What's this mumbo-jumbo? Well, its just SSH saying:
+> Hey, I’ve never talked to gitlab.com before. I don’t know if this is really GitLab or someone pretending to be. The server is showing me a fingerprint — do you trust it?
+
+This is SSH’s way of **verifying the server’s identity** before continuing. If you answer yes, SSH will save that fingerprint in your `~/.ssh/known_hosts` file, so it won’t ask again next time.
+
+If you want to be sure that the fingerprint matches. Go to
+[GitLab SSH host key fingerprints](https://docs.gitlab.com/ee/user/gitlab_com/index.html#ssh-host-keys-fingerprints) and check that the **ED25519** fingerprint matches the one you see in your terminal
+
+```bash
+ssh -T gitlab.com
+```
+
+```bash
+Welcome to GitLab, @username!
+```
+This means you’re all set! You can now use SSH to push, pull, and clone without entering your password every time.

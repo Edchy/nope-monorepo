@@ -1,0 +1,220 @@
+---
+interface Props {
+  href: string;
+  variant?: "primary" | "secondary";
+  max?: number;
+  experimentalTextColor?: boolean;
+}
+
+const { href, variant = "primary", max = 20, experimentalTextColor = false } =
+  Astro.props;
+---
+
+<span class="lift-wrap" data-max={max}>
+  <a
+    href={href}
+    class={`lift-btn lift-btn--${variant} ${experimentalTextColor ? "lift-btn--experimental-text" : ""}`}
+  >
+    <slot />
+  </a>
+</span>
+
+<script>
+  let cleanupLiftButtons: (() => void) | undefined;
+
+  const canUseLiftInteractions = () =>
+    window.matchMedia("(min-width: 769px)").matches &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  const resetLiftStyles = (btn: HTMLElement) => {
+    btn.style.setProperty("--_tx", "0px");
+    btn.style.setProperty("--_ty", "0px");
+    btn.style.setProperty("--_sx", "0px");
+    btn.style.setProperty("--_sy", "0px");
+    btn.style.setProperty("--_scale", "1");
+  };
+
+  function init() {
+    cleanupLiftButtons?.();
+
+    const wraps = document.querySelectorAll<HTMLElement>(".lift-wrap");
+    if (!wraps.length) {
+      cleanupLiftButtons = undefined;
+      return;
+    }
+
+    if (!canUseLiftInteractions()) {
+      wraps.forEach((wrap) => {
+        const btn = wrap.querySelector<HTMLElement>(".lift-btn");
+        if (btn) resetLiftStyles(btn);
+      });
+      cleanupLiftButtons = undefined;
+      return;
+    }
+
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    wraps.forEach((wrap) => {
+      const btn = wrap.querySelector<HTMLElement>(".lift-btn")!;
+      const MAX = Number(wrap.dataset.max ?? 20);
+
+      wrap.addEventListener("mousemove", (e) => {
+        const rect = wrap.getBoundingClientRect();
+        const nx = (e.clientX - rect.left) / rect.width;
+        const ny = (e.clientY - rect.top) / rect.height;
+
+        btn.style.setProperty("--_tx", `${nx * MAX}px`);
+        btn.style.setProperty("--_ty", `${-(ny * MAX)}px`);
+        btn.style.setProperty("--_sx", `${-(nx * MAX)}px`);
+        btn.style.setProperty("--_sy", `${ny * MAX}px`);
+        btn.style.setProperty("--_scale", "1.04");
+      }, { signal });
+
+      wrap.addEventListener("mouseleave", () => {
+        resetLiftStyles(btn);
+      }, { signal });
+    });
+
+    cleanupLiftButtons = () => {
+      controller.abort();
+      wraps.forEach((wrap) => {
+        const btn = wrap.querySelector<HTMLElement>(".lift-btn");
+        if (btn) resetLiftStyles(btn);
+      });
+    };
+  }
+
+  document.addEventListener("astro:page-load", init);
+  init();
+</script>
+
+<style>
+  .lift-wrap {
+    display: inline-flex;
+  }
+
+  .lift-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 10rem;
+    min-height: 44px;
+    padding-inline: var(--space-6);
+    padding-block: var(--space-3);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 0;
+    transform: translate(var(--_tx, 0px), var(--_ty, 0px)) scale(var(--_scale, 1));
+    transition:
+      color 0.08s ease,
+      background-color 0.08s ease,
+      box-shadow 0.15s ease,
+      transform 0.15s ease;
+  }
+
+  .lift-btn:active {
+    transform: translate(var(--_tx, 0px), var(--_ty, 0px)) scale(0.96);
+  }
+
+  .lift-btn--primary {
+    background-color: var(--color-action-primary);
+    color: var(--color-text-inverse);
+    position: relative;
+  }
+
+  .lift-btn--primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    translate: var(--_sx, 0px) var(--_sy, 0px);
+    border: 2px solid var(--color-action-primary);
+    z-index: -1;
+    transition: translate 0.15s ease;
+  }
+
+  :global([data-theme="experimental"])
+    .lift-btn--primary.lift-btn--experimental-text {
+    background-color: var(--experimental-2);
+    color: var(--experimental-1);
+  }
+
+  :global([data-theme="experimental"])
+    .lift-btn--primary.lift-btn--experimental-text::after {
+    border-color: var(--experimental-2);
+  }
+
+  :global([data-theme="experimental"])
+    .lift-btn--primary.lift-btn--experimental-text:focus-visible {
+    background-color: var(--experimental-2);
+    color: var(--experimental-1);
+  }
+
+  .lift-btn--secondary {
+    color: var(--color-text-primary);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+    box-shadow: var(--_sx, 0px) var(--_sy, 0px) 0 var(--color-text-primary);
+  }
+
+  .lift-btn--secondary:focus-visible {
+    outline: 3px solid var(--color-action-primary);
+    outline-offset: 2px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .lift-btn--primary:hover {
+      background-color: var(--color-action-primary);
+      color: var(--color-text-inverse);
+      text-decoration: none;
+    }
+
+    :global([data-theme="experimental"])
+      .lift-btn--primary.lift-btn--experimental-text:hover {
+      background-color: var(--experimental-2);
+      color: var(--experimental-1);
+    }
+
+    .lift-btn--secondary:hover {
+      color: var(--color-text-primary);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+      text-decoration-thickness: 2px;
+    }
+
+    .lift-btn--secondary:hover {
+      opacity: 0.85;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .lift-btn {
+      transform: none;
+      transition:
+        color 0.08s ease,
+        background-color 0.08s ease;
+    }
+
+    .lift-btn--primary::after {
+      translate: 0 0;
+    }
+
+    .lift-btn--secondary {
+      box-shadow: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lift-btn {
+      transition: none;
+    }
+
+    .lift-btn--primary::after {
+      transition: none;
+    }
+  }
+</style>

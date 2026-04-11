@@ -1,0 +1,219 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="About Nope" description="A bit about us.">
+  <section class="page-shell layout-shell about-page">
+    <div class="page-grid layout-grid">
+      <h1 class="page-title visually-hidden">About</h1>
+      <div class="about-chunk-1">
+        <p>
+          Nope is a small studio.<br />
+          We make websites, apps, and digital things.
+        </p>
+      </div>
+
+      <div class="about-chunk-2">
+        <p>Digital, from digitus, Latin for finger. Fingers became digits, digits became numbers, numbers became everything on a screen. <br/> 1s & 0s. <br/>
+        We like that. We still make things with our fingers.</p>
+      </div>
+
+      <div class="about-chunk-3">
+        <p>
+          The name is intentional.<br />
+          We say no to most things.<br />
+          Not out of stubbornness. Out of conviction.
+        </p>
+      </div>
+
+      <div class="about-chunk-4">
+        <p>
+          Most things don't need to exist.<br />
+          Extra features nobody asked for.<br />
+          Pages that fill space.<br />
+          Design that decorates instead of communicates.<br />
+          We remove all of it.<br />
+          What's left is usually better.
+        </p>
+      </div>
+
+      <div class="about-chunk-5">
+        <p>
+          This is minimalism, but not as an aesthetic. As a method.<br />
+          Every decision starts with a question: <br /> Does this need to be here?<br
+          />
+          If the answer isn't clearly yes, it goes.
+        </p>
+
+        <p>
+          We apply this to everything.<br />
+          The work we take on, the words we write,<br /> the pixels we place.
+        </p>
+      </div>
+
+      <div class="about-chunk-6">
+        <p>
+          We take design seriously.<br />
+          Not as decoration. As communication.
+        </p>
+
+        <p>
+          The typeface, the spacing, the colour, the weight of a line.<br />
+          These are all decisions.<br />
+          Decisions made carelessly produce work that feels wrong even when people
+          can't say why.<br />
+          We make them carefully.
+        </p>
+
+        <p>
+          Good design disappears.<br />
+          You stop noticing it and start using it.
+        </p>
+      </div>
+
+      <div class="about-chunk-7">
+        <p>
+          The name wasn't a strategy.<br /> It was just the first honest thing.
+        </p>
+        <span class="signature">— Nope</span>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    :global([data-theme="experimental"]) .about-page {
+      --color-text-primary: var(--color-text-inverse);
+      --color-text-secondary: var(--color-text-inverse);
+      color: var(--color-text-primary);
+    }
+
+    .page-title {
+      grid-column: 1 / 4;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-regular);
+      color: var(--color-text-secondary);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding-top: 0.2em; /* optical alignment with body text */
+    }
+
+    .about-chunk-1,
+    .about-chunk-2,
+    .about-chunk-3,
+    .about-chunk-4,
+    .about-chunk-5,
+    .about-chunk-6,
+    .about-chunk-7 {
+      padding-block: var(--space-12);
+      text-wrap: pretty;
+      max-width: 32ch;
+    }
+
+    .about-chunk-1 {
+      grid-column: 3 / 8;
+      grid-row: 2;
+    }
+
+    .about-chunk-2 {
+      grid-column: 6 / 11;
+      grid-row: 3;
+      margin-left: auto;
+    }
+
+    .about-chunk-3 {
+      grid-column: 3 / 8;
+      grid-row: 4;
+    }
+
+    .about-chunk-4 {
+      grid-column: 6 / 11;
+      grid-row: 5;
+      margin-left: auto;
+    }
+
+    .about-chunk-5 {
+      grid-column: 3 / 8;
+      grid-row: 6;
+    }
+
+    .about-chunk-6 {
+      grid-column: 6 / 11;
+      grid-row: 7;
+      margin-left: auto;
+    }
+
+    .about-chunk-7 {
+      grid-column: 3 / 8;
+      grid-row: 8;
+    }
+
+    .signature {
+      display: block;
+      margin-top: var(--space-10);
+      color: var(--color-text-secondary);
+      font-style: italic;
+      letter-spacing: 0.02em;
+      font-size: var(--font-size-sm);
+    }
+
+    @media (max-width: 1024px) {
+      .about-chunk-1,
+      .about-chunk-3,
+      .about-chunk-5,
+      .about-chunk-7 {
+        grid-column: 3 / 9;
+      }
+
+      .about-chunk-2,
+      .about-chunk-4,
+      .about-chunk-6 {
+        grid-column: 3 / 9;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-grid {
+        row-gap: var(--space-8);
+      }
+
+      .page-title,
+      .about-chunk-1,
+      .about-chunk-2,
+      .about-chunk-3,
+      .about-chunk-4,
+      .about-chunk-5,
+      .about-chunk-6,
+      .about-chunk-7 {
+        grid-column: 1 / -1;
+        grid-row: auto;
+        padding-block: 0;
+        width: min(100%, 42rem);
+        margin-inline: auto;
+      }
+
+      .about-chunk-2,
+      .about-chunk-3,
+      .about-chunk-4,
+      .about-chunk-5,
+      .about-chunk-6,
+      .about-chunk-7 {
+        margin-top: 0;
+        text-align: left;
+      }
+
+      .signature {
+        margin-top: var(--space-6);
+      }
+
+      .about-chunk-1 p,
+      .about-chunk-2 p,
+      .about-chunk-3 p,
+      .about-chunk-4 p,
+      .about-chunk-5 p,
+      .about-chunk-6 p,
+      .about-chunk-7 p {
+        overflow-wrap: anywhere;
+      }
+    }
+  </style>
+</BaseLayout>

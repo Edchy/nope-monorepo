@@ -1,0 +1,289 @@
+---
+interface Props {
+  siteTitle?: string;
+  email?: string;
+  tagline?: string;
+}
+
+const {
+  siteTitle = "NOPE",
+  email = "hello@nope.digital",
+  tagline = "That'll do",
+} = Astro.props;
+
+const year = new Date().getFullYear();
+const footerWordmark = `${siteTitle}${siteTitle}${siteTitle}`;
+const footerLetters = [...footerWordmark];
+---
+
+<footer class="site-footer">
+  <div class="site-footer__shell" data-footer-shell>
+    <div class="site-footer__marquee" aria-hidden="true">
+      <p class="site-footer__wordmark">
+        {footerLetters.map((letter, index) => (
+          <span
+            class="site-footer__letter"
+            style={`--footer-letter-index: ${index};`}
+            aria-hidden="true"
+          >
+            {letter}
+          </span>
+        ))}
+      </p>
+    </div>
+    <div class="site-footer__meta" aria-label="Footer details">
+      <p class="site-footer__copy">
+        <a href={`mailto:${email}`}>{email}</a>
+      </p>
+      <p class="site-footer__copy site-footer__copy--center">
+        © {year}
+        {siteTitle}
+      </p>
+      <p class="site-footer__tagline">{tagline}</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: auto;
+    overflow: hidden;
+    overflow: clip;
+    contain: layout style paint;
+  }
+
+  .site-footer__shell {
+    padding-top: var(--space-10, 2.5rem);
+    padding-bottom: var(--space-4, 1rem);
+    overflow: hidden;
+    overflow: clip;
+  }
+
+  .site-footer__marquee {
+    overflow: hidden;
+    overflow: clip;
+  }
+
+  .site-footer__wordmark {
+    width: max-content;
+    margin: 0;
+    margin-left: calc(var(--space-container-x, var(--space-6, 1.5rem)) * -1.5);
+    margin-right: calc(var(--space-container-x, var(--space-6, 1.5rem)) * -1.5);
+    font-family: var(--font-family-base, sans-serif);
+    font-size: clamp(4.5rem, 18vw, 16rem);
+    font-weight: var(--font-weight-bold, 700);
+    line-height: 0.82;
+    letter-spacing: -0.08em;
+    text-transform: uppercase;
+    color: currentColor;
+    white-space: nowrap;
+  }
+
+  .site-footer__letter {
+    display: inline-block;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .site-footer__meta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-4, 1rem);
+    padding-inline: var(--space-container-x, var(--space-6, 1.5rem));
+    padding-top: var(--space-3, 0.75rem);
+  }
+
+  .site-footer__copy,
+  .site-footer__tagline {
+    margin: 0;
+    font-size: var(--font-size-xs, 0.75rem);
+    letter-spacing: 0.03em;
+    color: var(--color-text-secondary);
+  }
+
+  .site-footer__copy a {
+    color: inherit;
+    transition: opacity 0.15s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .site-footer__copy a:hover {
+      opacity: 0.75;
+    }
+  }
+
+  .site-footer__copy:first-child {
+    justify-self: start;
+  }
+
+  .site-footer__copy--center {
+    justify-self: center;
+    text-align: center;
+  }
+
+  .site-footer__tagline {
+    justify-self: end;
+    text-align: right;
+  }
+
+  @media (max-width: 768px) {
+    .site-footer__shell {
+      padding-top: var(--space-8, 2rem);
+      padding-bottom: var(--space-3, 0.75rem);
+    }
+
+    .site-footer__wordmark {
+      margin-left: calc(var(--space-container-x, var(--space-4, 1rem)) * -1);
+      margin-right: calc(var(--space-container-x, var(--space-4, 1rem)) * -1);
+      font-size: clamp(3.8rem, 24vw, 8rem);
+      line-height: 0.78;
+    }
+
+    .site-footer__meta {
+      grid-template-columns: 1fr;
+      gap: var(--space-2, 0.5rem);
+      text-align: left;
+    }
+
+    .site-footer__copy:first-child,
+    .site-footer__copy--center,
+    .site-footer__tagline {
+      justify-self: start;
+      text-align: left;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-footer__letter {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  declare global {
+    interface Window {
+      __footerRevealBound?: boolean;
+    }
+  }
+
+  {
+    const footerShell = document.querySelector<HTMLElement>("[data-footer-shell]");
+    if (footerShell) {
+      function initFooterReveal() {
+        const footerLetters = footerShell.querySelectorAll<HTMLElement>(
+          ".site-footer__letter",
+        );
+
+        if (!footerLetters.length || footerShell.dataset.footerReady === "true") {
+          return;
+        }
+
+        footerLetters.forEach((letter) => {
+          letter.style.opacity = "0";
+          letter.style.transform =
+            "translate3d(0, var(--footer-wordmark-offset-y, 1.15em), 0) rotate(-8deg) scale(0.9)";
+        });
+
+        footerShell.dataset.footerReady = "true";
+
+        if (
+          sessionStorage.getItem("footer-revealed") === "true" ||
+          window.matchMedia("(max-width: 768px)").matches ||
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ) {
+          footerLetters.forEach((letter) => {
+            letter.style.opacity = "1";
+            letter.style.transform = "translate3d(0, 0, 0)";
+          });
+          footerShell.dataset.footerVisible = "true";
+          return;
+        }
+
+        const footerStyles = getComputedStyle(footerShell);
+        const springEasing =
+          footerStyles.getPropertyValue("--motion-ease-footer-spring").trim() ||
+          "cubic-bezier(0.34, 1.56, 0.64, 1)";
+        const duration =
+          Number.parseFloat(
+            footerStyles.getPropertyValue("--motion-duration-footer-reveal"),
+          ) * 1000 || 900;
+        const stagger =
+          Number.parseFloat(
+            footerStyles.getPropertyValue("--footer-letter-stagger"),
+          ) || 52;
+        const startTransform =
+          "translate3d(0, var(--footer-wordmark-offset-y, 1.15em), 0) rotate(-8deg) scale(0.9)";
+
+        function animateFooterLetters() {
+          if (footerShell.dataset.footerVisible === "true") {
+            return;
+          }
+
+          footerShell.dataset.footerVisible = "true";
+          sessionStorage.setItem("footer-revealed", "true");
+
+          footerLetters.forEach((letter, index) => {
+            letter.animate(
+              [
+                {
+                  opacity: 0,
+                  transform: startTransform,
+                },
+                {
+                  opacity: 1,
+                  offset: 0.58,
+                  transform:
+                    "translate3d(0, 0.18em, 0) rotate(2.5deg) scale(1.06)",
+                },
+                {
+                  opacity: 1,
+                  offset: 0.82,
+                  transform:
+                    "translate3d(0, -0.08em, 0) rotate(-0.8deg) scale(0.985)",
+                },
+                {
+                  opacity: 1,
+                  transform: "translate3d(0, 0, 0) rotate(0deg) scale(1)",
+                },
+              ],
+              {
+                duration,
+                delay: index * stagger,
+                easing: springEasing,
+                fill: "forwards",
+              },
+            );
+          });
+        }
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                animateFooterLetters();
+                observer.disconnect();
+                break;
+              }
+            }
+          },
+          {
+            threshold: 0.35,
+            rootMargin: "0px 0px -10% 0px",
+          },
+        );
+
+        observer.observe(footerShell);
+      }
+
+      if (!window.__footerRevealBound) {
+        document.addEventListener("astro:page-load", initFooterReveal);
+        window.__footerRevealBound = true;
+      }
+
+      initFooterReveal();
+    }
+  }
+</script>

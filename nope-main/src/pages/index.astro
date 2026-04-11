@@ -1,0 +1,410 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import LiftButton from "../components/LiftButton.astro";
+---
+
+<BaseLayout
+  title="NOPE"
+  description="Design, websites, and digital work for ordinary people and small companies. Made by people."
+>
+  <section class="hero">
+    <div class="hero__shell layout-shell">
+      <div class="hero__grid layout-grid">
+        <div class="hero__copy">
+          <h1 class="hero__title">
+            <span
+              class="hero__title-word hero__title-word--human"
+              style="--word-index: 0"
+              ><span
+                class="hero__title-letter"
+                style="--letter-rotate: -5deg; --letter-skew: -3deg">H</span
+              ><span
+                class="hero__title-letter"
+                style="--letter-rotate: 4deg; --letter-skew: 4deg">u</span
+              ><span
+                class="hero__title-letter"
+                style="--letter-rotate: -3deg; --letter-skew: 2deg">m</span
+              ><span
+                class="hero__title-letter hero__title-letter--wiggle"
+                style="--letter-rotate: 6deg; --letter-skew: -4deg">a</span
+              ><span
+                class="hero__title-letter"
+                style="--letter-rotate: -4deg; --letter-skew: 3deg">n</span
+              ><span class="hero__title-dot">.</span>
+            </span>
+            <span
+              class="hero__title-word hero__title-word--minimal"
+              style="--word-index: 1"
+            >
+              Minimal<span class="hero__title-dot">.</span>
+            </span>
+            <span
+              class="hero__title-word hero__title-word--deliberate"
+              style="--word-index: 2"
+              aria-label="Deliberate"
+            >
+              <span class="hero__deliberate-letter" style="--i:0" aria-hidden="true">D</span><span
+                class="hero__deliberate-letter"
+                style="--i:1" aria-hidden="true">e</span
+              ><span class="hero__deliberate-letter" style="--i:2" aria-hidden="true">l</span><span
+                class="hero__deliberate-letter"
+                style="--i:3" aria-hidden="true">i</span
+              ><span class="hero__deliberate-letter" style="--i:4" aria-hidden="true">b</span><span
+                class="hero__deliberate-letter"
+                style="--i:5" aria-hidden="true">e</span
+              ><span class="hero__deliberate-letter" style="--i:6" aria-hidden="true">r</span><span
+                class="hero__deliberate-letter"
+                style="--i:7" aria-hidden="true">a</span
+              ><span class="hero__deliberate-letter" style="--i:8" aria-hidden="true">t</span><span
+                class="hero__deliberate-letter"
+                style="--i:9" aria-hidden="true">e</span
+              ><span class="hero__title-dot" aria-hidden="true">.</span>
+            </span>
+          </h1>
+          <p class="hero__summary">
+            Websites. Apps. Design. <br />
+            For folks who want it done right. <br/>
+            Come with an idea or without one. Either works.
+            Say hello and we'll figure it out.
+          </p>
+          <p class="hero__summary"></p>
+          <nav class="hero__actions">
+            <LiftButton
+              href="mailto:hello@nope.digital"
+              variant="primary"
+              experimentalTextColor={true}
+            >
+              Say hello
+            </LiftButton>
+            <LiftButton href="/work" variant="secondary">See work</LiftButton>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    position: relative;
+    isolation: isolate;
+  }
+
+  .hero__shell {
+    flex: 1;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero__grid {
+    width: 100%;
+    min-height: 100%;
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    row-gap: var(--space-8);
+    padding-top: var(--space-20);
+    padding-bottom: var(--space-20);
+  }
+
+  .hero__copy {
+    grid-column: 3 / 9;
+    grid-row: 2;
+    display: grid;
+    row-gap: var(--space-6);
+    align-content: start;
+  }
+
+  @keyframes hero-word-in {
+    from {
+      opacity: 0;
+      translate: 0 0.4em;
+      scale: 0.92;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+      scale: 1;
+    }
+  }
+
+  .hero__title-word {
+    display: block;
+    --hero-title-word-weight: var(--font-weight-bold);
+    --hero-title-word-hover-weight: var(--font-weight-bold);
+    --hero-title-word-transition-duration: var(
+      --motion-duration-hero-weight-shift
+    );
+    --hero-title-word-transition-ease: var(--motion-ease-hero-weight-shift);
+    min-inline-size: var(--hero-title-word-min-width, auto);
+    font-variation-settings: "wght" var(--hero-title-word-weight);
+    animation: hero-word-in var(--motion-duration-hero-reveal)
+      calc(var(--word-index) * var(--hero-word-stagger))
+      var(--motion-ease-footer-spring) both;
+    transition: font-variation-settings
+      var(--hero-title-word-transition-duration)
+      var(--hero-title-word-transition-ease);
+    /* Prevent font/animation changes from reflowing the hit box */
+    contain: inline-size;
+    overflow: clip;
+  }
+
+  .hero__title-word--human {
+    --hero-title-word-transition-duration: var(--motion-duration-hero-human);
+    --hero-title-word-transition-ease: var(--motion-ease-hero-human);
+    --hero-title-word-min-width: 5.2ch;
+    cursor: inherit;
+  }
+
+  .hero__title-word--minimal {
+    --hero-title-word-hover-weight: var(--font-weight-thin);
+    --hero-title-word-transition-duration: var(--motion-duration-hero-minimal);
+    --hero-title-word-transition-ease: var(--motion-ease-hero-minimal);
+    --hero-title-word-min-width: 7.4ch;
+    cursor: inherit;
+  }
+
+  .hero__title-word--deliberate {
+    --hero-title-word-transition-duration: var(
+      --motion-duration-hero-deliberate
+    );
+    --hero-title-word-transition-ease: var(--motion-ease-hero-deliberate);
+    --hero-title-word-min-width: 10ch;
+    cursor: inherit;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hero__title-word:hover {
+      --hero-title-word-weight: var(--hero-title-word-hover-weight);
+    }
+  }
+
+  .hero__title-dot {
+    pointer-events: none;
+    color: currentColor;
+  }
+
+  @keyframes letter-wiggle {
+    0% {
+      transform: rotate(6deg) skewX(-4deg);
+    }
+    25% {
+      transform: rotate(-7deg) skewX(5deg);
+    }
+    50% {
+      transform: rotate(8deg) skewX(-3deg);
+    }
+    75% {
+      transform: rotate(-5deg) skewX(4deg);
+    }
+    100% {
+      transform: rotate(6deg) skewX(-4deg);
+    }
+  }
+
+  .hero__deliberate-letter {
+    display: inline-block;
+    pointer-events: none;
+    font-variation-settings: "wght" var(--font-weight-bold);
+    transition: font-variation-settings 0.2s var(--motion-ease-hero-deliberate)
+      calc(var(--i) * 40ms);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hero__title-word--deliberate:hover .hero__deliberate-letter {
+      font-variation-settings: "wght" var(--font-weight-black);
+    }
+  }
+
+  .hero__title-letter {
+    display: inline-block;
+    pointer-events: none;
+    transition: transform var(--motion-duration-hero-human)
+      var(--motion-ease-hero-human);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hero__title-word--human:hover .hero__title-letter {
+      transform: rotate(var(--letter-rotate)) skewX(var(--letter-skew));
+    }
+
+    .hero__title-word--human:hover .hero__title-letter--wiggle {
+      animation: letter-wiggle 1.4s ease-in-out infinite;
+    }
+  }
+
+  /* Intro demo: temporarily apply hover effects on first visit */
+  .hero__title-word--human.is-intro-active .hero__title-letter {
+    transform: rotate(var(--letter-rotate)) skewX(var(--letter-skew));
+  }
+
+  .hero__title-word--human.is-intro-active .hero__title-letter--wiggle {
+    animation: letter-wiggle 1.4s ease-in-out infinite;
+  }
+
+  .hero__title-word--minimal.is-intro-active {
+    --hero-title-word-weight: var(--hero-title-word-hover-weight);
+  }
+
+  .hero__title-word--deliberate.is-intro-active .hero__deliberate-letter {
+    font-variation-settings: "wght" var(--font-weight-black);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__title-word {
+      animation: none;
+      transition: none;
+    }
+  }
+
+  .hero__title {
+    max-width: 9ch;
+    font-size: clamp(4.2rem, 8vw, 7rem);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-display);
+    letter-spacing: -0.03em;
+    text-indent: -0.03em;
+    text-wrap: balance;
+    color: var(--color-text-primary);
+  }
+
+  .hero__title-break {
+    display: block;
+    color: color-mix(
+      in srgb,
+      var(--color-text-primary) 84%,
+      var(--neutral-500)
+    );
+  }
+
+  .hero__summary {
+    max-width: 28rem;
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-snug);
+    text-wrap: pretty;
+    color: color-mix(
+      in srgb,
+      var(--color-text-primary) 72%,
+      var(--neutral-500)
+    );
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    justify-self: start;
+    padding-top: var(--space-2);
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      min-height: 100dvh;
+    }
+
+    .hero__grid {
+      min-height: 100%;
+      grid-template-rows: auto;
+      row-gap: var(--space-6);
+      padding-top: var(--space-8);
+      padding-bottom: var(--space-10);
+    }
+
+    .hero__copy {
+      grid-column: 1 / -1;
+      grid-row: auto;
+      justify-self: stretch;
+      align-self: auto;
+      width: min(100%, 34rem);
+      margin-inline: auto;
+    }
+
+    .hero__title {
+      max-width: 11ch;
+      font-size: clamp(3rem, 15vw, 4.5rem);
+      text-indent: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .hero__title-word {
+      min-inline-size: 0;
+    }
+
+    .hero__summary {
+      overflow-wrap: anywhere;
+    }
+
+    .hero__actions {
+      justify-content: flex-start;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-3);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__title-word--minimal.is-intro-active {
+      transition-duration: 0.6s;
+    }
+    .hero__title-word--human.is-intro-active .hero__title-letter {
+      transition-duration: 0.5s;
+    }
+    .hero__title-word--deliberate.is-intro-active .hero__deliberate-letter {
+      transition-duration: 0.4s;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .hero__copy {
+      justify-items: center;
+      text-align: center;
+    }
+
+    .hero__title,
+    .hero__summary {
+      margin-inline: auto;
+    }
+
+    .hero__actions {
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  function initHeroIntro() {
+    if (
+      sessionStorage.getItem("hero-intro-done") ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) return;
+
+    sessionStorage.setItem("hero-intro-done", "1");
+
+    const human = document.querySelector<HTMLElement>(".hero__title-word--human");
+    const minimal = document.querySelector<HTMLElement>(".hero__title-word--minimal");
+    const deliberate = document.querySelector<HTMLElement>(".hero__title-word--deliberate");
+    if (!human || !minimal || !deliberate) return;
+
+    // Stagger: wait for words to finish appearing, then trigger each effect
+    // Words animate in at: 0ms, 80ms, 160ms — done by ~870ms total
+    const baseDelay = 950;
+    const holdDuration = 900;
+    const between = 200;
+
+    function activate(el: HTMLElement, delay: number) {
+      setTimeout(() => {
+        el.classList.add("is-intro-active");
+        setTimeout(() => el.classList.remove("is-intro-active"), holdDuration);
+      }, delay);
+    }
+
+    activate(human, baseDelay);
+    activate(minimal, baseDelay + holdDuration + between);
+    activate(deliberate, baseDelay + (holdDuration + between) * 2);
+  }
+
+  document.addEventListener("astro:page-load", initHeroIntro);
+</script>

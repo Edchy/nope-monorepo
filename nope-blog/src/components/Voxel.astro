@@ -1,0 +1,136 @@
+---
+---
+
+<section class="voxel" aria-hidden="true">
+  <div class="voxel__scene" id="voxel-scene"></div>
+</section>
+
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&display=swap");
+
+  .voxel {
+    --voxel-bg: #050505;
+    --voxel-ink: oklch(0.94 0.04 100);
+    --voxel-ink-soft: oklch(0.88 0.03 100);
+    --voxel-ink-muted: oklch(0.78 0.02 100);
+    position: relative;
+    width: min(920px, 90vw);
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--voxel-bg);
+  }
+
+  .voxel__scene {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .voxel__scene :global(svg) {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: var(--voxel-bg);
+  }
+
+  @media (max-width: 40rem) {
+    .voxel {
+      width: 100vw;
+    }
+  }
+</style>
+
+<script>
+  import { Heerich } from 'heerich';
+
+  const container = document.getElementById('voxel-scene');
+  if (!container) throw new Error('voxel-scene container not found');
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const scope = container.closest('.voxel');
+  const palette = getComputedStyle(scope ?? document.documentElement);
+  const token = (name: string, fallback: string) => palette.getPropertyValue(name)?.trim() || fallback;
+
+  const colors = {
+    bg: token('--voxel-bg', '#050505'),
+    ink: token('--voxel-ink', '#f6f2e9'),
+    inkSoft: token('--voxel-ink-soft', '#e5e0d3'),
+    inkMuted: token('--voxel-ink-muted', '#bfb8a9'),
+  };
+
+  const h = new Heerich({
+    tile: 34,
+    camera: { type: 'oblique', angle: 320, distance: 24 },
+    style: { fill: colors.bg, stroke: colors.bg, strokeWidth: 0 },
+  });
+
+  const glyph = (char: string, fill: string) => `
+    <text
+      font-family="'Space Grotesk', 'Helvetica Neue', sans-serif"
+      font-size="18"
+      font-weight="500"
+      fill="${fill}"
+      text-anchor="middle"
+      dominant-baseline="central"
+      letter-spacing="0.32em"
+    >${char}</text>
+  `;
+
+  function buildScene() {
+    h.clear();
+
+    // ONLY content voxels - no solid geometry, just floating letters
+    const word = 'NOPE';
+    const cols = 8;
+    const rows = 18;
+    const startX = 0;
+    const startZ = 0;
+    const dx = 1.9;
+    const dz = 0.9;
+
+    for (let row = 0; row < rows; row++) {
+      const rowRatio = row / (rows - 1);
+      const tint = rowRatio < 0.35 ? colors.ink : rowRatio < 0.7 ? colors.inkSoft : colors.inkMuted;
+      const yPos = 0;
+      const wobble = Math.sin(row * 0.35) * 0.25;
+
+      for (let col = 0; col < cols; col++) {
+        const char = word[(col + row) % word.length];
+        const xPos = startX + col * dx + wobble;
+        const zPos = startZ + row * dz;
+
+        h.applyGeometry({
+          type: 'box',
+          position: [xPos, yPos, zPos],
+          size: 1,
+          opaque: false,
+          content: glyph(char, tint),
+        });
+      }
+    }
+  }
+
+  const render = () => {
+    container.innerHTML = h.toSVG({ padding: 24 });
+  };
+
+  buildScene();
+  render();
+
+  if (!prefersReducedMotion) {
+    const animate = (now: number) => {
+      const angle = 320 + Math.sin(now * 0.00025) * 10;
+      const distance = 21 + Math.cos(now * 0.00018) * 1.4;
+      h.setCamera({ type: 'oblique', angle, distance });
+      render();
+      requestAnimationFrame(animate);
+    };
+
+    requestAnimationFrame(animate);
+  }
+</script>

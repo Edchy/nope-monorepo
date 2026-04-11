@@ -1,0 +1,194 @@
+---
+import { Font } from "astro:assets";
+import "../styles/global.css";
+import Footer from "@nope/ui/src/Footer.astro";
+import { ClientRouter } from "astro:transitions";
+
+interface Props {
+  title: string;
+  description?: string;
+  noFooter?: boolean;
+}
+
+const {
+  title,
+  description = "Personal knowledge hub — learning, building, and shipping.",
+  noFooter = false,
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
+
+const navLinks = [
+  { href: "/blog", label: "blog" },
+  { href: "/resources", label: "resources" },
+  { href: "/gallery", label: "gallery" },
+  { href: "https://nope.digital", label: "nope.digital", isExternal: true },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <Font cssVariable="--font-jost" />
+    <ClientRouter />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="shell__aside" transition:persist="shell-aside">
+        <div class="shell__aside-inner">
+          <div class="shell__meta">
+            <slot name="meta">
+              <p class="shell__page-title">{title}</p>
+              {description && <p class="shell__page-desc">{description}</p>}
+            </slot>
+          </div>
+
+          <nav class="shell__nav" aria-label="Main navigation">
+            <a href="/" class="shell__site-title">NOPE</a>
+            <ul class="shell__nav-links">
+              {navLinks.map(({ href, label, isExternal }) => (
+                <li>
+                  <a
+                    href={href}
+                    class:list={[
+                      "shell__nav-link",
+                      { "shell__nav-link--active": currentPath.startsWith(href) && !isExternal },
+                    ]}
+                  >
+                    {label}
+                    {isExternal && <span aria-hidden="true">↗</span>}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </aside>
+
+      <main class="shell__main" transition:name="shell-main" transition:animate="none">
+        <slot />
+      </main>
+    </div>
+
+    {!noFooter && <Footer siteTitle="NOPE" />}
+  </body>
+</html>
+
+<style>
+  .shell {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    min-height: 100svh;
+  }
+
+  @media (min-width: 768px) {
+    .shell {
+      grid-template-columns: 280px 1fr;
+    }
+  }
+
+  /* ── Left panel ── */
+  .shell__aside {
+    background: var(--surface, #edeae3);
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  @media (min-width: 768px) {
+    .shell__aside {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      overflow-y: auto;
+    }
+  }
+
+  .shell__aside-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: var(--space-8);
+    gap: var(--space-8);
+  }
+
+  /* ── Meta slot (top) ── */
+  .shell__meta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .shell__page-title {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--line-height-tight);
+  }
+
+  .shell__page-desc {
+    margin: var(--space-3) 0 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-relaxed);
+  }
+
+  /* ── Nav (bottom) ── */
+  .shell__nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .shell__site-title {
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-sm);
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    color: var(--color-text-primary);
+    transition: opacity var(--transition-fast);
+  }
+
+  .shell__site-title:hover {
+    opacity: 0.6;
+  }
+
+  .shell__nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .shell__nav-link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-1);
+    font-size: var(--font-size-sm);
+    text-decoration: none;
+    color: var(--color-text-secondary);
+    transition: color var(--transition-fast);
+  }
+
+  .shell__nav-link:hover,
+  .shell__nav-link--active {
+    color: var(--color-text-primary);
+  }
+
+  /* ── Right panel ── */
+  .shell__main {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+  }
+</style>

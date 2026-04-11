@@ -1,0 +1,51 @@
+---
+interface Props {
+  fullBleed?: boolean;
+  centered?: boolean;
+  class?: string;
+  style?: string;
+}
+
+const {
+  fullBleed = false,
+  centered = false,
+  class: className,
+  style,
+} = Astro.props;
+
+const classes = [
+  fullBleed && "section--full-bleed",
+  centered && "section--centered",
+  className,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<section
+  class={classes || undefined}
+  style={style}
+  data-full-bleed={fullBleed || undefined}
+>
+  <slot />
+</section>
+
+<style>
+  section {
+    display: grid;
+    min-height: 100svh;
+  }
+
+  section > :global(*) {
+    min-width: 0;
+  }
+
+  .section--full-bleed {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+
+  .section--centered {
+    place-items: center;
+  }
+</style>
