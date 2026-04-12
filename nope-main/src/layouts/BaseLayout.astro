@@ -10,10 +10,11 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description?: string;
+  mainClass?: string;
 }
 
 import { SITE_TITLE } from "../config";
-const { title, description = SITE_TITLE } = Astro.props;
+const { title, description = SITE_TITLE, mainClass } = Astro.props;
 ---
 
 <!doctype html>
@@ -70,7 +71,7 @@ const { title, description = SITE_TITLE } = Astro.props;
         { href: "https://blog.nope.digital", label: "Blog", isExternal: true },
       ]}
     />
-    <main class="site-main">
+    <main class:list={["site-main", mainClass]}>
       <div
         class="site-main__stage"
         transition:name="page-stage"
@@ -91,5 +92,16 @@ const { title, description = SITE_TITLE } = Astro.props;
     flex: 1;
     min-height: 0;
     display: flex;
+  }
+
+  .site-main.site-main--viewport-floor {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  @media (max-width: 768px) {
+    .site-main.site-main--viewport-floor {
+      min-height: 0;
+    }
   }
 </style>

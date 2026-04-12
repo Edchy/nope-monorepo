@@ -6,6 +6,7 @@ import LiftButton from "../components/LiftButton.astro";
 <BaseLayout
   title="NOPE"
   description="Design, websites, and digital work for ordinary people and small companies. Made by people."
+  mainClass="site-main--viewport-floor"
 >
   <section class="hero">
     <div class="hero__shell layout-shell">
@@ -89,10 +90,10 @@ import LiftButton from "../components/LiftButton.astro";
 <style>
   .hero {
     flex: 1;
-    min-height: 0;
     display: flex;
     position: relative;
     isolation: isolate;
+    min-height: 100%;
   }
 
   .hero__shell {

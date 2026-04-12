@@ -1,1 +1,1 @@
-export const SITE_TITLE = "NOPE";
+export const SITE_TITLE = "nope";
