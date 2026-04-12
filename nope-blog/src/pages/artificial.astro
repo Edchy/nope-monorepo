@@ -1,14 +1,419 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const all = await getCollection("artificial", ({ data }) => !data.draft);
+
+const notes = all
+  .filter((e) => e.data.kind === "note")
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const tools = all
+  .filter((e) => e.data.kind === "tool")
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const links = all
+  .filter((e) => e.data.kind === "link")
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const toolVariants = ["cell--tool-1", "cell--tool-2", "cell--tool-3"];
 ---
 
-<BaseLayout title="Artificial Intelligence" description="Art and intelligence.">
-  <div class="art-int-page">
+<BaseLayout title="ジンコウチノウ — NOPE" description="Notes, tools, and links on artificial intelligence.">
+  <div class="ai-page">
+
+    <!-- NOTES -->
+    {notes.length > 0 && (
+      <section class="ai-section">
+        <h2 class="section-label">Notes</h2>
+        <div class="notes-grid">
+          {notes.map((note) => (
+            <div class="cell cell--lift cell--note" data-lift-max="12">
+              <div class="cell__top">
+                <p class="cell__meta cell__eyebrow">
+                  {note.data.date.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </p>
+                <h3 class="cell__title">{note.data.title}</h3>
+              </div>
+              {note.data.tags.length > 0 && (
+                <ul class="tag-list cell__meta">
+                  {note.data.tags.map((tag) => <li class="tag">{tag}</li>)}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- TOOLS -->
+    {tools.length > 0 && (
+      <section class="ai-section">
+        <h2 class="section-label">Tools</h2>
+        <div class="tools-grid">
+          {tools.map((tool, i) => (
+            <a
+              href={tool.data.url ?? "#"}
+              target={tool.data.url ? "_blank" : undefined}
+              rel={tool.data.url ? "noopener noreferrer" : undefined}
+              class={`cell cell--lift ${toolVariants[i % toolVariants.length]}`}
+              data-lift-max="14"
+            >
+              <div class="cell__top">
+                <h3 class="cell__title">{tool.data.title}</h3>
+                {tool.data.description && (
+                  <p class="cell__desc cell__meta">{tool.data.description}</p>
+                )}
+              </div>
+              {tool.data.url && (
+                <p class="cell__meta cell__domain">
+                  {new URL(tool.data.url).hostname.replace("www.", "")}
+                </p>
+              )}
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- LINKS -->
+    {links.length > 0 && (
+      <section class="ai-section">
+        <h2 class="section-label">Links</h2>
+        <ul class="links-list">
+          {links.map((link) => (
+            <li>
+              <a
+                href={link.data.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-row"
+              >
+                <span class="link-row__meta cell__meta">
+                  {link.data.date.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
+                <span class="link-row__title">{link.data.title}</span>
+                {link.data.description && (
+                  <span class="link-row__desc cell__meta">{link.data.description}</span>
+                )}
+                <span class="link-row__domain cell__meta">
+                  {new URL(link.data.url).hostname.replace("www.", "")}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
   </div>
 </BaseLayout>
 
 <style>
-  .art-int-page {
+  .ai-page {
     padding: var(--space-12) var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+  }
+
+  /* ── Section labels ── */
+  .ai-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .section-label {
+    margin: 0;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+  }
+
+  /* ── Base cell (mirrors writing/index.astro) ── */
+  .cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+  }
+
+  .cell--lift {
+    --_tx: 0px;
+    --_ty: 0px;
+    --_scale: 1;
+    transform: translate(var(--_tx), var(--_ty)) scale(var(--_scale));
+    transform-origin: center;
+    transition: transform 0.15s ease;
+    will-change: transform;
+  }
+
+  /* Notes variant */
+  .cell--note {
+    background: var(--neutral-900);
+    color: var(--neutral-50);
+    cursor: default;
+  }
+
+  /* Tool variants */
+  .cell--tool-1 {
+    background: var(--brand-purple);
+    color: var(--neutral-50);
+  }
+  .cell--tool-2 {
+    background: var(--brand-green);
+    color: var(--neutral-900);
+  }
+  .cell--tool-3 {
+    background: var(--neutral-900);
+    color: var(--neutral-50);
+  }
+
+  /* ── Cell internals ── */
+  .cell__top {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .cell__eyebrow {
+    margin: 0;
+  }
+
+  .cell__title {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: -0.02em;
+  }
+
+  .cell__desc {
+    margin: 0;
+    line-height: var(--line-height-relaxed);
+    text-transform: none;
+  }
+
+  .cell__meta {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.1em;
+    line-height: var(--line-height-relaxed);
+    color: currentColor;
+    opacity: 0.62;
+  }
+
+  .cell__domain {
+    margin: 0;
+    text-transform: lowercase;
+  }
+
+  /* ── Notes grid ── */
+  .notes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 28svh;
+    gap: var(--space-2);
+  }
+
+  /* ── Tools grid ── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 22svh;
+    gap: var(--space-2);
+  }
+
+  /* ── Tags ── */
+  .tag-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .tag {
+    text-transform: lowercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Links list ── */
+  .links-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: var(--border-width-1) solid var(--color-border-default);
+  }
+
+  .links-list li {
+    border-bottom: var(--border-width-1) solid var(--color-border-default);
+  }
+
+  .link-row {
+    display: grid;
+    grid-template-columns: 8rem 1fr 1fr 8rem;
+    align-items: baseline;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-2);
+    text-decoration: none;
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    transition: background 0.1s ease;
+  }
+
+  .link-row:hover {
+    background: var(--color-background-subtle);
+  }
+
+  .link-row__title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: -0.01em;
+  }
+
+  .link-row__desc {
+    text-transform: none;
+    font-size: var(--font-size-xs);
+  }
+
+  .link-row__domain {
+    text-align: right;
+    text-transform: lowercase;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .notes-grid,
+    .tools-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .link-row {
+      grid-template-columns: 7rem 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    .link-row__desc {
+      display: none;
+    }
+
+    .link-row__domain {
+      text-align: left;
+      grid-column: 2;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .ai-page {
+      padding: var(--space-8) var(--space-4);
+    }
+
+    .notes-grid,
+    .tools-grid {
+      grid-template-columns: 1fr;
+      grid-auto-rows: minmax(12rem, auto);
+    }
+
+    .link-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-1);
+    }
+
+    .link-row__domain {
+      display: none;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .cell--lift:is(:hover, :focus-visible) {
+      z-index: 2;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cell--lift {
+      transform: none;
+      transition: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cell--lift {
+      transition: none;
+    }
   }
 </style>
+
+<script>
+  {
+    let cleanup: (() => void) | undefined;
+
+    const canUseLift = () =>
+      window.matchMedia("(min-width: 769px)").matches &&
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const reset = (cell: HTMLElement) => {
+      cell.style.setProperty("--_tx", "0px");
+      cell.style.setProperty("--_ty", "0px");
+      cell.style.setProperty("--_scale", "1");
+    };
+
+    function init() {
+      cleanup?.();
+
+      const cells = document.querySelectorAll<HTMLElement>(".ai-page .cell--lift");
+      if (!cells.length || !canUseLift()) {
+        cells.forEach(reset);
+        cleanup = undefined;
+        return;
+      }
+
+      const controller = new AbortController();
+      const { signal } = controller;
+
+      cells.forEach((cell) => {
+        const max = Number(cell.dataset.liftMax ?? 14);
+
+        cell.addEventListener("mousemove", (e) => {
+          const rect = cell.getBoundingClientRect();
+          const nx = (e.clientX - rect.left) / rect.width;
+          const ny = (e.clientY - rect.top) / rect.height;
+          cell.style.setProperty("--_tx", `${nx * max}px`);
+          cell.style.setProperty("--_ty", `${-(ny * max)}px`);
+          cell.style.setProperty("--_scale", "1.04");
+        }, { signal });
+
+        cell.addEventListener("mouseleave", () => reset(cell), { signal });
+      });
+
+      cleanup = () => {
+        controller.abort();
+        cells.forEach(reset);
+      };
+    }
+
+    document.addEventListener("astro:page-load", init);
+    document.addEventListener("astro:before-swap", () => cleanup?.(), { once: true });
+    init();
+  }
+</script>

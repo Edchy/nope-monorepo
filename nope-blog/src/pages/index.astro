@@ -10,7 +10,6 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
 );
 
 const latestPost = posts[0];
-const secondPost = posts[1];
 ---
 
 <BaseLayout title="NOPE">
@@ -126,7 +125,7 @@ const secondPost = posts[1];
 
   /* ── Blog post cells ── */
   .cell--post {
-    background: var(--experimental-1);
+    background: var(--brand-purple);
     color: var(--neutral-50);
     gap: var(--space-3);
   }
@@ -191,8 +190,8 @@ const secondPost = posts[1];
 
   /* ── Dark / Art Int cell ── */
   .cell--dark {
-    background: var(--experimental-2);
-    color: var(--experimental-1);
+    background: var(--brand-green);
+    color: var(--brand-purple);
     gap: var(--space-2);
   }
 
@@ -212,7 +211,7 @@ const secondPost = posts[1];
 
   @media (hover: hover) and (pointer: fine) {
     .cell--voxel:hover {
-      background: var(--experimental-2);
+      background: var(--brand-green);
     }
 
     .cell--quote:hover {

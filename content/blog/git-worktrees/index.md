@@ -1,7 +1,7 @@
 ---
 title: "You Can Have Multiple Branches Checked Out at the Same Time"
 description: "You don't have to drop everything when something urgent comes up. Git lets you have multiple branches open at once."
-date: 2026-04-10
+date: 2026-03-15
 draft: false
 ---
 You're halfway through a feature. Something breaks in production. Git expects you to either commit half-finished garbage or stash everything and hope for the best.

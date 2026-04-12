@@ -1,7 +1,7 @@
 ---
 title: "How Claude Code Decides What to Listen To"
 description: "Claude Code doesn't just follow one set of rules. It listens to several, layered on top of each other. Here's how that works."
-date: 2026-04-10
+date: 2026-02-03
 draft: false
 ---
 When you use Claude Code, there isn't just one thing telling Claude how to behave. There's a whole stack of instructions layered on top of each other. Knowing how they work saves you a lot of confusion.

@@ -22,7 +22,7 @@ const currentPath = Astro.url.pathname;
 export const navLinks = [
   { href: "/log", label: "Løg" },
   { href: "/room", label: "Røøm" },
-  { href: "/writing", label: "Writingz" },
+  { href: "/writing", label: "Writing" },
   { href: "/artificial", label: "ジンコウチノウ" },
   { href: "https://nope.digital", label: "Nøpe.digital", isExternal: true },
 ];
@@ -74,6 +74,7 @@ export const navLinks = [
     <Font cssVariable="--font-nature" />
   </head>
   <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <button
       type="button"
       class="menu-trigger"
@@ -109,7 +110,7 @@ export const navLinks = [
     <div class="shell">
       <aside id="shell-aside" class="shell__aside" transition:persist="shell-aside">
         <div class="shell__aside-inner">
-          <a href="/" class="shell__wordmark">NOPE</a>
+          <a href="/" class="shell__wordmark">nope digital</a>
 
           <nav class="shell__nav" aria-label="Main navigation">
             <ul class="shell__nav-links">
@@ -154,7 +155,7 @@ export const navLinks = [
         </button>
       </aside>
 
-      <main class="shell__main" transition:name="shell-main" transition:animate="none">
+      <main id="main-content" class="shell__main" tabindex="-1" transition:name="shell-main" transition:animate="none">
         <slot />
       </main>
     </div>
@@ -199,6 +200,29 @@ export const navLinks = [
     --shell-aside-transition-duration: 360ms;
     --shell-aside-fade-duration: 240ms;
     --shell-aside-transition: var(--shell-aside-transition-duration) cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: var(--space-4);
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    z-index: 9999;
+    border: var(--border-width-1) solid var(--color-border-default);
+  }
+
+  .skip-link:focus {
+    top: var(--space-4);
+    outline: 3px solid var(--color-action-primary);
+    outline-offset: 2px;
+  }
+
+  .shell__main:focus {
+    outline: none;
   }
 
   /* ── Shell ── */
@@ -390,7 +414,7 @@ export const navLinks = [
       position: fixed;
       left: var(--space-2);
       border-color: transparent;
-      background: color-mix(in oklch, var(--experimental-1) 50%, transparent);
+      background: color-mix(in oklch, var(--brand-purple) 50%, transparent);
       color: var(--neutral-50);
       transform: translate(-0.5rem, -50%);
       opacity: 0;
@@ -667,21 +691,13 @@ export const navLinks = [
         syncViewportState();
       };
 
-      if ("addEventListener" in desktopMedia) {
-        desktopMedia.addEventListener("change", handleViewportChange);
-      } else {
-        desktopMedia.addListener(handleViewportChange);
-      }
+      desktopMedia.addEventListener("change", handleViewportChange);
 
       syncViewportState();
 
       cleanup = () => {
         controller.abort();
-        if ("removeEventListener" in desktopMedia) {
-          desktopMedia.removeEventListener("change", handleViewportChange);
-        } else {
-          desktopMedia.removeListener(handleViewportChange);
-        }
+        desktopMedia.removeEventListener("change", handleViewportChange);
         document.body.style.overflow = "";
       };
     }

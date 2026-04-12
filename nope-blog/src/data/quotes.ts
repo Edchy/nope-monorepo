@@ -32,14 +32,18 @@ export const quotes: Quote[] = [
     author: "Bruce Lee",
   },
   {
+    text: "What i lack in ambition i make up for in absolutely nothing.",
+    author: "Calvin from Calvin and Hobbes",
+  },
+  {
     text: "Make it simple, but significant.",
     author: "Don Draper",
   },
+
   {
     text: "Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away.",
     author: "Antoine de Saint-Exupéry",
   },
-
 
   {
     text: "A man is rich in proportion to the number of things he can afford to let alone.",

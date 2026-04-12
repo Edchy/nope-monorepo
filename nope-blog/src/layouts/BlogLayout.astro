@@ -10,7 +10,7 @@ interface Props {
   postId?: string;
 }
 
-const { title, description, date, tags = [], author, postId } = Astro.props;
+const { title, description, date, postId } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description}>

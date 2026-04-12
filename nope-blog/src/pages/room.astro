@@ -92,7 +92,13 @@ const availableSlots = orderedSlots.filter((slot) => slot !== ecommerceReservedS
 const ecommerceItem = workItems.find((item) => item.id === "ecommerce-platform");
 const regularItems = workItems.filter((item) => item.id !== "ecommerce-platform");
 
-const assignedItems = ecommerceItem
+type AssignedItem = {
+  item: typeof workItems[number];
+  slot: ReturnType<typeof wallSlot>;
+  cycleIndex?: number;
+};
+
+const assignedItems: AssignedItem[] = ecommerceItem
   ? [{ item: ecommerceItem, slot: ecommerceReservedSlot }]
   : [];
 
@@ -104,7 +110,6 @@ regularItems.forEach((item, index) => {
 });
 
 type DisplayKind = "wall-panel" | "wall-monitor" | "crt-stack";
-type DisplayMediaKind = "image" | "slideshow";
 
 function getDisplayKind(room: string, index: number): DisplayKind {
   if (room === "main-hall" || room === "room-d") return "wall-panel";
@@ -197,7 +202,7 @@ const displayDataJson = JSON.stringify(displayData);
   <div id="gallery-mobile-wall" hidden>
     <p>The 3D gallery requires a desktop browser.</p>
   </div>
-  <script type="application/json" id="gallery-data" set:html={displayDataJson} />
+  <script is:inline type="application/json" id="gallery-data" set:html={displayDataJson}></script>
 </BaseLayout>
 
 <style is:global>
@@ -241,8 +246,6 @@ const displayDataJson = JSON.stringify(displayData);
     padding-inline: var(--space-4);
     border: var(--border-width-1) solid var(--gallery-chrome-border);
     background: var(--gallery-chrome-surface);
-    backdrop-filter: blur(18px) saturate(145%);
-    -webkit-backdrop-filter: blur(18px) saturate(145%);
     color: var(--gallery-chrome-text);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
@@ -268,8 +271,6 @@ const displayDataJson = JSON.stringify(displayData);
     padding: var(--space-6);
     border: var(--border-width-1) solid var(--gallery-chrome-border);
     background: var(--gallery-chrome-surface);
-    backdrop-filter: blur(18px) saturate(145%);
-    -webkit-backdrop-filter: blur(18px) saturate(145%);
     display: grid;
     gap: var(--space-3);
   }
@@ -371,17 +372,10 @@ const displayDataJson = JSON.stringify(displayData);
     top: 0;
     width: min(460px, calc(100vw - 32px));
     padding: 26px 28px 28px;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08)),
-      linear-gradient(180deg, rgba(33, 38, 48, 0.7), rgba(18, 22, 30, 0.58));
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow:
-      0 24px 64px rgba(0, 0, 0, 0.28),
-      inset 0 1px 0 rgba(255, 255, 255, 0.26),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(18px) saturate(145%);
-    -webkit-backdrop-filter: blur(18px) saturate(145%);
-    color: #f6f7fb;
+    background: var(--neutral-800);
+    border: 1px solid color-mix(in oklch, var(--neutral-50) 20%, transparent);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+    color: var(--neutral-50);
     font-size: 1.04rem;
     line-height: 1.55;
     transform: translate(calc(-100% + 18px), calc(-100% + 18px)) scale(0.94);
@@ -409,12 +403,12 @@ const displayDataJson = JSON.stringify(displayData);
     font-weight: 650;
     display: block;
     margin-bottom: 8px;
-    color: #fbfcff;
+    color: var(--neutral-50);
     letter-spacing: -0.02em;
   }
 
   .display-label-meta {
-    color: rgba(246, 247, 251, 0.58);
+    color: color-mix(in oklch, var(--neutral-50) 58%, transparent);
     font-size: 0.78rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -423,7 +417,7 @@ const displayDataJson = JSON.stringify(displayData);
   }
 
   .display-label-desc {
-    color: rgba(246, 247, 251, 0.8);
+    color: color-mix(in oklch, var(--neutral-50) 80%, transparent);
     font-size: 1rem;
     line-height: 1.6;
     display: block;
@@ -438,9 +432,9 @@ const displayDataJson = JSON.stringify(displayData);
     font-size: 0.7rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(246, 247, 251, 0.7);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: color-mix(in oklch, var(--neutral-50) 70%, transparent);
+    background: color-mix(in oklch, var(--neutral-50) 8%, transparent);
+    border: 1px solid color-mix(in oklch, var(--neutral-50) 14%, transparent);
     border-radius: 6px;
     padding: 3px 8px;
   }
@@ -452,14 +446,14 @@ const displayDataJson = JSON.stringify(displayData);
     font-size: 0.78rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(246, 247, 251, 0.7);
+    color: color-mix(in oklch, var(--neutral-50) 70%, transparent);
   }
   .display-label-link kbd {
     font-family: inherit;
     font-size: 0.72rem;
-    color: #f4f4f5;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: var(--neutral-100);
+    background: color-mix(in oklch, var(--neutral-50) 12%, transparent);
+    border: 1px solid color-mix(in oklch, var(--neutral-50) 22%, transparent);
     border-radius: 5px;
     padding: 2px 7px;
     letter-spacing: 0;
@@ -473,9 +467,7 @@ const displayDataJson = JSON.stringify(displayData);
     align-items: center;
     justify-content: center;
     gap: 12px;
-    background:
-      radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 45%),
-      linear-gradient(180deg, rgba(19, 21, 24, 0.88), rgba(11, 12, 14, 0.94));
+    background: var(--neutral-900);
     transition: opacity 0.4s;
   }
 
@@ -489,14 +481,14 @@ const displayDataJson = JSON.stringify(displayData);
     font-size: 2.5rem;
     font-weight: var(--font-weight-bold);
     letter-spacing: -0.02em;
-    color: #f7f3eb;
+    color: var(--neutral-50);
     margin: 0;
   }
 
   .gallery-overlay p {
     font-family: var(--font-nature), system-ui, sans-serif;
     font-weight: var(--font-weight-regular);
-    color: rgba(247, 243, 235, 0.78);
+    color: color-mix(in oklch, var(--neutral-50) 78%, transparent);
     font-size: 1rem;
     margin: 0;
   }
@@ -558,7 +550,6 @@ const displayDataJson = JSON.stringify(displayData);
     Scene,
     SpotLight,
     SRGBColorSpace,
-    Texture,
     TextureLoader,
     TubeGeometry,
     Vector3,
@@ -1234,7 +1225,7 @@ const displayDataJson = JSON.stringify(displayData);
     title: string;
     desc: string;
     tech: string[];
-    date: string;
+    date?: string;
     accent: string;
     meta: string;
     url: string;
@@ -1265,8 +1256,8 @@ const displayDataJson = JSON.stringify(displayData);
     textureLoader.load(
       encodeURI(url),
       (texture) => {
-      texture.colorSpace = SRGBColorSpace;
-      texture.anisotropy = maxAnisotropy;
+        texture.colorSpace = SRGBColorSpace;
+        texture.anisotropy = maxAnisotropy;
         onLoad(texture);
       },
       undefined,
@@ -1449,7 +1440,7 @@ const displayDataJson = JSON.stringify(displayData);
     imageSources: string[],
     tags: string[],
     tech: string[],
-    date: string,
+    date: string | undefined,
     url: string,
     kind: 'wall-panel' | 'wall-monitor',
     facing: WallFacing = 'positive'
@@ -1574,7 +1565,7 @@ const displayDataJson = JSON.stringify(displayData);
     imageSources: string[],
     tags: string[],
     tech: string[],
-    date: string,
+    date: string | undefined,
     url: string,
     facing: WallFacing = 'positive'
   ) {
@@ -1867,7 +1858,15 @@ const displayDataJson = JSON.stringify(displayData);
   });
 
   // Animation
-  let activeLabel: { el: HTMLDivElement; pos: Vector3; dist: number; screenPos: Vector3; url: string } | null = null;
+  type ActiveLabel = {
+    el: HTMLDivElement;
+    pos: Vector3;
+    dist: number;
+    screenPos: Vector3;
+    url: string;
+  };
+
+  let activeLabel: ActiveLabel | null = null;
   const velocity = new Vector3();
   const direction = new Vector3();
   const speed = 1;
@@ -1928,27 +1927,30 @@ const displayDataJson = JSON.stringify(displayData);
     const showDist = 5;
     const activeMediaDist = 7;
 
-    activeLabel = null;
-
-    labelEls.forEach(({ el, pos, url }) => {
+    const nextActiveLabel = labelEls.reduce<ActiveLabel | null>((closestLabel, { el, pos, url }) => {
       el.classList.remove('visible');
       const dist = camera.position.distanceTo(pos);
-      if (dist >= showDist) return;
+      if (dist >= showDist) return closestLabel;
 
       const screenPos = pos.clone().project(camera);
-      if (screenPos.z > 1) return;
+      if (screenPos.z > 1) return closestLabel;
 
-      if (!activeLabel || dist < activeLabel.dist) {
-        activeLabel = { el, pos, dist, screenPos, url };
+      if (!closestLabel || dist < closestLabel.dist) {
+        return { el, pos, dist, screenPos, url };
       }
-    });
 
-    if (activeLabel) {
-      const parallaxX = activeLabel.screenPos.x * 18;
-      const parallaxY = activeLabel.screenPos.y * 12;
-      activeLabel.el.style.left = `${vw - 28 + parallaxX}px`;
-      activeLabel.el.style.top = `${vh - 28 + parallaxY}px`;
-      activeLabel.el.classList.add('visible');
+      return closestLabel;
+    }, null);
+
+    activeLabel = nextActiveLabel;
+
+    const visibleLabel = nextActiveLabel;
+    if (visibleLabel) {
+      const parallaxX = visibleLabel.screenPos.x * 18;
+      const parallaxY = visibleLabel.screenPos.y * 12;
+      visibleLabel.el.style.left = `${vw - 28 + parallaxX}px`;
+      visibleLabel.el.style.top = `${vh - 28 + parallaxY}px`;
+      visibleLabel.el.classList.add('visible');
     }
 
     animatedScreens.forEach((screen) => {

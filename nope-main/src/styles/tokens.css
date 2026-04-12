@@ -20,8 +20,8 @@
   --neutral-950: #080808;
   --neutral-warm-600: oklch(0.5 0.012 70);
 
-  --experimental-1: #7c2bdd;
-  --experimental-2: #00d900;
+  --brand-purple: #7c2bdd;
+  --brand-green: #00d900;
   --experimental-3: oklch(0.75 0.1 125);
 
   /* Spacing primitives */
@@ -111,7 +111,7 @@
   /* Actions */
   --color-action-primary: var(--neutral-900);
   --color-action-primary-hover: var(--neutral-700);
-  --color-accent-experimental: var(--experimental-1);
+  --color-accent-experimental: var(--brand-purple);
 
   /* Borders */
   --color-border-default: color-mix(
@@ -164,13 +164,20 @@
    Experimental theme override
    ------------------------------------------------------------ */
 :root {
-  --button-theme-toggle-color: var(--experimental-2);
-  --scrollbar-thumb-color: var(--color-text-primary);
+  --button-theme-toggle-color: var(--brand-green);
 }
 
 [data-theme="experimental"] {
-  --color-background: var(--experimental-1);
-  --color-text-primary: var(--experimental-2);
+  --color-background: var(--brand-purple);
+  --color-text-primary: var(--brand-green);
+  --color-text-secondary: var(--experimental-3);
+  --color-accent-experimental: var(--neutral-100);
+  --button-theme-toggle-color: var(--neutral-100);
+}
+
+[data-theme="experimental"] {
+  --color-background: var(--brand-purple);
+  --color-text-primary: var(--brand-green);
   --color-text-secondary: var(--experimental-3);
   --color-accent-experimental: var(--neutral-100);
   --button-theme-toggle-color: var(--neutral-100);
