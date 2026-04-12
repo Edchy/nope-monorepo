@@ -1,5 +1,6 @@
 ---
 title: "How Claude Code Decides What to Listen To"
+description: "Claude Code doesn't just follow one set of rules. It listens to several, layered on top of each other. Here's how that works."
 date: 2026-04-10
 draft: false
 ---

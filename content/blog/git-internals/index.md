@@ -1,5 +1,6 @@
 ---
 title: "Git Is Just Text Files Pointing at Other Text Files"
+description: "Git looks complicated from the outside. Inside, it's just a bunch of small text files pointing at each other."
 date: 2026-04-10
 draft: false
 ---

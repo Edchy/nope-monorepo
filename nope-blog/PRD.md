@@ -48,7 +48,7 @@ These are directional, not commitments. Add them when the content and intent are
 
 | Section | Rough idea |
 |---------|------------|
-| Resources | Curated links — tools, articles, references worth keeping |
+| Log | Curated links — tools, articles, references worth keeping |
 | Reading / Articles | Things I've read and want to remember or share |
 | Videos | Interesting, fun, or inspiring video finds |
 | Art | Visual work, inspiration, or personal creative output |

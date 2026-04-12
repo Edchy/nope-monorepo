@@ -20,8 +20,8 @@ Jumps:
 
 Does not jump:
 - `/blog`
-- `/art-int`
-- `/resources`
+- `/artificial`
+- `/log`
 
 ### `nope-main`
 
@@ -105,7 +105,7 @@ Why:
 
 What was learned:
 - the shared footer can exist without the bug
-- `nope-blog /resources` is basically shell + footer and does **not** jump
+- `nope-blog /log` is basically shell + footer and does **not** jump
 - changing footer layout did not remove the bug
 
 Conclusion:
