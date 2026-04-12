@@ -20,6 +20,7 @@ const { Content } = await render(post);
   date={post.data.date?.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
   tags={post.data.tags}
   author={post.data.author}
+  postId={post.id}
 >
   <Content />
 </BlogLayout>

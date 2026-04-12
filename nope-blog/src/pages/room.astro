@@ -175,7 +175,6 @@ const displayDataJson = JSON.stringify(displayData);
   <div class="gallery-wrapper" id="gallery-wrapper" data-gallery-state="idle">
     <canvas id="gallery-canvas"></canvas>
     <div class="gallery-hud">
-      <a href="/" class="gallery-hud__back" id="gallery-back-link">Back to site</a>
       <div class="gallery-hud__panel">
         <p class="gallery-hud__status" id="gallery-status" aria-live="polite" hidden>
           Paused.
@@ -197,7 +196,6 @@ const displayDataJson = JSON.stringify(displayData);
   </div>
   <div id="gallery-mobile-wall" hidden>
     <p>The 3D gallery requires a desktop browser.</p>
-    <a href="/" class="gallery-hud__back">Back to site</a>
   </div>
   <script type="application/json" id="gallery-data" set:html={displayDataJson} />
 </BaseLayout>
@@ -235,7 +233,6 @@ const displayDataJson = JSON.stringify(displayData);
     pointer-events: auto;
   }
 
-  .gallery-hud__back,
   .gallery-overlay__action {
     display: inline-flex;
     align-items: center;
@@ -259,7 +256,6 @@ const displayDataJson = JSON.stringify(displayData);
       opacity 0.2s ease;
   }
 
-  .gallery-hud__back:hover,
   .gallery-overlay__action:hover {
     background: color-mix(in oklch, var(--neutral-950) 88%, var(--neutral-50));
     color: var(--gallery-chrome-text);
@@ -322,7 +318,6 @@ const displayDataJson = JSON.stringify(displayData);
     justify-content: flex-end;
   }
 
-  .gallery-wrapper[data-gallery-state="locked"] .gallery-hud__back,
   .gallery-wrapper[data-gallery-state="locked"] .gallery-hud__instructions {
     display: none;
   }
@@ -575,35 +570,14 @@ const displayDataJson = JSON.stringify(displayData);
   const canvas = document.getElementById('gallery-canvas') as HTMLCanvasElement;
   const overlay = document.getElementById('gallery-overlay') as HTMLElement;
   const wrapper = document.getElementById('gallery-wrapper') as HTMLElement;
-  const backLink = document.getElementById('gallery-back-link') as HTMLAnchorElement;
   const statusText = document.getElementById('gallery-status') as HTMLParagraphElement;
   const toggleButton = document.getElementById('gallery-toggle') as HTMLButtonElement;
-  if (!canvas || !overlay || !wrapper || !backLink || !statusText || !toggleButton) return;
+  if (!canvas || !overlay || !wrapper || !statusText || !toggleButton) return;
 
   let hasExplored = false;
   const initialStatusHtml = '';
   const pausedStatusHtml = 'Paused.';
   const exploringStatusHtml = 'Exploring. <kbd>Esc</kbd> to pause.';
-
-  function getBackTarget() {
-    const fallback = { href: '/', label: 'Back to site' };
-
-    try {
-      if (!document.referrer) return fallback;
-      const referrer = new URL(document.referrer);
-
-      if (referrer.origin !== window.location.origin || referrer.pathname === window.location.pathname) {
-        return fallback;
-      }
-
-      return {
-        href: `${referrer.pathname}${referrer.search}${referrer.hash}`,
-        label: 'Back',
-      };
-    } catch {
-      return fallback;
-    }
-  }
 
   function syncGalleryChrome(locked: boolean) {
     wrapper.dataset.galleryState = locked ? 'locked' : 'idle';
@@ -621,9 +595,6 @@ const displayDataJson = JSON.stringify(displayData);
     toggleButton.textContent = hasExplored ? 'Resume' : 'Enter';
   }
 
-  const backTarget = getBackTarget();
-  backLink.href = backTarget.href;
-  backLink.textContent = backTarget.label;
   syncGalleryChrome(false);
 
   // Scene

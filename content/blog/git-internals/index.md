@@ -1,11 +1,11 @@
 ---
-title: "Git Is Just a Folder Full of Text Files Pointing at Other Text Files"
+title: "Git Is Just Text Files Pointing at Other Text Files"
 date: 2026-04-10
-draft: true
+draft: false
 ---
 Git has a reputation for being complicated. There are books about it. People get nervous when they have to rebase in front of others. "Detached HEAD" sounds like something that happens to you when the build pipeline fails hard enough.
 
-But here's the thing: once you look inside Git's guts, most of it is just... text files. Small ones. Pointing at each other. Organized into a surprisingly elegant little database.
+But once you look inside Git's guts, most of it is just text files. Small ones. Pointing at each other. Organized into a surprisingly elegant little database.
 
 That's it. That's the magic trick.
 
@@ -68,7 +68,7 @@ Inside `.git/objects/` it appears as:
 .git/objects/e9/65047ad7c57865823c7d992b1d046ea66edf78
 ```
 
-Git splits the hash into a two-character folder to keep the directory from becoming a nightmare. Practical, if inelegant.
+Git splits the hash into a two-character folder to keep the directory manageable. Practical, if inelegant.
 
 ### Trees: directory structure
 
@@ -108,7 +108,7 @@ author Eddie
 message "add login"
 ```
 
-The `tree` field points to the root tree for that snapshot. That tree points to all the folders and blobs. So the full picture of "what the project looked like at this commit" is: commit points to root tree, root tree points to everything else.
+The `tree` field points to the root tree for that snapshot. That tree points to all the folders and blobs. The full picture of "what the project looked like at this commit" is: commit points to root tree, root tree points to everything else.
 
 The `parent` field is what creates history. Each commit points backward to the one before it:
 
@@ -158,7 +158,7 @@ When you clone a repo, Git downloads all the objects. Once you have them, you ca
 
 ### This idea turns out to be pretty important
 
-Git basically built a content-addressed storage system before most people knew that phrase. The same core idea shows up in Docker (image layers), IPFS (distributed file storage), and Nix (reproducible builds). All of them store content by hash, reference by pointer, deduplicate automatically.
+Git basically built a content-addressed storage system before most people knew that phrase. The same core idea shows up in Docker (image layers), IPFS (distributed file storage), and Nix (reproducible builds). All of them store content by hash, reference by pointer, and deduplicate automatically.
 
 Git got there first. By accident, while trying to version-control the Linux kernel.
 
@@ -190,7 +190,7 @@ ref: refs/heads/main
 
 That's how Git knows which branch you're on. HEAD points to a branch file, which points to a commit. Two hops.
 
-When you make a new commit, Git creates the commit object, then updates the branch file to contain the new hash. That's it. That's the whole "branch moved forward" operation.
+When you make a new commit, Git creates the commit object, then updates the branch file to contain the new hash. That's the whole "branch moved forward" operation.
 
 ---
 
@@ -215,7 +215,7 @@ ref: refs/heads/main   ← normal
 a1b93f4               ← detached
 ```
 
-This is "detached HEAD state," which sounds like a medical emergency. It just means: you're parked at a commit with no branch label. If you make commits here, they won't be attached to any branch. They'll exist in the objects database, but nothing points to them, so Git will eventually garbage-collect them.
+This is "detached HEAD state," which sounds like a medical emergency. It just means you're parked at a commit with no branch label. If you make commits here, they won't be attached to any branch. They'll exist in the objects database, but nothing points to them, so Git will eventually garbage-collect them.
 
 The fix: `git checkout -b new-branch-name`. That creates a branch file pointing to where you are. HEAD has something to point to again. You're back on the map.
 
@@ -253,4 +253,4 @@ The design is more elegant than it has any right to be for something that starte
 
 ---
 
-*If you want to poke around the object database yourself, look up `git cat-file`. It lets you read commits, trees, and blobs directly by their hash. Once you've done that, Git feels genuinely less mysterious. It's worth ten minutes.*
+*If you want to poke around the object database yourself, look up `git cat-file`. It lets you read commits, trees, and blobs directly by their hash. Once you've done that, Git feels genuinely less mysterious. Worth ten minutes.*

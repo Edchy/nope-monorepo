@@ -131,6 +131,12 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
     color: var(--color-text-primary);
   }
 
+  .work-page,
+  .work-page .page-grid,
+  .work-page .work-list {
+    overflow-anchor: none;
+  }
+
   .work-page .page-grid {
     row-gap: var(--space-8);
   }

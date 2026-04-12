@@ -55,10 +55,16 @@ a {
    VIEW TRANSITIONS
    ============================================================ */
 
-/* Root never animates — only shell-main does */
+/* Root never animates — shell-main handles page content transitions */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
+}
+
+/* Shared element transitions (post title, swatch) use natural morph with refined easing */
+::view-transition-group(*) {
+  animation-duration: 360ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes main-in {
@@ -84,14 +90,15 @@ a {
 }
 
 ::view-transition-old(shell-main) {
-  animation: main-out 150ms ease forwards;
+  animation: main-out 180ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 ::view-transition-new(shell-main) {
-  animation: main-in 250ms ease forwards;
+  animation: main-in 320ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
   ::view-transition-old(shell-main),
   ::view-transition-new(shell-main) {
     animation: none;

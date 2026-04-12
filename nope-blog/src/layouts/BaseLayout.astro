@@ -13,18 +13,18 @@ interface Props {
 
 const {
   title,
-  description = "Personal knowledge hub — learning, building, and shipping.",
+  description = "Just Nope",
   noFooter = false,
 } = Astro.props;
 
 const currentPath = Astro.url.pathname;
 
-const navLinks = [
-  { href: "/blog", label: "Blog" },
-  { href: "/art-int", label: "Art Int" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/resources", label: "Resources" },
-  { href: "https://nope.digital", label: "Nope.digital", isExternal: true },
+export const navLinks = [
+  { href: "/log", label: "Løg" },
+  { href: "/room", label: "Røøm" },
+  { href: "/writing", label: "Writingz" },
+  { href: "/artificial", label: "ジンコウチノウ" },
+  { href: "https://nope.digital", label: "Nøpe.digital", isExternal: true },
 ];
 ---
 
@@ -185,10 +185,17 @@ const navLinks = [
 </html>
 
 <style>
+  @property --shell-aside-visible-width {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 15rem;
+  }
+
   :root {
     --shell-aside-width: 15rem;
+    --shell-aside-visible-width: 15rem;
     --aside-toggle-size: 1.25rem;
-    --aside-toggle-hit-size: calc(var(--aside-toggle-size) + var(--space-2));
+    --aside-toggle-hit-size: 2.25rem;
     --shell-aside-transition-duration: 360ms;
     --shell-aside-fade-duration: 240ms;
     --shell-aside-transition: var(--shell-aside-transition-duration) cubic-bezier(0.22, 1, 0.36, 1);
@@ -203,12 +210,14 @@ const navLinks = [
 
   @media (min-width: 768px) {
     .shell {
-      grid-template-columns: var(--shell-aside-width) minmax(0, 1fr);
-      transition: grid-template-columns var(--shell-aside-transition);
+      --shell-aside-visible-width: var(--shell-aside-width);
+      grid-template-columns: var(--shell-aside-visible-width) minmax(0, 1fr);
+      overflow-x: clip;
+      transition: --shell-aside-visible-width var(--shell-aside-transition);
     }
 
     .shell.shell--aside-collapsed {
-      grid-template-columns: 0 minmax(0, 1fr);
+      --shell-aside-visible-width: 0rem;
     }
   }
 
@@ -336,56 +345,66 @@ const navLinks = [
     .aside-toggle {
       display: inline-flex;
       top: 50%;
+      position: absolute;
       align-items: center;
       justify-content: center;
       width: var(--aside-toggle-hit-size);
       height: var(--aside-toggle-hit-size);
       padding: 0;
-      border: none;
+      border: var(--border-width-1) solid color-mix(in oklch, var(--neutral-950) 14%, transparent);
       border-radius: var(--border-radius-full);
-      background-color: transparent;
-      color: var(--color-background-surface);
+      background: color-mix(in oklch, var(--color-background) 88%, transparent);
+      backdrop-filter: blur(14px) saturate(120%);
+      -webkit-backdrop-filter: blur(14px) saturate(120%);
+      color: var(--color-text-primary);
       z-index: 102;
       transition:
         color 150ms ease,
         background-color var(--shell-aside-fade-duration) ease-out,
         box-shadow var(--shell-aside-fade-duration) ease-out,
-        opacity var(--shell-aside-fade-duration) ease-out;
-      transform: translateY(-50%);
+        opacity var(--shell-aside-fade-duration) ease-out,
+        transform var(--shell-aside-transition);
       opacity: 1;
     }
 
     .aside-toggle--open {
-      position: absolute;
-      right: var(--space-1);
+      right: var(--space-3);
+      border-color: transparent;
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      transform: translate(0, -50%);
     }
 
     .shell.shell--aside-collapsed .aside-toggle--open {
       opacity: 0;
       pointer-events: none;
+      transform: translate(calc(var(--space-2) * -1), -50%);
     }
 
     .aside-toggle--open:hover {
-      opacity: 0.56;
+      transform: translate(2px, -50%);
     }
 
     .aside-toggle--closed {
       position: fixed;
       left: var(--space-2);
-      background-color: var(--experimental-1);
-      color: var(--color-background-surface);
+      border-color: transparent;
+      background: color-mix(in oklch, var(--experimental-1) 50%, transparent);
+      color: var(--neutral-50);
+      transform: translate(-0.5rem, -50%);
       opacity: 0;
       pointer-events: none;
-      box-shadow: 0 0 0 var(--border-width-1) color-mix(in oklch, var(--experimental-1) 70%, black);
     }
 
     .shell.shell--aside-collapsed ~ .aside-toggle--closed {
       opacity: 1;
       pointer-events: auto;
+      transform: translate(0, -50%);
     }
 
     .aside-toggle--closed:hover {
-      opacity: 1;
+      transform: translate(2px, -50%);
     }
 
     .aside-toggle__icon {
@@ -516,6 +535,7 @@ const navLinks = [
 <script>
   {
     let cleanup: (() => void) | undefined;
+    const desktopAsideStorageKey = "nope-blog:desktop-aside-collapsed";
 
     function init() {
       cleanup?.();
@@ -533,6 +553,22 @@ const navLinks = [
       aside.style.opacity = "";
       aside.style.pointerEvents = "";
       const desktopMedia = window.matchMedia("(min-width: 768px)");
+
+      const getStoredDesktopCollapsed = () => {
+        try {
+          return window.localStorage.getItem(desktopAsideStorageKey) === "true";
+        } catch {
+          return false;
+        }
+      };
+
+      const storeDesktopCollapsed = (collapsed: boolean) => {
+        try {
+          window.localStorage.setItem(desktopAsideStorageKey, String(collapsed));
+        } catch {
+          // Ignore storage access failures.
+        }
+      };
 
       const syncAriaState = () => {
         const desktopCollapsed = shell.classList.contains("shell--aside-collapsed");
@@ -566,12 +602,20 @@ const navLinks = [
 
       const setDesktopCollapsed = (collapsed: boolean) => {
         shell.classList.toggle("shell--aside-collapsed", collapsed);
+        storeDesktopCollapsed(collapsed);
         syncAriaState();
       };
 
       const syncViewportState = () => {
-        if (desktopMedia.matches) closeMobileMenu();
-        else syncAriaState();
+        if (desktopMedia.matches) {
+          closeMobileMenu();
+          shell.classList.toggle("shell--aside-collapsed", getStoredDesktopCollapsed());
+          syncAriaState();
+          return;
+        }
+
+        shell.classList.remove("shell--aside-collapsed");
+        syncAriaState();
       };
 
       const controller = new AbortController();
@@ -629,7 +673,7 @@ const navLinks = [
         desktopMedia.addListener(handleViewportChange);
       }
 
-      syncAriaState();
+      syncViewportState();
 
       cleanup = () => {
         controller.abort();

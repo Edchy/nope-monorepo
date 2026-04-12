@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import VoxelWork from "../components/VoxelWork.astro";
 import { getCollection } from "astro:content";
 import { quotes } from "../data/quotes";
+import { navLinks } from "../layouts/BaseLayout.astro";
 
 const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
@@ -29,19 +30,19 @@ const secondPost = posts[1];
 
     <!-- 3: Art Int -->
     <a href="/art-int" class="cell cell--dark cell--lift" data-lift-max="18">
-      <span class="cell__label-lg">Art Int</span>
-      <span class="cell__sublabel cell__meta">Art &amp; intelligence</span>
+      <span class="cell__label-lg">{navLinks[3]?.label}</span>
+      <span class="cell__sublabel cell__meta">artyficiál intél</span>
     </a>
 
-    <!-- 4: Latest blog post -->
+    <!-- 2: Latest blog post -->
     {latestPost && (
       <a
-        href={`/blog/${latestPost.id.replace(/\/index$/, "")}`}
+        href={`/writing/${latestPost.id.replace(/\/index$/, "")}`}
         class="cell cell--post cell--lift"
         data-lift-max="18"
       >
         <p class="cell__eyebrow cell__meta">Latest post</p>
-        <h2 class="cell__title">{latestPost.data.title}</h2>
+        <h2 class="cell__title" transition:name={`post-title-${latestPost.id}`}>{latestPost.data.title}</h2>
         {latestPost.data.description && (
           <p class="cell__desc cell__meta">{latestPost.data.description}</p>
         )}
@@ -55,9 +56,9 @@ const secondPost = posts[1];
       </a>
     )}
 
-    <!-- 5: Gallery -->
+    <!-- 1: Gallery -->
     <a href="/gallery" class="cell cell--gallery cell--lift" data-lift-max="18">
-      <span class="cell__label-lg">Gallery</span>
+      <span class="cell__label-lg">{navLinks[1]?.label}</span>
       <span class="cell__sublabel cell__meta">3D work &amp; experiments</span>
     </a>
 
@@ -71,6 +72,7 @@ const secondPost = posts[1];
     grid-template-rows: 50svh 50svh;
     min-height: 100svh;
     gap: 0;
+    overflow-anchor: none;
   }
 
   /* Base cell */

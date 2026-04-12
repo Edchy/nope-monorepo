@@ -24,7 +24,7 @@ const swatchColors = [
       {
         posts.map((post, i) => (
           <li class="blog-card">
-            <a href={`/blog/${post.id.replace(/\/index$/, "")}`} class="blog-card__link">
+            <a href={`/writing/${post.id.replace(/\/index$/, "")}`} class="blog-card__link">
               <div
                 class="blog-card__swatch"
                 style={`background: ${swatchColors[i % swatchColors.length]}`}
@@ -37,7 +37,7 @@ const swatchColors = [
                     day: "numeric",
                   })}
                 </p>
-                <h2 class="blog-card__title">{post.data.title}</h2>
+                <h2 class="blog-card__title" transition:name={`post-title-${post.id}`}>{post.data.title}</h2>
                 {post.data.description && (
                   <p class="blog-card__desc">{post.data.description}</p>
                 )}
