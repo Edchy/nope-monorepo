@@ -1,0 +1,314 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection, render } from "astro:content";
+
+const notes = await Promise.all(
+  (await getCollection("artificial", ({ data }) => !data.draft && data.kind === "note"))
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+    .map(async (note) => {
+      const { Content } = await render(note);
+      const popoverId = `note-${note.id.replace(/[^a-z0-9]/gi, "-")}`;
+      return { ...note, Content, popoverId };
+    })
+);
+---
+
+<BaseLayout title="Notes on AI — NOPE" description="Short observations on artificial intelligence.">
+  <div class="notes-page">
+    <header class="notes-header">
+      <a href="/artificial" class="back-link">← AI</a>
+    </header>
+    <ul class="notes-list">
+      {notes.map((note) => (
+        <li>
+          <button type="button" class="note-row" popovertarget={note.popoverId}>
+            <span class="note-row__date cell__meta">
+              {note.data.date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </span>
+            <div class="note-row__body">
+              <span class="note-row__title">{note.data.title}</span>
+              {note.data.tags.length > 0 && (
+                <ul class="tag-list">
+                  {note.data.tags.map((tag) => <li class="tag">{tag}</li>)}
+                </ul>
+              )}
+            </div>
+          </button>
+        </li>
+      ))}
+    </ul>
+
+    {notes.map((note) => (
+      <div id={note.popoverId} popover class="note-popover">
+        <header class="note-popover__header">
+          <div class="note-popover__meta">
+            <span class="cell__meta">
+              {note.data.date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </span>
+            {note.data.tags.length > 0 && (
+              <ul class="tag-list cell__meta">
+                {note.data.tags.map((tag) => <li class="tag">{tag}</li>)}
+              </ul>
+            )}
+          </div>
+          <button
+            type="button"
+            class="note-popover__close"
+            popovertarget={note.popoverId}
+            popovertargetaction="hide"
+            aria-label="Close"
+          >✕</button>
+        </header>
+        <h2 class="note-popover__title">{note.data.title}</h2>
+        <div class="note-popover__body">
+          <note.Content />
+        </div>
+      </div>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  .notes-page {
+    padding: var(--space-12) var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .notes-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .back-link {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    color: var(--color-text-primary);
+  }
+
+  .notes-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: var(--border-width-1) solid var(--color-border-default);
+  }
+
+  .note-row {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    align-items: baseline;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-2);
+    border-bottom: var(--border-width-1) solid var(--color-border-default);
+    width: 100%;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background-color 160ms ease,
+      transform 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .note-row:hover {
+    background: color-mix(
+      in oklch,
+      var(--color-background-subtle) 72%,
+      var(--color-background-surface) 28%
+    );
+    border-bottom-color: color-mix(
+      in oklch,
+      var(--color-border-default) 72%,
+      var(--color-text-secondary) 28%
+    );
+    transform: translateX(var(--space-1));
+  }
+
+  .note-row:hover .note-row__date,
+  .note-row:hover .tag {
+    opacity: 0.78;
+  }
+
+  .note-row:hover .note-row__title {
+    color: color-mix(
+      in oklch,
+      var(--color-text-primary) 82%,
+      var(--brand-green) 18%
+    );
+  }
+
+  .note-row__date {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.1em;
+    opacity: 0.62;
+    text-transform: uppercase;
+  }
+
+  .note-row__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .note-row__title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+  }
+
+  .tag-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .tag {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.1em;
+    opacity: 0.62;
+    text-transform: lowercase;
+  }
+
+  /* ── Note popover ── */
+  :global(.note-popover:popover-open) {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(560px, calc(100vw - var(--space-8)));
+    max-height: min(80svh, 600px);
+    overflow-y: auto;
+    padding: var(--space-8) var(--space-8) var(--space-12);
+    background: var(--color-background-surface);
+    border: none;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  :global(.note-popover::backdrop) {
+    background: rgba(242, 240, 239, 0.7);
+    backdrop-filter: blur(6px);
+  }
+
+  :global(.note-popover__header) {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  :global(.note-popover__meta) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  :global(.note-popover__close) {
+    flex: none;
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+  }
+
+  :global(.note-popover__close:hover) {
+    color: var(--color-text-primary);
+  }
+
+  :global(.note-popover__title) {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: -0.02em;
+  }
+
+  :global(.note-popover__body) {
+    font-family: var(--font-newsreader);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text-secondary);
+  }
+
+  :global(.note-popover__body p) {
+    margin: 0 0 var(--space-3);
+  }
+
+  :global(.note-popover__body p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .cell__meta {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.1em;
+    line-height: var(--line-height-relaxed);
+    color: currentColor;
+    opacity: 0.62;
+  }
+
+  @media (max-width: 480px) {
+    .notes-page {
+      padding: var(--space-8) var(--space-4);
+    }
+
+    .note-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-1);
+    }
+  }
+</style>
+
+<script>
+  let justClosed = false;
+
+  document.addEventListener("pointerdown", (e) => {
+    const open = document.querySelector<HTMLElement>(".note-popover:popover-open");
+    if (!open) return;
+    if (open.contains(e.target as Node)) return;
+    justClosed = true;
+    open.hidePopover();
+  }, { capture: true });
+
+  document.addEventListener("click", (e) => {
+    if (!justClosed) return;
+    justClosed = false;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }, { capture: true });
+</script>

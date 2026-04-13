@@ -40,6 +40,7 @@ const artificial = defineCollection({
     date: z.date(),
     draft: z.boolean().default(false),
     description: z.string().optional(),
+    icon: z.string().optional(),
     url: z.url().optional(),
     tags: z.array(z.string()).default([]),
   }),

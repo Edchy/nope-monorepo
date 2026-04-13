@@ -19,7 +19,7 @@ const footerLetters = [...footerWordmark];
 <footer class="site-footer">
   <div class="site-footer__shell" data-footer-shell>
     <div class="site-footer__marquee site-footer__marquee--desktop" aria-hidden="true">
-      <p class="site-footer__wordmark">
+      <a href="/" class="site-footer__wordmark">
         {footerLetters.map((letter, index) => (
           <span
             class="site-footer__letter"
@@ -29,12 +29,13 @@ const footerLetters = [...footerWordmark];
             {letter}
           </span>
         ))}
-      </p>
+      </a>
     </div>
     <div class="site-footer__marquee site-footer__marquee--mobile" aria-hidden="true">
-      <p class="site-footer__wordmark site-footer__wordmark--mobile">{siteTitle}</p>
+      <a href="/" class="site-footer__wordmark site-footer__wordmark--mobile">{siteTitle}</a>
     </div>
     <div class="site-footer__meta" aria-label="Footer details">
+      <a href="/" class="site-footer__mobile-title">{siteTitle}</a>
       <p class="site-footer__copy">
         <a href={`mailto:${email}`}>{email}</a>
       </p>
@@ -73,6 +74,7 @@ const footerLetters = [...footerWordmark];
   }
 
   .site-footer__wordmark {
+    display: block;
     width: max-content;
     margin: 0;
     margin-left: calc(var(--space-container-x, var(--space-6, 1.5rem)) * -1.5);
@@ -85,6 +87,8 @@ const footerLetters = [...footerWordmark];
     text-transform: uppercase;
     color: currentColor;
     white-space: nowrap;
+    text-decoration: none;
+    color: inherit;
   }
 
   .site-footer__letter {
@@ -103,11 +107,19 @@ const footerLetters = [...footerWordmark];
   }
 
   .site-footer__copy,
-  .site-footer__tagline {
+  .site-footer__tagline,
+  .site-footer__mobile-title {
     margin: 0;
     font-size: var(--font-size-xs, 0.75rem);
     letter-spacing: 0.03em;
     color: var(--color-text-secondary);
+  }
+
+  .site-footer__mobile-title {
+    display: none;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: inherit;
   }
 
   .site-footer__copy a {
@@ -164,29 +176,43 @@ const footerLetters = [...footerWordmark];
     }
 
     .site-footer__marquee--mobile {
-      display: block;
-      overflow: visible;
-    }
-
-    .site-footer__wordmark--mobile {
-      width: auto;
-      margin: 0;
-      padding-inline: var(--space-container-x, var(--space-4, 1rem));
-      font-size: clamp(3.5rem, 18vw, 6rem);
-      line-height: 0.86;
+      display: none;
     }
 
     .site-footer__meta {
-      grid-template-columns: 1fr;
-      justify-items: start;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
       gap: var(--space-2, 0.5rem);
     }
 
-    .site-footer__copy:first-child,
-    .site-footer__copy--center,
-    .site-footer__tagline {
+    .site-footer__mobile-title {
+      display: block;
+      font-family: var(--font-family-base, sans-serif);
+      font-size: clamp(3.5rem, 18vw, 6rem);
+      font-weight: var(--font-weight-bold, 700);
+      line-height: 0.86;
+      letter-spacing: -0.08em;
+      color: currentColor;
       justify-self: start;
+      align-self: center;
       text-align: left;
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .site-footer__copy:first-child {
+      justify-self: end;
+      align-self: center;
+      text-align: right;
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .site-footer__copy--center {
+      justify-self: center;
+      text-align: center;
+      grid-column: 1 / -1;
+      grid-row: 2;
     }
 
     .site-footer__tagline {

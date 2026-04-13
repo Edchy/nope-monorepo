@@ -93,7 +93,7 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
           Smaller commissions, earlier systems, and work that still belongs in
           the index.
         </p>
-        <ul class="work-list">
+        <ul class="work-list work-list-archive">
           {
             archiveProjects.map(({ name, type, year }) => (
               <li class="work-item work-item-archive">
@@ -135,6 +135,10 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
   .work-page .page-grid,
   .work-page .work-list {
     overflow-anchor: none;
+  }
+
+  .work-page {
+    --work-text-color: var(--brand-green);
   }
 
   .work-page .page-grid {
@@ -179,7 +183,7 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
     margin: 0 0 var(--space-8) 0;
     font-size: var(--font-size-sm);
     line-height: var(--line-height-snug);
-    color: var(--color-text-primary);
+    color: var(--color-text-secondary);
     text-wrap: pretty;
   }
 
@@ -219,25 +223,14 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
     outline-offset: var(--space-2);
   }
 
-  .work-item-archive {
-    color: var(--color-text-secondary);
-  }
-
   .project-name {
     font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-regular);
+    font-weight: var(--font-weight-bold);
     letter-spacing: 0.06em;
     line-height: var(--line-height-tight);
-    color: var(--color-text-primary);
+    color: var(--work-text-color);
     text-transform: uppercase;
     text-wrap: pretty;
-  }
-
-  .work-item-archive .project-name {
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: 0.06em;
-    color: var(--color-text-secondary);
   }
 
   .project-meta {
@@ -273,6 +266,10 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
     gap: var(--space-2);
   }
 
+  .work-list-archive {
+    gap: var(--space-2);
+  }
+
   :global(.work-list-featured__pill) {
     position: absolute;
     inset-inline: calc(var(--space-4) * -1);
@@ -300,13 +297,9 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
     padding-block: var(--space-3);
   }
 
-  .work-item-featured.is-hovered .project-name,
-  .work-item-featured.is-hovered .project-type,
-  .work-item-featured.is-hovered .project-year {
-    color: var(--brand-purple);
+  .work-item-archive {
+    padding-block: var(--space-3);
   }
-
-
 
   .preview {
     position: fixed;
@@ -406,9 +399,11 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
       margin-bottom: var(--space-6);
     }
 
-    .work-item-featured {
-      padding-block: var(--space-2);
+    .work-item-featured,
+    .work-item-archive {
+      padding-block: 0;
     }
+
   }
 
   @media (max-width: 500px) {

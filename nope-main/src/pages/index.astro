@@ -90,6 +90,7 @@ import LiftButton from "../components/LiftButton.astro";
 <style>
   .hero {
     flex: 1;
+    min-width: 0;
     display: flex;
     position: relative;
     isolation: isolate;
@@ -98,6 +99,7 @@ import LiftButton from "../components/LiftButton.astro";
 
   .hero__shell {
     flex: 1;
+    min-width: 0;
     position: relative;
     z-index: 2;
   }
@@ -116,8 +118,10 @@ import LiftButton from "../components/LiftButton.astro";
     grid-column: 3 / 9;
     grid-row: 2;
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     row-gap: var(--space-6);
     align-content: start;
+    width: 100%;
   }
 
   @keyframes hero-word-in {
@@ -285,11 +289,13 @@ import LiftButton from "../components/LiftButton.astro";
   .hero__summary-group {
     display: grid;
     gap: var(--space-3);
+    min-width: 0;
+    width: 100%;
     max-width: 28rem;
   }
 
   .hero__summary {
-    max-width: 28rem;
+    min-width: 0;
     font-size: var(--font-size-lg);
     line-height: var(--line-height-snug);
     text-wrap: pretty;
@@ -316,6 +322,7 @@ import LiftButton from "../components/LiftButton.astro";
 
     .hero__grid {
       min-height: 100svh;
+      grid-template-columns: minmax(0, 1fr);
       grid-template-rows: auto;
       row-gap: var(--space-6);
       padding-top: var(--space-10);
@@ -327,7 +334,8 @@ import LiftButton from "../components/LiftButton.astro";
       grid-row: auto;
       justify-self: stretch;
       align-self: auto;
-      width: min(100%, 34rem);
+      width: 100%;
+      max-width: 34rem;
       min-height: 100%;
       margin-inline: auto;
     }
@@ -349,7 +357,12 @@ import LiftButton from "../components/LiftButton.astro";
       scale: 1;
     }
 
+    .hero__summary-group {
+      max-width: 100%;
+    }
+
     .hero__summary {
+      max-width: calc(100vw - 2 * var(--space-container-x));
       overflow-wrap: anywhere;
     }
 

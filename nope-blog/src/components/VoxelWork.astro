@@ -52,18 +52,62 @@
 </style>
 
 <script>
+  type VoxelWorkState = {
+    bound: boolean;
+    cleanup?: () => void;
+    initFrameId?: number;
+    runId: number;
+  };
+
+  type VoxelWorkWindow = Window &
+    typeof globalThis & {
+      __nopeVoxelWork?: VoxelWorkState;
+    };
+
+  const voxelWindow = window as VoxelWorkWindow;
+  const voxelState =
+    voxelWindow.__nopeVoxelWork ??
+    (voxelWindow.__nopeVoxelWork = {
+      bound: false,
+      runId: 0,
+    });
+
   const canLoadVoxel = () =>
     window.matchMedia("(min-width: 769px)").matches &&
     window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
+  const clearStage = (section: HTMLElement) => {
+    const stage = section.querySelector<HTMLElement>(".voxel-work__stage");
+    if (stage) stage.innerHTML = "";
+  };
+
   async function init() {
+    const runId = ++voxelState.runId;
+
+    voxelState.cleanup?.();
+    voxelState.cleanup = undefined;
+
+    const sections = Array.from(
+      document.querySelectorAll<HTMLElement>(".voxel-work"),
+    );
+
+    if (!sections.length || !canLoadVoxel()) {
+      sections.forEach(clearStage);
+      return;
+    }
+
     if (!canLoadVoxel()) return;
 
     const { Heerich } = await import("heerich");
 
-    if (!canLoadVoxel()) return;
+    if (runId !== voxelState.runId || !canLoadVoxel()) {
+      sections.forEach(clearStage);
+      return;
+    }
 
-    document.querySelectorAll<HTMLElement>(".voxel-work").forEach((section) => {
+    const cleanups: Array<() => void> = [];
+
+    sections.forEach((section) => {
       const stage = section.querySelector<HTMLElement>(".voxel-work__stage");
       if (!stage) return;
 
@@ -244,8 +288,9 @@
       buildScene();
       render();
 
+      let rafId: number | undefined;
+
       if (!prefersReducedMotion) {
-        let rafId: number;
         const rotationSpeed = 0.00018;
         const radius = 12;
         const camY = 8;
@@ -268,19 +313,57 @@
           rafId = requestAnimationFrame(animate);
         };
         rafId = requestAnimationFrame(animate);
-
-        document.addEventListener(
-          "astro:before-swap",
-          () => cancelAnimationFrame(rafId),
-          { once: true },
-        );
       }
+
+      cleanups.push(() => {
+        if (rafId !== undefined) cancelAnimationFrame(rafId);
+        stage.innerHTML = "";
+      });
     });
+
+    if (runId !== voxelState.runId) {
+      cleanups.forEach((cleanup) => cleanup());
+      return;
+    }
+
+    voxelState.cleanup = () => {
+      cleanups.forEach((cleanup) => cleanup());
+      voxelState.cleanup = undefined;
+    };
   }
 
-  document.addEventListener("astro:page-load", () => {
+  const scheduleInit = () => {
+    if (voxelState.initFrameId !== undefined) {
+      cancelAnimationFrame(voxelState.initFrameId);
+    }
+
     // Defer one frame so the view-transition animation has committed
     // and the voxel element has real layout dimensions.
-    requestAnimationFrame(init);
-  });
+    voxelState.initFrameId = requestAnimationFrame(() => {
+      voxelState.initFrameId = undefined;
+      init();
+    });
+  };
+
+  const cleanup = () => {
+    voxelState.runId += 1;
+
+    if (voxelState.initFrameId !== undefined) {
+      cancelAnimationFrame(voxelState.initFrameId);
+      voxelState.initFrameId = undefined;
+    }
+
+    voxelState.cleanup?.();
+    document
+      .querySelectorAll<HTMLElement>(".voxel-work")
+      .forEach(clearStage);
+  };
+
+  if (!voxelState.bound) {
+    document.addEventListener("astro:page-load", scheduleInit);
+    document.addEventListener("astro:before-swap", cleanup);
+    voxelState.bound = true;
+  }
+
+  scheduleInit();
 </script>

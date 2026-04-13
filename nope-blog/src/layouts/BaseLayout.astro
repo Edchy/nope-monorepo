@@ -72,40 +72,44 @@ export const navLinks = [
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <Font cssVariable="--font-nature" />
+    <Font cssVariable="--font-newsreader" />
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    <button
-      type="button"
-      class="menu-trigger"
-      aria-label="Toggle navigation menu"
-      aria-expanded="false"
-      aria-controls="shell-aside"
-    >
-      <svg
-        class="menu-icon"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        aria-hidden="true"
+    <header class="mobile-header">
+      <a href="/" class="mobile-header__title">nope</a>
+      <button
+        type="button"
+        class="menu-trigger"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+        aria-controls="shell-aside"
       >
-        <line
-          class="menu-icon__top"
-          x1="3" y1="9" x2="21" y2="9"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-        ></line>
-        <line
-          class="menu-icon__bot"
-          x1="3" y1="15" x2="21" y2="15"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-        ></line>
-      </svg>
-    </button>
+        <svg
+          class="menu-icon"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+        >
+          <line
+            class="menu-icon__top"
+            x1="3" y1="9" x2="21" y2="9"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          ></line>
+          <line
+            class="menu-icon__bot"
+            x1="3" y1="15" x2="21" y2="15"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          ></line>
+        </svg>
+      </button>
+    </header>
 
     <div class="shell">
       <aside id="shell-aside" class="shell__aside" transition:persist="shell-aside">
@@ -197,6 +201,8 @@ export const navLinks = [
     --shell-aside-visible-width: 15rem;
     --aside-toggle-size: 1.25rem;
     --aside-toggle-hit-size: 2.25rem;
+    --mobile-header-height: calc(var(--space-10) + var(--space-2));
+    --mobile-header-offset: calc(var(--mobile-header-height) + env(safe-area-inset-top, 0px));
     --shell-aside-transition-duration: 360ms;
     --shell-aside-fade-duration: 240ms;
     --shell-aside-transition: var(--shell-aside-transition-duration) cubic-bezier(0.22, 1, 0.36, 1);
@@ -357,6 +363,10 @@ export const navLinks = [
   }
 
   /* ── Hamburger trigger — desktop hidden ── */
+  .mobile-header {
+    display: none;
+  }
+
   .menu-trigger {
     display: none;
   }
@@ -455,7 +465,7 @@ export const navLinks = [
       gap: var(--space-8);
       position: fixed;
       inset: 0;
-      z-index: 100;
+      z-index: 110;
       pointer-events: none;
       opacity: 0;
       overflow-y: auto;
@@ -503,24 +513,40 @@ export const navLinks = [
       line-height: var(--line-height-tight);
     }
 
+    .mobile-header {
+      display: block;
+      position: relative;
+      min-height: var(--mobile-header-offset);
+      padding: env(safe-area-inset-top, 0px) var(--space-8) var(--space-2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--color-background);
+      z-index: 120;
+    }
+
+    .mobile-header__title {
+      font-weight: var(--font-weight-bold);
+      font-size: var(--font-size-base);
+      color: var(--color-text-primary);
+      text-decoration: none;
+    }
+
     .menu-trigger {
       display: inline-flex;
-      position: fixed;
-      top: var(--space-4);
-      right: var(--space-4);
       align-items: center;
       justify-content: center;
       width: 44px;
       height: 44px;
       padding: 0;
       background: transparent;
-      color: var(--neutral-50);
+      color: var(--color-text-primary);
       border: none;
-      z-index: 101;
+      z-index: 121;
     }
 
     .menu-trigger[aria-expanded="true"] {
-      color: var(--neutral-900);
+      color: var(--color-text-primary);
     }
 
     .menu-trigger .menu-icon__top,
@@ -542,6 +568,12 @@ export const navLinks = [
 
     .menu-trigger[aria-expanded="true"] .menu-icon__bot {
       transform: translateY(-3px) rotate(-45deg);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .mobile-header {
+      padding-inline: var(--space-4);
     }
   }
 

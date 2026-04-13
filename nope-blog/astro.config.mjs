@@ -24,6 +24,22 @@ export default defineConfig({
         ],
       },
     },
+    {
+      name: "Newsreader",
+      cssVariable: "--font-newsreader",
+      provider: fontProviders.local(),
+      fallbacks: ["Georgia", "serif"],
+      options: {
+        variants: [
+          {
+            style: "normal",
+            weight: "400",
+            src: ["./src/assets/fonts/Newsreader_9pt-Regular.ttf"],
+            display: "swap",
+          },
+        ],
+      },
+    },
   ],
   vite: {
     build: {

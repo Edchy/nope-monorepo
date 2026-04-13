@@ -130,9 +130,17 @@ const { title, description, date, postId } = Astro.props;
 
   /* ── Body prose ── */
   .post__body {
+    font-family: var(--font-newsreader);
     font-size: var(--font-size-base);
     line-height: 1.75;
     color: var(--color-text-primary);
+  }
+
+  /* Reset headings to base font */
+  .post__body :global(h2),
+  .post__body :global(h3),
+  .post__body :global(h4) {
+    font-family: var(--font-nature);
   }
 
   /* Paragraphs */
