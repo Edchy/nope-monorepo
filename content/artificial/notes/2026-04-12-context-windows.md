@@ -1,5 +1,4 @@
 ---
-kind: note
 title: Context windows are working memory, not storage
 date: 2026-04-12
 tags: [llms, mental-models]

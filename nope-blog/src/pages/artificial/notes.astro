@@ -3,7 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection, render } from "astro:content";
 
 const notes = await Promise.all(
-  (await getCollection("artificial", ({ data }) => !data.draft && data.kind === "note"))
+  (await getCollection("notes", ({ data }) => !data.draft))
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
     .map(async (note) => {
       const { Content } = await render(note);
@@ -11,6 +11,9 @@ const notes = await Promise.all(
       return { ...note, Content, popoverId };
     })
 );
+
+const noteRowVariants = ["note-row--1", "note-row--2", "note-row--3"];
+const getNoteVariant = (i: number) => noteRowVariants[i % noteRowVariants.length];
 ---
 
 <BaseLayout title="Notes on AI — NOPE" description="Short observations on artificial intelligence.">
@@ -19,9 +22,13 @@ const notes = await Promise.all(
       <a href="/artificial" class="back-link">← AI</a>
     </header>
     <ul class="notes-list">
-      {notes.map((note) => (
+      {notes.map((note, i) => (
         <li>
-          <button type="button" class="note-row" popovertarget={note.popoverId}>
+          <button
+            type="button"
+            class={`note-row ${getNoteVariant(i)}`}
+            popovertarget={note.popoverId}
+          >
             <span class="note-row__date cell__meta">
               {note.data.date.toLocaleDateString("en-US", {
                 year: "numeric",
@@ -31,11 +38,6 @@ const notes = await Promise.all(
             </span>
             <div class="note-row__body">
               <span class="note-row__title">{note.data.title}</span>
-              {note.data.tags.length > 0 && (
-                <ul class="tag-list">
-                  {note.data.tags.map((tag) => <li class="tag">{tag}</li>)}
-                </ul>
-              )}
             </div>
           </button>
         </li>
@@ -53,11 +55,6 @@ const notes = await Promise.all(
                 day: "numeric",
               })}
             </span>
-            {note.data.tags.length > 0 && (
-              <ul class="tag-list cell__meta">
-                {note.data.tags.map((tag) => <li class="tag">{tag}</li>)}
-              </ul>
-            )}
           </div>
           <button
             type="button"
@@ -107,7 +104,8 @@ const notes = await Promise.all(
     list-style: none;
     margin: 0;
     padding: 0;
-    border-top: var(--border-width-1) solid var(--color-border-default);
+    display: grid;
+    gap: var(--space-2);
   }
 
   .note-row {
@@ -116,54 +114,48 @@ const notes = await Promise.all(
     align-items: baseline;
     gap: var(--space-4);
     padding: var(--space-4) var(--space-2);
-    border-bottom: var(--border-width-1) solid var(--color-border-default);
     width: 100%;
-    background: none;
-    border-top: none;
-    border-left: none;
-    border-right: none;
+    border: none;
     font: inherit;
     color: inherit;
     text-align: left;
     cursor: pointer;
     transition:
-      background-color 160ms ease,
+      filter 160ms ease,
       transform 160ms ease,
-      border-color 160ms ease;
+      box-shadow 160ms ease;
   }
 
   .note-row:hover {
-    background: color-mix(
-      in oklch,
-      var(--color-background-subtle) 72%,
-      var(--color-background-surface) 28%
-    );
-    border-bottom-color: color-mix(
-      in oklch,
-      var(--color-border-default) 72%,
-      var(--color-text-secondary) 28%
-    );
+    filter: brightness(1.03);
+    box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.1);
     transform: translateX(var(--space-1));
   }
 
-  .note-row:hover .note-row__date,
-  .note-row:hover .tag {
+  .note-row:hover .note-row__date {
     opacity: 0.78;
   }
 
-  .note-row:hover .note-row__title {
-    color: color-mix(
-      in oklch,
-      var(--color-text-primary) 82%,
-      var(--brand-green) 18%
-    );
+  .note-row--1 {
+    background: var(--brand-purple);
+    color: var(--neutral-50);
+  }
+
+  .note-row--2 {
+    background: var(--neutral-900);
+    color: var(--neutral-50);
+  }
+
+  .note-row--3 {
+    background: var(--brand-green);
+    color: var(--neutral-900);
   }
 
   .note-row__date {
-    font-size: var(--font-size-xs);
+    font-size: 0.64rem;
     font-weight: var(--font-weight-semibold);
-    letter-spacing: 0.1em;
-    opacity: 0.62;
+    letter-spacing: 0.06em;
+    opacity: 0.58;
     text-transform: uppercase;
   }
 
@@ -177,25 +169,8 @@ const notes = await Promise.all(
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     letter-spacing: -0.01em;
-    text-transform: uppercase;
-    color: var(--color-text-primary);
-  }
-
-  .tag-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-
-  .tag {
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: 0.1em;
-    opacity: 0.62;
-    text-transform: lowercase;
+    text-transform: none;
+    color: currentColor;
   }
 
   /* ── Note popover ── */

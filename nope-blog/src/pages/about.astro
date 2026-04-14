@@ -1,0 +1,64 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="me" description="About Eddie, frontend engineer and creative builder.">
+  <article class="about">
+    <div class="about__body">
+      <p>
+        I studied web at university for two years. Then started a two-year vocational program in frontend engineering. Left four months before the end.
+      </p>
+      <p>
+        Not because it got hard. Because it had stopped being useful.
+      </p>
+
+      <p>
+        Every placement at a real company meant old codebases, maintenance tasks, and no room to do anything new. I'm a creative person. Constraints are fine. Boredom isn't.
+      </p>
+      <p>
+        The other thing that pushed me out: the program had almost nothing to say about AI. That felt wrong. AI was already changing how software gets built, and sitting in classes that ignored it started to feel like training for a world that was going away.
+      </p>
+
+      <p>
+        I've built the standard stack: HTML, CSS, JavaScript, React, some backend, some APIs. The foundation is there.
+      </p>
+      <p>
+        But the courses that actually held my attention were design, UI, UX. Not because code doesn't interest me—it does. Problem-solving with code is genuinely satisfying. It's just that the most important thing to me is how something looks and how it feels to use.
+      </p>
+      <p>
+        Frontend sits between design and engineering. That's why it fits.
+      </p>
+
+      <p>
+        The past year has been learning on my own. Building with AI, breaking things, figuring out where agents are actually useful and where they're noise. The landscape moves fast. Staying close to it is the only way to keep up.
+      </p>
+      <p>
+        NOPE is where I do the work. The bet is that building with AI is the most useful skill right now.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .about {
+    width: 100%;
+    max-width: 62ch;
+    margin-inline: auto;
+    padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 5vw, 2rem) clamp(4rem, 10vw, 8rem);
+  }
+
+  .about__body {
+    font-family: var(--font-newsreader);
+    font-size: var(--font-size-base);
+    line-height: 1.75;
+    color: var(--color-text-primary);
+  }
+
+  .about__body p {
+    margin: 0 0 1.5em;
+  }
+
+  .about__body p:last-child {
+    margin-bottom: 0;
+  }
+</style>

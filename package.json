@@ -17,8 +17,5 @@
     "dev:main": "npm run dev --workspace @nope/main",
     "preview:blog": "npm run preview --workspace @nope/blog",
     "preview:main": "npm run preview --workspace @nope/main"
-  },
-  "devDependencies": {
-    "@astrojs/mdx": "^4.3.0"
   }
 }

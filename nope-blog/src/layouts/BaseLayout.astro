@@ -20,11 +20,12 @@ const {
 const currentPath = Astro.url.pathname;
 
 export const navLinks = [
-  { href: "/log", label: "Løg" },
-  { href: "/room", label: "Røøm" },
+  { href: "/about", label: "I" },
+  { href: "/artificial", label: "AI" },
+  { href: "/internetgoodies", label: "vibes" },
+  { href: "/room", label: "3DRoom" },
   { href: "/writing", label: "Writing" },
-  { href: "/artificial", label: "ジンコウチノウ" },
-  { href: "https://nope.digital", label: "Nøpe.digital", isExternal: true },
+  { href: "https://nope.digital", label: "Nope.digital", isExternal: true },
 ];
 ---
 
@@ -114,10 +115,11 @@ export const navLinks = [
     <div class="shell">
       <aside id="shell-aside" class="shell__aside" transition:persist="shell-aside">
         <div class="shell__aside-inner">
-          <a href="/" class="shell__wordmark">nope digital</a>
+          <a href="/" class="shell__wordmark">nope ジ</a>
 
           <nav class="shell__nav" aria-label="Main navigation">
             <ul class="shell__nav-links">
+              <li class="shell__nav-indicator" id="nav-indicator" aria-hidden="true"></li>
               {navLinks.map(({ href, label, isExternal }, index) => (
                 <li
                   class="shell__nav-item"
@@ -129,8 +131,9 @@ export const navLinks = [
                       "shell__nav-link",
                       { "shell__nav-link--active": currentPath.startsWith(href) && !isExternal },
                     ]}
+                    aria-label={label}
                   >
-                    {label}
+                    <span class="shell__nav-link-text">{label}</span>
                     {isExternal && <span aria-hidden="true">↗</span>}
                   </a>
                 </li>
@@ -328,27 +331,51 @@ export const navLinks = [
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
+    position: relative;
+  }
+
+  .shell__nav-item {
+    position: relative;
   }
 
   .shell__nav-link {
-    display: inline-flex;
-    align-items: baseline;
-    gap: var(--space-2);
+    position: relative;
+    display: block;
+    padding-inline: var(--space-2);
+    margin-inline: calc(var(--space-2) * -1);
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-semibold);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     text-decoration: none;
     color: var(--color-text-primary);
-    transition: opacity 0.15s ease;
+    z-index: 1;
+    border-radius: var(--border-radius-sm);
   }
 
-  .shell__nav-link:hover {
-    opacity: 0.6;
+  .shell__nav-link-text {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
   }
 
-  .shell__nav-link--active {
+  .shell__nav-indicator {
+    position: absolute;
+    inset-inline: var(--space-2);
+    top: 0;
+    height: 0;
+    background: var(--brand-green);
+    border-radius: var(--border-radius-sm);
+    pointer-events: none;
+    opacity: 0;
+    will-change: transform, height;
+    transition:
+      transform 0.26s var(--motion-ease-decelerate),
+      height 0.26s var(--motion-ease-decelerate),
+      opacity 0.16s ease-out;
+  }
+
+  .shell__nav-indicator.is-visible {
     opacity: 1;
   }
 
@@ -509,15 +536,21 @@ export const navLinks = [
       font-size: clamp(2rem, 11vw, 3.5rem);
       font-weight: var(--font-weight-bold);
       letter-spacing: -0.03em;
-      padding-block: var(--space-1);
       line-height: var(--line-height-tight);
+      padding-inline: var(--space-4);
+      margin-inline: calc(var(--space-4) * -1);
+    }
+
+    .shell__nav-indicator {
+      inset-inline: var(--space-4);
     }
 
     .mobile-header {
       display: block;
       position: relative;
       min-height: var(--mobile-header-offset);
-      padding: env(safe-area-inset-top, 0px) var(--space-8) var(--space-2);
+      height: var(--mobile-header-offset);
+      padding: env(safe-area-inset-top, 0px) var(--space-8) 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -526,8 +559,12 @@ export const navLinks = [
     }
 
     .mobile-header__title {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
       font-weight: var(--font-weight-bold);
       font-size: var(--font-size-base);
+      line-height: 1;
       color: var(--color-text-primary);
       text-decoration: none;
     }
@@ -725,6 +762,31 @@ export const navLinks = [
 
       desktopMedia.addEventListener("change", handleViewportChange);
 
+      const navIndicator = document.getElementById("nav-indicator");
+      const navList = aside.querySelector<HTMLElement>(".shell__nav-links");
+      const navLinks = aside.querySelectorAll<HTMLAnchorElement>(".shell__nav-link");
+
+      function updateNavIndicator(targetLink?: HTMLAnchorElement | null) {
+        if (!navIndicator || !navList) return;
+        if (!targetLink) {
+          navIndicator.classList.remove("is-visible");
+          return;
+        }
+        const target = targetLink;
+        const targetRect = target.getBoundingClientRect();
+        const navListRect = navList.getBoundingClientRect();
+        navIndicator.style.transform = `translateY(${targetRect.top - navListRect.top}px)`;
+        navIndicator.style.height = `${targetRect.height}px`;
+        navIndicator.classList.add("is-visible");
+      }
+
+      navLinks.forEach((link) => {
+        link.addEventListener("pointerenter", () => updateNavIndicator(link));
+        link.addEventListener("focus", () => updateNavIndicator(link));
+        link.addEventListener("blur", () => updateNavIndicator());
+      });
+
+      navList?.addEventListener("pointerleave", () => updateNavIndicator());
       syncViewportState();
 
       cleanup = () => {

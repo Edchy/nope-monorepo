@@ -1,0 +1,186 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const goodies = (await getCollection("internetgoodies")).sort((a, b) =>
+  a.id.localeCompare(b.id),
+);
+---
+
+<BaseLayout title="internet goodies" description="A personal collection of internet artifacts, arranged like a quiet gallery.">
+  <section class="goodies">
+    <header class="goodies__header">
+      <h1>internet goodies</h1>
+    </header>
+
+    <ol class="goodies__list">
+      {goodies.map((entry) => {
+        const domain = new URL(entry.data.url).hostname.replace("www.", "");
+        const rawImage = entry.data.image;
+        const imageSrc = rawImage
+          ? typeof rawImage === "string"
+            ? rawImage
+            : rawImage.src
+          : undefined;
+
+        return (
+          <li class="goodies__item">
+            <a class="piece" href={entry.data.url} target="_blank" rel="noopener noreferrer">
+              <div class="piece__frame">
+                {imageSrc ? (
+                  <img
+                    src={imageSrc}
+                    alt={entry.data.title}
+                    class="piece__image"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <div class="piece__placeholder" aria-hidden="true">
+                    <span>{domain}</span>
+                  </div>
+                )}
+              </div>
+              <div class="piece__meta">
+                <h2>{entry.data.title}</h2>
+                <p>{entry.data.subtitle}</p>
+                <span>{domain}</span>
+              </div>
+            </a>
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+</BaseLayout>
+
+<style>
+  .goodies {
+    --gallery-gap: clamp(var(--space-12), 10vw, calc(var(--space-24) * 1.6));
+    --frame-padding: clamp(var(--space-3), 2vw, var(--space-8));
+    --frame-max-width: min(100%, 25rem);
+    --frame-border: calc(var(--border-width-2) + var(--border-width-1));
+
+    padding: clamp(var(--space-8), 7vw, var(--space-20)) var(--space-container-x);
+    font-family: Papyrus, fantasy;
+  }
+
+  .goodies__header {
+    margin-inline: auto;
+    max-width: 32rem;
+    display: grid;
+    gap: 0;
+    margin-bottom: clamp(var(--space-12), 10vw, var(--space-24));
+  }
+
+  .goodies__header h1 {
+    font-family: inherit;
+    font-size: clamp(var(--font-size-xl), 4.8vw, var(--font-size-3xl));
+    line-height: var(--line-height-tight);
+    text-wrap: balance;
+  }
+
+  .goodies__list {
+    list-style: none;
+    display: grid;
+    gap: var(--gallery-gap);
+  }
+
+  .goodies__item {
+    justify-self: start;
+    width: 100%;
+    max-width: var(--frame-max-width);
+  }
+
+  .goodies__item:nth-child(even) {
+    justify-self: end;
+  }
+
+  .piece {
+    display: grid;
+    gap: var(--space-6);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .piece:hover {
+    text-decoration: none;
+  }
+
+  .piece__frame {
+    background: color-mix(
+      in oklch,
+      var(--color-background-surface) 92%,
+      var(--color-background)
+    );
+    border: var(--frame-border) solid var(--brand-green);
+    padding: var(--frame-padding);
+    box-shadow:
+      0 0 0 var(--border-width-1) color-mix(in oklch, var(--color-background) 86%, black),
+      0 var(--space-2) var(--space-10) color-mix(in oklch, var(--color-background) 86%, black);
+    transition:
+      transform 220ms var(--motion-ease-decelerate),
+      box-shadow 220ms var(--motion-ease-decelerate);
+  }
+
+  .piece:hover .piece__frame,
+  .piece:focus-visible .piece__frame {
+    transform: translateY(calc(var(--space-1) * -1));
+    box-shadow:
+      0 0 0 var(--border-width-1) color-mix(in oklch, var(--color-background) 80%, black),
+      0 var(--space-4) var(--space-12) color-mix(in oklch, var(--color-background) 82%, black);
+  }
+
+  .piece__image,
+  .piece__placeholder {
+    width: 100%;
+    aspect-ratio: 5 / 4;
+    object-fit: cover;
+    border: var(--border-width-1) solid var(--color-border-default);
+    background: color-mix(in oklch, var(--color-background) 80%, white);
+  }
+
+  .piece__placeholder {
+    display: grid;
+    place-items: center;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    text-transform: lowercase;
+    letter-spacing: 0.05em;
+  }
+
+  .piece__meta {
+    display: grid;
+    gap: var(--space-2);
+    max-width: 56ch;
+  }
+
+  .piece__meta h2 {
+    font-family: inherit;
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-tight);
+  }
+
+  .piece__meta p {
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .piece__meta span {
+    font-size: var(--font-size-sm);
+    text-transform: lowercase;
+    letter-spacing: 0.06em;
+    color: color-mix(in oklch, var(--color-text-primary) 58%, var(--color-background));
+  }
+
+  @media (max-width: 52rem) {
+    .goodies__item,
+    .goodies__item:nth-child(even) {
+      justify-self: start;
+    }
+
+    .goodies__header h1 {
+      font-size: clamp(var(--font-size-xl), 10vw, var(--font-size-3xl));
+    }
+  }
+</style>

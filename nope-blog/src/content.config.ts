@@ -3,7 +3,7 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: '../content/blog' }),
+  loader: glob({ pattern: '**/*.md', base: '../content/blog' }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -16,7 +16,7 @@ const blog = defineCollection({
 });
 
 const work = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: '../content/work' }),
+  loader: glob({ pattern: '**/*.md', base: '../content/work' }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
@@ -32,22 +32,43 @@ const work = defineCollection({
     }),
 });
 
-const artificial = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: '../content/artificial' }),
+const notes = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: '../content/artificial/notes' }),
   schema: z.object({
-    kind: z.enum(['note', 'tool', 'link']),
+    title: z.string(),
+    date: z.date(),
+    draft: z.boolean().default(false),
+    tags: z.array(z.string()).default([]),
+  }),
+});
+
+const links = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: '../content/artificial/links' }),
+  schema: z.object({
     title: z.string(),
     date: z.date(),
     draft: z.boolean().default(false),
     description: z.string().optional(),
-    icon: z.string().optional(),
     url: z.url().optional(),
     tags: z.array(z.string()).default([]),
   }),
 });
 
+const internetgoodies = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: '../content/internetgoodies' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      subtitle: z.string(),
+      url: z.url(),
+      image: z.union([image(), z.url()]).optional(),
+    }),
+});
+
 export const collections = {
   blog,
   work,
-  artificial,
+  notes,
+  links,
+  internetgoodies,
 };

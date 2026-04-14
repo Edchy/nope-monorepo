@@ -1,0 +1,490 @@
+settings:
+  hide: true
+  content:
+    merge: true
+  commit:
+    identity: app
+    templates:
+      create: "content(create): {path}"
+      update: "content(update): {path}"
+      delete: "content(delete): {path}"
+      rename: "content(rename): {oldPath} -> {newPath}"
+
+content:
+  - name: blog
+    label: Blog
+    type: collection
+    path: content/blog
+    filename:
+      template: "{primary}/index.md"
+      field: create
+    view:
+      layout: tree
+      primary: title
+      fields: [title, date, draft]
+      sort: [date, title]
+      search: [title, description, author, tags]
+      default:
+        sort: date
+        order: desc
+      node:
+        filename: index.md
+        hideDirs: others
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: description
+        label: Description
+        type: text
+        options:
+          rows: 3
+      - name: date
+        label: Date
+        type: date
+      - name: subtitle
+        label: Subtitle
+        type: string
+      - name: author
+        label: Author
+        type: string
+      - name: tags
+        label: Tags
+        type: select
+        options:
+          multiple: true
+          creatable: true
+          placeholder: "Choose tags or create a new one"
+          values:
+            - ai
+            - building
+            - claude-code
+            - cli
+            - ecosystem
+            - fundamentals
+            - history
+            - llm
+            - mcp
+            - models
+            - prompting
+            - technical
+            - tools
+            - workflow
+      - name: draft
+        label: Draft
+        type: boolean
+        default: false
+      - name: body
+        label: Body
+        type: rich-text
+        options:
+          format: markdown
+          media: false
+
+  - name: work
+    label: Work
+    type: collection
+    path: content/work
+    filename:
+      template: "{primary}/index.md"
+      field: create
+    view:
+      layout: tree
+      primary: title
+      fields: [title, type, section, date, effort]
+      sort: [date, title, section, effort]
+      search: [title, description, type, tags, tech, url]
+      default:
+        sort: date
+        order: desc
+      node:
+        filename: index.md
+        hideDirs: others
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: description
+        label: Description
+        type: text
+        options:
+          rows: 4
+      - name: date
+        label: Date
+        type: date
+      - name: type
+        label: Type
+        type: string
+      - name: section
+        label: Section
+        type: select
+        options:
+          values:
+            - value: selected
+              label: Selected
+            - value: archive
+              label: Archive
+      - name: tags
+        label: Tags
+        type: select
+        options:
+          multiple: true
+          creatable: true
+          placeholder: "Choose tags or create a new one"
+          values:
+            - admin
+            - brand
+            - brochure
+            - calculator
+            - catalog
+            - community
+            - concept
+            - consumer
+            - database
+            - fitness
+            - health
+            - job search
+            - marketplace
+            - planning
+            - playground
+            - portfolio
+            - productivity
+            - public sector
+            - realtime
+            - residential
+            - tracking
+      - name: tech
+        label: Tech
+        type: select
+        options:
+          multiple: true
+          creatable: true
+          placeholder: "Choose tech or create a new one"
+          values:
+            - Astro
+            - Expo
+            - Express
+            - JavaScript
+            - MongoDB
+            - MySQL
+            - Node.js
+            - PHP
+            - React
+            - React Native
+            - Socket.IO
+            - Tailwind CSS
+            - TypeScript
+            - Vanilla
+            - Vite
+            - shadcn/ui
+      - name: effort
+        label: Effort
+        type: number
+        options:
+          min: 1
+          max: 3
+          step: 1
+      - name: url
+        label: URL
+        type: string
+      - name: images
+        label: Images
+        type: select
+        options:
+          multiple: true
+          creatable: true
+          values: []
+          placeholder: "Add one ./image.jpg or full URL per item"
+      - name: body
+        label: Body
+        type: rich-text
+        options:
+          format: markdown
+          media: false
+
+  - name: notes
+    label: AI Notes
+    type: collection
+    path: content/artificial/notes
+    filename:
+      template: "{year}-{month}-{day}-{primary}.md"
+      field: create
+    view:
+      primary: title
+      fields: [title, date, draft]
+      sort: [date, title]
+      search: [title, tags]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: date
+        label: Date
+        type: date
+      - name: draft
+        label: Draft
+        type: boolean
+        default: false
+      - name: tags
+        label: Tags
+        type: select
+        options:
+          multiple: true
+          creatable: true
+          placeholder: "Choose tags or create a new one"
+          values:
+            - agents
+            - anthropic
+            - api
+            - architecture
+            - assistant
+            - atlassian
+            - audio
+            - automation
+            - brand
+            - cli
+            - coding
+            - creative
+            - datasets
+            - design
+            - engineering
+            - foundational
+            - generation
+            - google
+            - image
+            - karpathy
+            - knowledge
+            - knowledge-management
+            - llms
+            - local
+            - local-first
+            - mental-models
+            - models
+            - multimodal
+            - notes
+            - open-source
+            - openai
+            - papers
+            - pattern
+            - project-management
+            - research
+            - routing
+            - search
+            - speech
+            - transformers
+            - voice
+            - web
+            - workflow
+      - name: body
+        label: Body
+        type: rich-text
+        options:
+          format: markdown
+          media: false
+
+  - name: tools
+    label: AI Tools
+    type: collection
+    path: content/artificial/tools
+    filename:
+      template: "{primary}.md"
+      field: create
+    view:
+      primary: title
+      fields: [title, date, draft, icon]
+      sort: [date, title]
+      search: [title, description, tags, url, icon]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: date
+        label: Date
+        type: date
+      - name: description
+        label: Description
+        type: text
+        options:
+          rows: 3
+      - name: draft
+        label: Draft
+        type: boolean
+        default: false
+      - name: icon
+        label: Icon
+        type: string
+      - name: url
+        label: URL
+        type: string
+      - name: tags
+        label: Tags
+        type: select
+        options:
+          multiple: true
+          creatable: true
+          placeholder: "Choose tags or create a new one"
+          values:
+            - agents
+            - anthropic
+            - api
+            - architecture
+            - assistant
+            - atlassian
+            - audio
+            - automation
+            - brand
+            - cli
+            - coding
+            - creative
+            - datasets
+            - design
+            - engineering
+            - foundational
+            - generation
+            - google
+            - image
+            - karpathy
+            - knowledge
+            - knowledge-management
+            - llms
+            - local
+            - local-first
+            - mental-models
+            - models
+            - multimodal
+            - notes
+            - open-source
+            - openai
+            - papers
+            - pattern
+            - project-management
+            - research
+            - routing
+            - search
+            - speech
+            - transformers
+            - voice
+            - web
+            - workflow
+
+  - name: links
+    label: AI Links
+    type: collection
+    path: content/artificial/links
+    filename:
+      template: "{year}-{month}-{day}-{primary}.md"
+      field: create
+    view:
+      primary: title
+      fields: [title, date, draft, url]
+      sort: [date, title]
+      search: [title, description, tags, url]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: date
+        label: Date
+        type: date
+      - name: description
+        label: Description
+        type: text
+        options:
+          rows: 3
+      - name: draft
+        label: Draft
+        type: boolean
+        default: false
+      - name: url
+        label: URL
+        type: string
+      - name: tags
+        label: Tags
+        type: select
+        options:
+          multiple: true
+          creatable: true
+          placeholder: "Choose tags or create a new one"
+          values:
+            - agents
+            - anthropic
+            - api
+            - architecture
+            - assistant
+            - atlassian
+            - audio
+            - automation
+            - brand
+            - cli
+            - coding
+            - creative
+            - datasets
+            - design
+            - engineering
+            - foundational
+            - generation
+            - google
+            - image
+            - karpathy
+            - knowledge
+            - knowledge-management
+            - llms
+            - local
+            - local-first
+            - mental-models
+            - models
+            - multimodal
+            - notes
+            - open-source
+            - openai
+            - papers
+            - pattern
+            - project-management
+            - research
+            - routing
+            - search
+            - speech
+            - transformers
+            - voice
+            - web
+            - workflow
+
+  - name: internetgoodies
+    label: Internet Goodies
+    type: collection
+    path: content/internetgoodies
+    filename:
+      template: "{primary}.md"
+      field: true
+    view:
+      primary: title
+      fields: [title, subtitle, url]
+      sort: [title]
+      search: [title, subtitle, url]
+      default:
+        sort: title
+        order: asc
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: subtitle
+        label: Subtitle
+        type: text
+        options:
+          rows: 2
+      - name: url
+        label: URL
+        type: string
+      - name: image
+        label: Image URL
+        type: string

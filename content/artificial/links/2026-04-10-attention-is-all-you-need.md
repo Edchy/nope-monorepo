@@ -1,5 +1,4 @@
 ---
-kind: link
 title: Attention Is All You Need
 date: 2026-04-10
 url: https://arxiv.org/abs/1706.03762

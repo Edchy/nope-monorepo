@@ -1,56 +1,54 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 
-const all = await getCollection("artificial", ({ data }) => !data.draft);
+interface NoteEntry extends CollectionEntry<"notes"> {
+  Content: ReturnType<typeof render> extends Promise<infer R> ? R extends { Content: infer C } ? C : never : never;
+  popoverId: string;
+}
 
-const notes = await Promise.all(
-  all
-    .filter((e) => e.data.kind === "note")
+const notes: NoteEntry[] = await Promise.all(
+  (await getCollection("notes", ({ data }) => !data.draft))
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
     .map(async (note) => {
       const { Content } = await render(note);
       const popoverId = `note-${note.id.replace(/[^a-z0-9]/gi, "-")}`;
-      return { ...note, Content, popoverId };
+      return { ...note, Content, popoverId } as NoteEntry;
     })
 );
 
-const tools = all
-  .filter((e) => e.data.kind === "tool")
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-
-const links = all
-  .filter((e) => e.data.kind === "link")
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const links = (await getCollection("links", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
 
 const toolIconBase =
   "https://unpkg.com/@lobehub/icons-static-svg@1.86.0/icons";
-const featuredToolTitlesDesktop = [
-  "Claude Code",
-  "Codex",
-  "Gemini",
-  "Perplexity",
-  "OpenRouter",
-  "Ollama",
+const toolIcons = [
+  { label: "Claude Code", icon: "claudecode", url: "https://claude.ai/code" },
+  { label: "Codex", icon: "codex", url: "https://openai.com/codex/" },
+  { label: "Gemini CLI", icon: "geminicli", url: "https://github.com/google-gemini/gemini-cli" },
+  { label: "Gemini", icon: "gemini", url: "https://gemini.google.com/" },
+  { label: "Perplexity", icon: "perplexity", url: "https://www.perplexity.ai/" },
+  { label: "OpenRouter", icon: "openrouter", url: "https://openrouter.ai/" },
+  { label: "Ollama", icon: "ollama", url: "https://ollama.com/" },
+  { label: "OpenCode", icon: "opencode", url: "https://opencode.ai/" },
+  { label: "Hugging Face", icon: "huggingface", url: "https://huggingface.co/" },
+  { label: "Midjourney", icon: "midjourney", url: "https://www.midjourney.com/" },
+  { label: "Recraft", icon: "recraft", url: "https://www.recraft.ai/" },
+  { label: "ElevenLabs", icon: "elevenlabs", url: "https://elevenlabs.io/" },
+  { label: "NotebookLM", icon: "notebooklm", url: "https://notebooklm.google/" },
+  { label: "Manus", icon: "manus", url: "https://manus.im/" },
+  { label: "Lovart", icon: "lovart", url: "https://www.lovart.ai/" },
+  { label: "Jira AI", icon: "atlascloud", url: "https://www.atlassian.com/software/jira/ai" },
 ];
 
-const featuredToolTitlesMobile = featuredToolTitlesDesktop.slice(0, 2);
-
-const featuredToolsDesktop = featuredToolTitlesDesktop
-  .map((title) => tools.find((tool) => tool.data.title === title))
-  .filter(Boolean);
-
-const featuredToolsMobile = featuredToolTitlesMobile
-  .map((title) => tools.find((tool) => tool.data.title === title))
-  .filter(Boolean);
-
-const moreToolsDesktop = tools.filter(
-  (tool) => !featuredToolTitlesDesktop.includes(tool.data.title),
-);
-
-const moreToolsMobile = tools.filter(
-  (tool) => !featuredToolTitlesMobile.includes(tool.data.title),
-);
+const noteCardVariants = ["cell--note-1", "cell--note-2", "cell--note-3"];
+const noteCols = 3;
+const getNoteVariant = (i: number) =>
+  noteCardVariants[(i + Math.floor(i / noteCols)) % noteCardVariants.length];
+const noteTilts = ["-1.8deg", "1.2deg", "-0.9deg", "1.6deg", "-1.3deg", "0.8deg", "-0.6deg", "1deg"];
+const getNoteTilt = (i: number) => noteTilts[(i * 7 + 3) % noteTilts.length];
 ---
 
 <BaseLayout title="ジンコウチノウ — NOPE" description="Notes, tools, and links on artificial intelligence.">
@@ -61,13 +59,14 @@ const moreToolsMobile = tools.filter(
       <section class="ai-section">
         <div class="section-header">
           <h2 class="section-label">Notes</h2>
-          <a href="/notes" class="view-all">All notes →</a>
+          <a href="/artificial/notes" class="view-all">All notes →</a>
         </div>
         <div class="notes-grid">
-          {notes.slice(0, 3).map((note) => (
+          {notes.slice(0, 6).map((note, i) => (
             <button
               type="button"
-              class="cell cell--lift cell--note"
+              class={`cell cell--lift cell--note ${getNoteVariant(i)}`}
+              style={`--note-tilt: ${getNoteTilt(i)};`}
               data-lift-max="12"
               popovertarget={note.popoverId}
             >
@@ -81,16 +80,11 @@ const moreToolsMobile = tools.filter(
                 </p>
                 <h3 class="cell__title">{note.data.title}</h3>
               </div>
-              {note.data.tags.length > 0 && (
-                <ul class="tag-list cell__meta">
-                  {note.data.tags.map((tag) => <li class="tag">{tag}</li>)}
-                </ul>
-              )}
             </button>
           ))}
         </div>
 
-        {notes.slice(0, 3).map((note) => (
+        {notes.slice(0, 6).map((note) => (
           <div id={note.popoverId} popover class="note-popover">
             <header class="note-popover__header">
               <div class="note-popover__meta">
@@ -101,11 +95,6 @@ const moreToolsMobile = tools.filter(
                     day: "numeric",
                   })}
                 </span>
-                {note.data.tags.length > 0 && (
-                  <ul class="tag-list cell__meta">
-                    {note.data.tags.map((tag) => <li class="tag">{tag}</li>)}
-                  </ul>
-                )}
               </div>
               <button
                 type="button"
@@ -119,177 +108,36 @@ const moreToolsMobile = tools.filter(
             <div class="note-popover__body">
               <note.Content />
             </div>
-            <a href="/notes" class="note-popover__link">see all notes →</a>
+            <a href="/artificial/notes" class="note-popover__link">see all notes →</a>
           </div>
         ))}
       </section>
     )}
 
     <!-- TOOLS -->
-    {tools.length > 0 && (
-      <section class="ai-section">
-        <h2 class="section-label">Tools</h2>
-        <div class="tools-block tools-block--desktop">
-          <div class="tools-grid">
-            {featuredToolsDesktop.map((tool) => (
-              <a
-                href={tool.data.url ?? "#"}
-                target={tool.data.url ? "_blank" : undefined}
-                rel={tool.data.url ? "noopener noreferrer" : undefined}
-                class="cell cell--lift cell--tool"
-                data-lift-max="14"
-              >
-                <div class="cell__top">
-                  <div
-                    class="tool-card__header"
-                    style={tool.data.icon
-                      ? `--tool-icon: url("${toolIconBase}/${tool.data.icon}.svg")`
-                      : undefined}
-                  >
-                    {tool.data.icon && <span class="tool-card__icon" aria-hidden="true"></span>}
-                    <h3 class="cell__title">{tool.data.title}</h3>
-                  </div>
-                  {tool.data.description && (
-                    <p class="cell__desc cell__meta">{tool.data.description}</p>
-                  )}
-                </div>
-                {tool.data.url && (
-                  <p class="cell__meta cell__domain">
-                    {new URL(tool.data.url).hostname.replace("www.", "")}
-                  </p>
-                )}
-              </a>
-            ))}
-          </div>
-
-          {moreToolsDesktop.length > 0 && (
-            <details class="tools-more">
-              <summary class="tools-more__summary cell__meta">
-                <span class="tools-more__label tools-more__label--closed">
-                  Show more tools ({moreToolsDesktop.length})
-                </span>
-                <span class="tools-more__label tools-more__label--open">
-                  Hide extra tools
-                </span>
-              </summary>
-              <div class="tools-more__content">
-                <div class="tools-grid tools-grid--more">
-                  {moreToolsDesktop.map((tool) => (
-                    <a
-                      href={tool.data.url ?? "#"}
-                      target={tool.data.url ? "_blank" : undefined}
-                      rel={tool.data.url ? "noopener noreferrer" : undefined}
-                      class="cell cell--lift cell--tool"
-                      data-lift-max="14"
-                    >
-                      <div class="cell__top">
-                        <div
-                          class="tool-card__header"
-                          style={tool.data.icon
-                            ? `--tool-icon: url("${toolIconBase}/${tool.data.icon}.svg")`
-                            : undefined}
-                        >
-                          {tool.data.icon && <span class="tool-card__icon" aria-hidden="true"></span>}
-                          <h3 class="cell__title">{tool.data.title}</h3>
-                        </div>
-                        {tool.data.description && (
-                          <p class="cell__desc cell__meta">{tool.data.description}</p>
-                        )}
-                      </div>
-                      {tool.data.url && (
-                        <p class="cell__meta cell__domain">
-                          {new URL(tool.data.url).hostname.replace("www.", "")}
-                        </p>
-                      )}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </details>
-          )}
-        </div>
-
-        <div class="tools-block tools-block--mobile">
-          <div class="tools-grid">
-            {featuredToolsMobile.map((tool) => (
-              <a
-                href={tool.data.url ?? "#"}
-                target={tool.data.url ? "_blank" : undefined}
-                rel={tool.data.url ? "noopener noreferrer" : undefined}
-                class="cell cell--lift cell--tool"
-                data-lift-max="14"
-              >
-                <div class="cell__top">
-                  <div
-                    class="tool-card__header"
-                    style={tool.data.icon
-                      ? `--tool-icon: url("${toolIconBase}/${tool.data.icon}.svg")`
-                      : undefined}
-                  >
-                    {tool.data.icon && <span class="tool-card__icon" aria-hidden="true"></span>}
-                    <h3 class="cell__title">{tool.data.title}</h3>
-                  </div>
-                  {tool.data.description && (
-                    <p class="cell__desc cell__meta">{tool.data.description}</p>
-                  )}
-                </div>
-                {tool.data.url && (
-                  <p class="cell__meta cell__domain">
-                    {new URL(tool.data.url).hostname.replace("www.", "")}
-                  </p>
-                )}
-              </a>
-            ))}
-          </div>
-
-          {moreToolsMobile.length > 0 && (
-            <details class="tools-more">
-              <summary class="tools-more__summary cell__meta">
-                <span class="tools-more__label tools-more__label--closed">
-                  Show more tools ({moreToolsMobile.length})
-                </span>
-                <span class="tools-more__label tools-more__label--open">
-                  Hide extra tools
-                </span>
-              </summary>
-              <div class="tools-more__content">
-                <div class="tools-grid tools-grid--more">
-                  {moreToolsMobile.map((tool) => (
-                    <a
-                      href={tool.data.url ?? "#"}
-                      target={tool.data.url ? "_blank" : undefined}
-                      rel={tool.data.url ? "noopener noreferrer" : undefined}
-                      class="cell cell--lift cell--tool"
-                      data-lift-max="14"
-                    >
-                      <div class="cell__top">
-                        <div
-                          class="tool-card__header"
-                          style={tool.data.icon
-                            ? `--tool-icon: url("${toolIconBase}/${tool.data.icon}.svg")`
-                            : undefined}
-                        >
-                          {tool.data.icon && <span class="tool-card__icon" aria-hidden="true"></span>}
-                          <h3 class="cell__title">{tool.data.title}</h3>
-                        </div>
-                        {tool.data.description && (
-                          <p class="cell__desc cell__meta">{tool.data.description}</p>
-                        )}
-                      </div>
-                      {tool.data.url && (
-                        <p class="cell__meta cell__domain">
-                          {new URL(tool.data.url).hostname.replace("www.", "")}
-                        </p>
-                      )}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </details>
-          )}
-        </div>
-      </section>
-    )}
+    <section class="ai-section">
+      <h2 class="section-label">Tools i use</h2>
+      <ul class="tools-grid" aria-label="AI tools">
+        {toolIcons.map((tool) => (
+          <li class="tool-icon-cell">
+            <a
+              href={tool.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="tool-icon-link"
+              title={tool.label}
+              aria-label={tool.label}
+            >
+              <span
+                class="tool-icon"
+                style={`--tool-icon: url("${toolIconBase}/${tool.icon}.svg")`}
+                aria-hidden="true"
+              ></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
 
     <!-- LINKS -->
     {links.length > 0 && (
@@ -387,49 +235,33 @@ const moreToolsMobile = tools.filter(
 
   /* Notes variant */
   .cell--note {
-    --note-paper: color-mix(
-      in oklch,
-      var(--color-background-surface) 82%,
-      var(--brand-green) 18%
-    );
-    --note-border: color-mix(
-      in oklch,
-      var(--note-paper) 78%,
-      var(--color-text-primary)
-    );
-    --note-shadow: color-mix(
-      in oklch,
-      var(--color-text-primary) 14%,
-      transparent
-    );
-    --note-pin: color-mix(
-      in oklch,
-      var(--brand-purple) 38%,
-      var(--color-text-primary)
-    );
-    --note-rotate: -1.4deg;
-
-    background:
-      linear-gradient(
-        180deg,
-        color-mix(in oklch, var(--note-paper) 92%, white) 0%,
-        var(--note-paper) 100%
-      );
-    color: var(--color-text-primary);
-    border: var(--border-width-1) solid var(--note-border);
-    box-shadow:
-      0 0.35rem 0.9rem var(--note-shadow),
-      0 0.05rem 0 color-mix(in oklch, var(--note-border) 72%, transparent);
+    border: none;
+    box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.08);
     cursor: pointer;
     padding: var(--space-3);
     gap: var(--space-2);
     position: relative;
-    overflow: visible;
+    overflow: hidden;
     justify-self: center;
     inline-size: min(100%, 15rem);
     min-block-size: 8.5rem;
     text-transform: none;
-    filter: saturate(0.94);
+    filter: none;
+  }
+
+  .cell--note-1 {
+    background: var(--brand-purple);
+    color: var(--neutral-50);
+  }
+
+  .cell--note-2 {
+    background: var(--neutral-900);
+    color: var(--neutral-50);
+  }
+
+  .cell--note-3 {
+    background: var(--brand-green);
+    color: var(--neutral-900);
   }
 
   .cell--note .cell__title {
@@ -440,90 +272,9 @@ const moreToolsMobile = tools.filter(
   }
 
   .cell--note .cell__meta {
-    letter-spacing: 0.08em;
-  }
-
-  .cell--note .tag-list {
-    gap: var(--space-1);
-  }
-
-  .cell--note .tag {
-    text-transform: lowercase;
-  }
-
-  .cell--note::before {
-    content: "";
-    position: absolute;
-    inset-block-start: calc(var(--space-2) * -1);
-    inset-inline-start: 50%;
-    inline-size: 0.8rem;
-    block-size: 0.8rem;
-    border-radius: 999px;
-    background: var(--color-text-primary);
-    transform: translateX(-50%);
-    z-index: 2;
-    pointer-events: none;
-  }
-
-  .cell--note::after {
-    content: "";
-    position: absolute;
-    inset-block-start: var(--space-2);
-    inset-inline-end: var(--space-3);
-    inline-size: 2.5rem;
-    block-size: 0.85rem;
-    background: color-mix(in oklch, var(--color-background) 76%, white);
-    border: 1px solid color-mix(in oklch, var(--color-text-primary) 10%, transparent);
-    opacity: 0.88;
-    transform: rotate(8deg);
-    box-shadow: 0 0.12rem 0.35rem rgba(0, 0, 0, 0.05);
-    pointer-events: none;
-  }
-
-  .cell--tool {
-    background: var(--color-text-primary);
-    color: var(--color-text-inverse);
-    border: var(--border-width-1) solid var(--color-text-primary);
-    gap: var(--space-2);
-    padding: var(--space-3);
-  }
-
-  .cell--tool .cell__top {
-    gap: var(--space-2);
-  }
-
-  .tool-card__header {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    min-width: 0;
-  }
-
-  .tool-card__icon {
-    width: 1rem;
-    height: 1rem;
-    flex: none;
-    background-color: currentColor;
-    opacity: 0.78;
-    -webkit-mask-image: var(--tool-icon);
-    -webkit-mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
-    mask-image: var(--tool-icon);
-    mask-position: center;
-    mask-repeat: no-repeat;
-    mask-size: contain;
-  }
-
-  .cell--tool .cell__title {
-    font-size: var(--font-size-sm);
-    overflow-wrap: anywhere;
-  }
-
-  .cell--tool .cell__desc,
-  .cell--tool .cell__meta {
-    font-size: var(--font-size-xs);
-    line-height: var(--line-height-tight);
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+    opacity: 0.58;
   }
 
   /* ── Cell internals ── */
@@ -560,57 +311,23 @@ const moreToolsMobile = tools.filter(
     opacity: 0.62;
   }
 
-  .cell__domain {
-    margin: 0;
-    text-transform: lowercase;
-  }
-
   /* ── Note card button reset ── */
   button.cell--note {
     width: 100%;
     text-align: left;
-    background: inherit;
-    border: inherit;
     font: inherit;
     cursor: pointer;
   }
 
   button.cell--note:hover {
-    border-color: var(--note-border);
+    border-color: transparent;
   }
 
   .cell--note.cell--lift {
     transform:
       translate(var(--_tx), var(--_ty))
-      rotate(var(--note-rotate))
+      rotate(var(--note-tilt, 0deg))
       scale(var(--_scale));
-  }
-
-  .notes-grid > :nth-child(3n + 1) {
-    --note-paper: color-mix(
-      in oklch,
-      var(--color-background-surface) 80%,
-      var(--brand-green) 20%
-    );
-    --note-rotate: -2.2deg;
-  }
-
-  .notes-grid > :nth-child(3n + 2) {
-    --note-paper: color-mix(
-      in oklch,
-      var(--color-background-surface) 88%,
-      var(--brand-purple) 12%
-    );
-    --note-rotate: 1.4deg;
-  }
-
-  .notes-grid > :nth-child(3n) {
-    --note-paper: color-mix(
-      in oklch,
-      var(--color-background-surface) 94%,
-      var(--neutral-warm-600) 6%
-    );
-    --note-rotate: -0.6deg;
   }
 
   /* ── Note popover ── */
@@ -706,101 +423,58 @@ const moreToolsMobile = tools.filter(
   /* ── Notes grid ── */
   .notes-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: minmax(9rem, auto);
-    gap: var(--space-3);
+    grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
+    align-items: stretch;
+    gap: var(--space-2);
     padding-top: var(--space-2);
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .notes-grid > * {
+    justify-self: stretch;
   }
 
   /* ── Tools grid ── */
   .tools-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: minmax(7.5rem, auto);
-    gap: var(--space-2);
-  }
-
-  .tools-block--mobile {
-    display: none;
-  }
-
-  .tools-more {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    margin-top: var(--space-2);
-    interpolate-size: allow-keywords;
-  }
-
-  .tools-more::details-content {
-    block-size: 0;
-    opacity: 0;
-    overflow: clip;
-    transition:
-      content-visibility 280ms allow-discrete,
-      block-size 280ms cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 180ms ease;
-  }
-
-  .tools-more[open]::details-content {
-    block-size: auto;
-    opacity: 1;
-  }
-
-  @starting-style {
-    .tools-more[open]::details-content {
-      block-size: 0;
-      opacity: 0;
-    }
-  }
-
-  .tools-more__summary {
-    cursor: pointer;
-    list-style: none;
-    width: fit-content;
-  }
-
-  .tools-more__summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .tools-more__summary::before {
-    content: "+ ";
-  }
-
-  .tools-more[open] .tools-more__summary::before {
-    content: "- ";
-  }
-
-  .tools-more__label--open {
-    display: none;
-  }
-
-  .tools-more[open] .tools-more__label--closed {
-    display: none;
-  }
-
-  .tools-more[open] .tools-more__label--open {
-    display: inline;
-  }
-
-  .tools-grid--more {
-    padding-top: var(--space-1);
-  }
-
-  /* ── Tags ── */
-  .tag-list {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(2.8rem, 1fr));
     gap: var(--space-2);
   }
 
-  .tag {
-    text-transform: lowercase;
-    letter-spacing: 0.05em;
+  .tool-icon-cell {
+    inline-size: 2.8rem;
+    block-size: 2.8rem;
+    border: var(--border-width-1) solid var(--color-border-default);
+    background: var(--color-background-surface);
+  }
+
+  .tool-icon-link {
+    inline-size: 100%;
+    block-size: 100%;
+    display: grid;
+    place-items: center;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .tool-icon {
+    inline-size: 1.2rem;
+    block-size: 1.2rem;
+    display: block;
+    background-color: var(--color-text-primary);
+    opacity: 0.84;
+    -webkit-mask-image: var(--tool-icon);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-image: var(--tool-icon);
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
   }
 
   /* ── Links list ── */
@@ -848,14 +522,12 @@ const moreToolsMobile = tools.filter(
 
   /* ── Responsive ── */
   @media (max-width: 900px) {
-    .notes-grid,
-    .tools-grid {
-      grid-template-columns: repeat(2, 1fr);
+    .notes-grid > * {
+      inline-size: 100%;
     }
 
     .tools-grid {
-      grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: minmax(7rem, auto);
+      grid-template-columns: repeat(auto-fill, minmax(2.6rem, 1fr));
     }
 
   }
@@ -865,45 +537,35 @@ const moreToolsMobile = tools.filter(
       padding: var(--space-8) var(--space-4);
     }
 
-    .tools-block--desktop {
-      display: none;
-    }
-
-    .tools-block--mobile {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-4);
-    }
-
-    .notes-grid,
     .tools-grid {
-      grid-template-columns: 1fr;
-      grid-auto-rows: minmax(12rem, auto);
+      grid-template-columns: repeat(auto-fill, minmax(2.4rem, 1fr));
+      gap: var(--space-1);
+    }
+
+    .tool-icon-cell {
+      inline-size: 2.4rem;
+      block-size: 2.4rem;
+    }
+
+    .tool-icon {
+      inline-size: 1rem;
+      block-size: 1rem;
     }
 
     .notes-grid {
-      grid-auto-rows: minmax(7rem, auto);
       gap: var(--space-2);
       padding-top: var(--space-1);
+      overflow: visible;
     }
 
     .cell--note {
       inline-size: 100%;
-      min-block-size: 7rem;
-      padding: var(--space-2) var(--space-3);
+      min-block-size: 5rem;
+      padding: var(--space-2);
     }
 
     .cell--note .cell__title {
       max-inline-size: none;
-    }
-
-    .cell--note::after {
-      inline-size: 2rem;
-      block-size: 0.7rem;
-    }
-
-    .tools-grid {
-      grid-auto-rows: minmax(6.5rem, auto);
     }
 
   }
@@ -916,8 +578,11 @@ const moreToolsMobile = tools.filter(
 
   @media (max-width: 768px) {
     .cell--lift {
-      transform: none;
       transition: none;
+    }
+
+    .cell--note.cell--lift {
+      transform: rotate(var(--note-tilt, 0deg));
     }
   }
 
@@ -926,9 +591,6 @@ const moreToolsMobile = tools.filter(
       transition: none;
     }
 
-    .tools-more::details-content {
-      transition: none;
-    }
   }
 </style>
 

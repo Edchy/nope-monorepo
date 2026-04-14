@@ -3,7 +3,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import VoxelWork from "../components/VoxelWork.astro";
 import { getCollection } from "astro:content";
 import { quotes } from "../data/quotes";
-import { navLinks } from "../layouts/BaseLayout.astro";
 
 const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
@@ -29,8 +28,8 @@ const latestPost = posts[0];
 
     <!-- 3: Art Int -->
     <a href="/artificial" class="cell cell--dark cell--lift" data-lift-max="18">
-      <span class="cell__label-lg">{navLinks[3]?.label}</span>
-      <span class="cell__sublabel cell__meta">artyficiál intél</span>
+      <span class="cell__label-lg">AI</span>
+      <span class="cell__sublabel cell__meta">人工知能 - man-made wisdom </span>
     </a>
 
     <!-- 2: Latest blog post -->
@@ -57,7 +56,7 @@ const latestPost = posts[0];
 
     <!-- 1: Gallery -->
     <a href="/room" class="cell cell--gallery cell--lift" data-lift-max="18">
-      <span class="cell__label-lg">{navLinks[1]?.label}</span>
+      <span class="cell__label-lg">3DRoom</span>
       <span class="cell__sublabel cell__meta">3D work &amp; experiments</span>
     </a>
 

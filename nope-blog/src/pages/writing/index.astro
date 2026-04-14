@@ -135,6 +135,8 @@ const getVariant = (i: number) => cellVariants[(i + Math.floor(i / cols)) % cell
     .writing-grid {
       grid-template-columns: 1fr;
       grid-auto-rows: minmax(14rem, auto);
+      min-height: auto;
+      gap: 0;
     }
   }
 

@@ -1,9 +1,7 @@
 import { defineConfig, fontProviders } from "astro/config";
-import mdx from "@astrojs/mdx";
 
 export default defineConfig({
   site: "https://nope.digital",
-  integrations: [mdx()],
   vite: {
     server: {
       watch: {

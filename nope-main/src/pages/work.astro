@@ -7,11 +7,11 @@ function mediaSrc(media: string | { src: string } | undefined) {
   return typeof media === "string" ? media : media?.src ?? "";
 }
 
-const toneByEffort = {
+const toneByEffort: Record<number, string> = {
   1: "#c8b89a",
   2: "#b8c4bb",
   3: "#a9b8c8",
-} as const;
+};
 
 function sortTime(date?: Date) {
   return date ? date.valueOf() : Number.NEGATIVE_INFINITY;
@@ -437,8 +437,6 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
     const previewImage = document.getElementById("preview-image");
     const linkIcon = document.getElementById("preview-link-icon");
     const desc = document.getElementById("preview-desc");
-    const tags = document.getElementById("preview-tags");
-
     if (!items.length || !preview) {
       cleanupWorkPreview = undefined;
       return;
@@ -667,11 +665,7 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
           const mode = getPreviewMode();
           const color = el.dataset.color ?? "";
           const href = el.dataset.href ?? "";
-          const name = el.dataset.name ?? "";
-          const type = el.dataset.type ?? "";
-          const year = el.dataset.year ?? "";
           const text = el.dataset.desc;
-          const tagList = el.dataset.tags?.split(",") ?? [];
           const images = readImages(el.dataset.images);
 
           const li = el.closest<HTMLElement>(".work-item-featured");

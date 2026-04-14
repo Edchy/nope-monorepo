@@ -16,6 +16,22 @@ Each entry should include:
 
 ## Entries
 
+### 2026-04-14: Shared nav indicators must target the hovered link and use valid list markup
+
+**What:** The sidebar nav indicator was added as a sliding green highlight, but hover did not move it to the hovered item and the indicator element was inserted as a `div` directly inside the `ul`.
+
+**Why:** The hover handler always recalculated from the active link instead of the hovered link, so hover never changed the target. Putting a non-`li` element directly inside the list also made the structure invalid and easier to position inconsistently across browsers.
+
+**Fix:** Keep decorative list overlays as `li` elements with `aria-hidden`, and make the indicator update function accept an explicit hovered or focused link before falling back to the active item.
+
+### 2026-04-14: Gate voxel animation, not voxel rendering
+
+**What:** The homepage/work voxel scene could appear completely blank on devices or browsers that did not match the desktop fine-pointer media query.
+
+**Why:** `VoxelWork.astro` used the same capability check for both loading the SVG scene and running the camera animation, so non-hover or coarse-pointer contexts cleared the stage instead of falling back to a static render.
+
+**Fix:** Always render the voxel SVG when the component is present, and use input/media capability checks only to decide whether the animation loop should run.
+
 ### 2026-04-13: Shared blog posts should not repeat the layout title as a body `#` heading
 
 **What:** AI series posts rendered the article title twice: once from `BlogLayout.astro` and again from the first Markdown heading inside the shared content file.
@@ -55,6 +71,19 @@ Each entry should include:
 **Why:** Moved fast without setting up foundations first.
 
 **Fix:** Setting up design tokens now as part of kickoff. In future, always set up tokens before writing any component styles.
+
+### 2026-04-14: Zod v4 — `z.string().url()` is deprecated; use `z.url()` instead
+
+**What:** `astro check` reported deprecation warnings on `.url()` calls in content config schemas, even after switching from `z` imported from `astro:content` to `z` imported from `zod` or `astro/zod`.
+
+**Why:** Zod v4 deprecated the `.url()` refinement on `z.string()`. The replacement is the standalone `z.url()` schema.
+
+**Fix:** Replace `z.string().url()` with `z.url()` in all collection schemas. The `image()` union pattern becomes:
+```ts
+images: z.array(z.union([image(), z.url()])).default([]),
+```
+
+Also note: importing `z` directly from `astro:content` is deprecated in Astro v6. Import from `"zod"` or `"astro/zod"` instead.
 
 ---
 
