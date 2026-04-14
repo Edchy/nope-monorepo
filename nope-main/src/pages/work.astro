@@ -49,7 +49,11 @@ const featuredProjects = workItems.filter((item) => item.section === "selected")
 const archiveProjects = workItems.filter((item) => item.section !== "selected");
 ---
 
-<BaseLayout title="Nope Work" description="Selected work.">
+<BaseLayout
+  title="Nope Work"
+  description="Selected work."
+  enableClientRouter={true}
+>
   <section class="page-shell layout-shell work-page">
     <div class="page-grid layout-grid">
       <h1 class="page-title visually-hidden">Work</h1>

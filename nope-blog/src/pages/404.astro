@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="NOPE 404" description="That page isn't here.">
+  <article class="error-404">
+    <div class="error-404__body">
+      <div class="error-404__intro">
+        <h1 class="error-404__title">nope 404</h1>
+      </div>
+      <p class="error-404__copy">
+        This page is missing.
+      </p>
+      <p class="error-404__copy">
+        <a href="/">Go home</a> or <a href="/writing">read something instead</a>.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .error-404 {
+    width: 100%;
+    max-width: 62ch;
+    margin-inline: auto;
+    padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 5vw, 2rem) clamp(4rem, 10vw, 8rem);
+  }
+
+  .error-404__body {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-newsreader);
+    color: var(--color-text-primary);
+  }
+
+  .error-404__intro {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 8px;
+  }
+
+  .error-404__title {
+    margin: 0;
+    font-family: var(--font-nature);
+    font-size: clamp(3rem, 10vw, 5.5rem);
+    line-height: 0.95;
+    text-transform: lowercase;
+  }
+
+  .error-404__copy {
+    margin: 0;
+    padding-top: 24px;
+    font-size: var(--font-size-base);
+    line-height: 1.75;
+  }
+
+  .error-404__copy a {
+    color: inherit;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.12em;
+  }
+ </style>

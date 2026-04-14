@@ -2,7 +2,11 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="About Nope" description="A bit about us.">
+<BaseLayout
+  title="About Nope"
+  description="A bit about us."
+  enableClientRouter={true}
+>
   <section class="page-shell layout-shell about-page">
     <div class="page-grid layout-grid">
       <h1 class="page-title visually-hidden">About</h1>
@@ -76,7 +80,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <p>
           The name wasn't a strategy. It was just the first honest thing.
         </p>
-        <span class="signature">— Nope</span>
+        <span class="signature">— Eddie, CEOO (Chief of Editing Out the Obvious
+)</span>
       </div>
     </div>
   </section>

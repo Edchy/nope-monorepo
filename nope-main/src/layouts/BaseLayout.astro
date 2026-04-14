@@ -10,50 +10,65 @@ interface Props {
   title: string;
   description?: string;
   mainClass?: string;
+  enableClientRouter?: boolean;
 }
 
 import { SITE_TITLE } from "../config";
-const { title, description = SITE_TITLE, mainClass } = Astro.props;
+const {
+  title,
+  description = SITE_TITLE,
+  mainClass,
+  enableClientRouter = false,
+} = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <ClientRouter />
-    <script is:inline>
-      const syncMobileTransitionMode = () => {
-        const isMobile = window.matchMedia("(max-width: 768px)").matches;
-        const enabledMeta = document.querySelector(
-          'meta[name="astro-view-transitions-enabled"]',
-        );
-        const fallbackMeta = document.querySelector(
-          'meta[name="astro-view-transitions-fallback"]',
-        );
+    {
+      enableClientRouter && (
+        <>
+          <ClientRouter />
+          <script is:inline>
+            const syncMobileTransitionMode = () => {
+              const isMobile = window.matchMedia("(max-width: 768px)").matches;
+              const enabledMeta = document.querySelector(
+                'meta[name="astro-view-transitions-enabled"]',
+              );
+              const fallbackMeta = document.querySelector(
+                'meta[name="astro-view-transitions-fallback"]',
+              );
 
-        if (isMobile) {
-          enabledMeta?.remove();
-          fallbackMeta?.remove();
-          return;
-        }
+              if (isMobile) {
+                enabledMeta?.remove();
+                fallbackMeta?.remove();
+                return;
+              }
 
-        if (!enabledMeta) {
-          const meta = document.createElement("meta");
-          meta.name = "astro-view-transitions-enabled";
-          meta.content = "true";
-          document.head.append(meta);
-        }
+              if (!enabledMeta) {
+                const meta = document.createElement("meta");
+                meta.name = "astro-view-transitions-enabled";
+                meta.content = "true";
+                document.head.append(meta);
+              }
 
-        if (!fallbackMeta) {
-          const meta = document.createElement("meta");
-          meta.name = "astro-view-transitions-fallback";
-          meta.content = "animate";
-          document.head.append(meta);
-        }
-      };
+              if (!fallbackMeta) {
+                const meta = document.createElement("meta");
+                meta.name = "astro-view-transitions-fallback";
+                meta.content = "animate";
+                document.head.append(meta);
+              }
+            };
 
-      syncMobileTransitionMode();
-      document.addEventListener("astro:page-load", syncMobileTransitionMode);
-    </script>
+            syncMobileTransitionMode();
+            document.addEventListener(
+              "astro:page-load",
+              syncMobileTransitionMode,
+            );
+          </script>
+        </>
+      )
+    }
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />

@@ -17,7 +17,10 @@ const footerLetters = [...footerWordmark];
 ---
 
 <footer class="site-footer">
-  <img src="/images/nope_eyes_up.png" alt="" aria-hidden="true" class="site-footer__peeker" />
+  <picture>
+    <source srcset="/images/nope_eyes_up_mobile.webp" media="(max-width: 768px)" />
+    <img src="/images/nope_eyes_up.webp" alt="" aria-hidden="true" class="site-footer__peeker" loading="lazy" />
+  </picture>
   <div class="site-footer__shell" data-footer-shell>
     <div class="site-footer__marquee site-footer__marquee--desktop" aria-hidden="true">
       <a href="/" class="site-footer__wordmark">

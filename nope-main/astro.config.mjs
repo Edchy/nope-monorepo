@@ -21,8 +21,8 @@ export default defineConfig({
           {
             style: "normal",
             weight: "100 900",
-            src: ["./src/assets/fonts/ZT Nature Variable-VF.ttf"],
-            display: "block",
+            src: ["./src/assets/fonts/ZT Nature Variable-VF.woff2"],
+            display: "swap",
           },
         ],
       },
