@@ -27,7 +27,7 @@ body {
   -webkit-font-smoothing: antialiased;
   display: flex;
   flex-direction: column;
-  min-height: 100svh;
+  min-height: 100dvh;
   overflow-x: clip;
 }
 
