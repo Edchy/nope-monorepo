@@ -17,6 +17,7 @@ const footerLetters = [...footerWordmark];
 ---
 
 <footer class="site-footer">
+  <img src="/images/nope_eyes_up.png" alt="" aria-hidden="true" class="site-footer__peeker" />
   <div class="site-footer__shell" data-footer-shell>
     <div class="site-footer__marquee site-footer__marquee--desktop" aria-hidden="true">
       <a href="/" class="site-footer__wordmark">
@@ -51,22 +52,35 @@ const footerLetters = [...footerWordmark];
 <style>
   .site-footer {
     margin-top: auto;
-    overflow: hidden;
-    overflow: clip;
-    contain: layout style paint;
     overflow-anchor: none;
+    position: relative;
+    min-height: clamp(300px, 55vw, 750px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .site-footer__peeker {
+    position: absolute;
+    bottom: var(--footer-peeker-bottom, clamp(-280px, -17vw, -100px));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    height: clamp(400px, 75vw, 950px);
+    width: auto;
   }
 
   .site-footer__shell {
     padding-top: var(--space-10, 2.5rem);
     padding-bottom: var(--space-4, 1rem);
-    overflow: hidden;
-    overflow: clip;
+    position: relative;
+    z-index: 1;
   }
 
   .site-footer__marquee {
-    overflow: hidden;
-    overflow: clip;
+    overflow: visible;
   }
 
   .site-footer__marquee--mobile {
@@ -85,10 +99,9 @@ const footerLetters = [...footerWordmark];
     line-height: 0.82;
     letter-spacing: -0.08em;
     text-transform: uppercase;
-    color: currentColor;
     white-space: nowrap;
     text-decoration: none;
-    color: inherit;
+    color: var(--brand-green, #00d900);
   }
 
   .site-footer__letter {
@@ -119,7 +132,7 @@ const footerLetters = [...footerWordmark];
     display: none;
     text-transform: uppercase;
     text-decoration: none;
-    color: inherit;
+    color: var(--brand-green, #00d900);
   }
 
   .site-footer__copy a {
@@ -192,7 +205,7 @@ const footerLetters = [...footerWordmark];
       font-weight: var(--font-weight-bold, 700);
       line-height: 0.86;
       letter-spacing: -0.08em;
-      color: currentColor;
+      color: var(--brand-green, #00d900);
       justify-self: start;
       align-self: center;
       text-align: left;

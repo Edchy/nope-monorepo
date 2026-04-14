@@ -11,5 +11,5 @@ images:
   - "./palais-de-poche-1.jpg"
   - "./palais-de-poche-2.jpg"
   - "./palais-de-poche-mobile.jpg"
-url: "https://palaisdepoche.com"
+url: "https://edchy.github.io/palais-de-poche/"
 ---

@@ -19,7 +19,6 @@ content:
       template: "{primary}/index.md"
       field: create
     view:
-      layout: tree
       primary: title
       fields: [title, date, draft]
       sort: [date, title]
@@ -27,9 +26,6 @@ content:
       default:
         sort: date
         order: desc
-      node:
-        filename: index.md
-        hideDirs: others
     fields:
       - name: title
         label: Title
@@ -89,7 +85,6 @@ content:
       template: "{primary}/index.md"
       field: create
     view:
-      layout: tree
       primary: title
       fields: [title, type, section, date, effort]
       sort: [date, title, section, effort]
@@ -97,9 +92,6 @@ content:
       default:
         sort: date
         order: desc
-      node:
-        filename: index.md
-        hideDirs: others
     fields:
       - name: title
         label: Title
@@ -284,94 +276,6 @@ content:
         options:
           format: markdown
           media: false
-
-  - name: tools
-    label: AI Tools
-    type: collection
-    path: content/artificial/tools
-    filename:
-      template: "{primary}.md"
-      field: create
-    view:
-      primary: title
-      fields: [title, date, draft, icon]
-      sort: [date, title]
-      search: [title, description, tags, url, icon]
-      default:
-        sort: date
-        order: desc
-    fields:
-      - name: title
-        label: Title
-        type: string
-      - name: date
-        label: Date
-        type: date
-      - name: description
-        label: Description
-        type: text
-        options:
-          rows: 3
-      - name: draft
-        label: Draft
-        type: boolean
-        default: false
-      - name: icon
-        label: Icon
-        type: string
-      - name: url
-        label: URL
-        type: string
-      - name: tags
-        label: Tags
-        type: select
-        options:
-          multiple: true
-          creatable: true
-          placeholder: "Choose tags or create a new one"
-          values:
-            - agents
-            - anthropic
-            - api
-            - architecture
-            - assistant
-            - atlassian
-            - audio
-            - automation
-            - brand
-            - cli
-            - coding
-            - creative
-            - datasets
-            - design
-            - engineering
-            - foundational
-            - generation
-            - google
-            - image
-            - karpathy
-            - knowledge
-            - knowledge-management
-            - llms
-            - local
-            - local-first
-            - mental-models
-            - models
-            - multimodal
-            - notes
-            - open-source
-            - openai
-            - papers
-            - pattern
-            - project-management
-            - research
-            - routing
-            - search
-            - speech
-            - transformers
-            - voice
-            - web
-            - workflow
 
   - name: links
     label: AI Links

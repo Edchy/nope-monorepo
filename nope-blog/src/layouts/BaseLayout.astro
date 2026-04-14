@@ -1,7 +1,6 @@
 ---
 import { Font } from "astro:assets";
 import "../styles/global.css";
-import DebugScrollOverlay from "@nope/ui/src/DebugScrollOverlay.astro";
 import Footer from "@nope/ui/src/Footer.astro";
 import { ClientRouter } from "astro:transitions";
 
@@ -187,7 +186,6 @@ export const navLinks = [
       </span>
     </button>
 
-    <DebugScrollOverlay />
     {!noFooter && <Footer siteTitle="NOPE" />}
   </body>
 </html>
@@ -238,7 +236,8 @@ export const navLinks = [
   .shell {
     display: grid;
     grid-template-columns: 1fr;
-    min-height: 100svh;
+    flex: 1;
+    min-height: 0;
   }
 
   @media (min-width: 768px) {

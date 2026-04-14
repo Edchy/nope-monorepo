@@ -25,6 +25,27 @@ body {
   color: var(--color-text-primary);
   background-color: var(--color-background);
   -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  overflow-x: clip;
+}
+
+.site-footer {
+  overflow: clip;
+  contain: layout style paint;
+}
+
+.site-footer__wordmark {
+  color: var(--brand-green, #00d900);
+}
+
+.site-footer__mobile-title {
+  color: var(--brand-green, #00d900);
+}
+
+.site-footer__marquee {
+  overflow: visible;
 }
 
 img,

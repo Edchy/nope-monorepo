@@ -19,7 +19,6 @@ Pages CMS reads the repo-root [.pages.yml](/Users/eddietovebeppearonelsa/dev/liv
 - `Blog` -> `content/blog/**/index.md`
 - `Work` -> `content/work/**/index.md`
 - `AI Notes` -> `content/artificial/notes/*.md`
-- `AI Tools` -> `content/artificial/tools/*.md`
 - `AI Links` -> `content/artificial/links/*.md`
 - `Internet Goodies` -> `content/internetgoodies/*.md`
 
@@ -29,7 +28,6 @@ Pages CMS reads the repo-root [.pages.yml](/Users/eddietovebeppearonelsa/dev/liv
 
 - New blog entries are created as `slug/index.md`.
 - The slug becomes the public URL under `/writing/...`.
-- Use nested slugs when needed, for example `ai-series/10-some-post`.
 - Once published, avoid changing slugs unless you also want the URL to change.
 
 ### Work
@@ -45,11 +43,6 @@ Pages CMS reads the repo-root [.pages.yml](/Users/eddietovebeppearonelsa/dev/liv
 - Notes use date-based filenames like `2026-04-14-some-note.md`.
 - The filename is mostly editorial; the page sorts by the `date` frontmatter.
 
-### AI Tools
-
-- Tools use flat filenames like `claude-code.md`.
-- Use a short stable slug.
-
 ### AI Links
 
 - Links use date-based filenames like `2026-04-14-interesting-link.md`.
@@ -64,7 +57,7 @@ Pages CMS reads the repo-root [.pages.yml](/Users/eddietovebeppearonelsa/dev/liv
 
 ### Drafts
 
-- `Blog`, `AI Notes`, `AI Tools`, and `AI Links` support `draft`.
+- `Blog`, `AI Notes`, and `AI Links` support `draft`.
 - Draft entries stay in the repo but are filtered out by the Astro pages.
 
 ### Work Images
@@ -115,7 +108,7 @@ That means any shared content change triggers a `nope-blog` rebuild.
 - `package.json`
 - `package-lock.json`
 
-That means `nope-main` only rebuilds for `work` content changes, not for blog, notes, tools, links, or internet goodies.
+That means `nope-main` only rebuilds for `work` content changes, not for blog, notes, links, or internet goodies.
 
 ## Important Repo Notes
 
