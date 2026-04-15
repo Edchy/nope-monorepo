@@ -4,4 +4,4 @@ date: 2026-04-14
 tags: [design, tools, workflow]
 ---
 
-[Impeccable](https://impeccable.style/). So good! A skill i use alot.
+[Impeccable](https://impeccable.style/). So good! A skill I use a lot.

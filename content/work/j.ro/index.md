@@ -1,6 +1,6 @@
 ---
-title: "Järna Rosteri Rebrand"
-description: "Järna rosteri's new website concept"
+title: "A site apart"
+description: "Website for a deli in Gothenburg, Sweden. I designed the site and the brochure, and built the site with Astro."
 date: 2026-03-22
 type: "website"
 section: "archive"

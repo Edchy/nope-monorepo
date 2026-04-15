@@ -6,4 +6,4 @@ tags: [claude-code, setup, ux]
 
 I added a more detailed statusline through `~/.claude/settings.json` and `~/.claude/statusline-command.sh`. Worth it.
 
-Is shows me more detailed info like branches, context, model, and alot more.
+It shows me more detailed info like branches, context, model, and a lot more.

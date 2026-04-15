@@ -1,6 +1,6 @@
 ---
 title: "A Brief History of AI"
-description: "The idea of artificial intelligence is older than computers. But most of what matters happened in the last decade. Here is the short version."
+description: "From the 1956 Dartmouth conference to ChatGPT and beyond — the short version of how we got here."
 date: 2025-10-22
 tags: [ai, history]
 draft: false

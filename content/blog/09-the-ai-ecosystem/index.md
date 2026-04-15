@@ -1,6 +1,6 @@
 ---
 title: "The AI Ecosystem"
-description: "There are a lot of AI tools. Most of them are wrappers around the same handful of underlying models. Some of them are genuinely useful. Here is the map."
+description: "A plain-language map of the AI tools worth knowing: assistants, builders, local runners, and more."
 date: 2026-02-04
 tags: [ai, ecosystem, tools]
 draft: false

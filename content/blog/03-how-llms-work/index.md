@@ -1,6 +1,6 @@
 ---
 title: "How LLMs Work"
-description: "You do not need to understand what is happening inside an AI model to use one well. But knowing the basics changes how you think about what the model can and cannot do. Here is what is actually going on."
+description: "Tokens, context windows, temperature, attention — the basics of how a language model actually works, without the hype."
 date: 2025-11-05
 tags: [ai, technical, llm]
 draft: false

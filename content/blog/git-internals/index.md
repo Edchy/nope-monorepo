@@ -1,14 +1,12 @@
 ---
 title: "Git Is Just Text Files Pointing at Other Text Files"
-description: "Git looks complicated from the outside. Inside, it's just a bunch of small text files pointing at each other."
+description: "Inside every Git repo is just a folder of small text files pointing at each other. Here is what they are."
 date: 2026-03-10
 draft: false
 ---
-Git has a reputation for being complicated. There are books about it. People get nervous when they have to rebase in front of others. "Detached HEAD" sounds like something that happens to you when the build pipeline fails hard enough.
+Git has a reputation for being complicated. But once you look inside, most of it is just text files. Small ones. Pointing at each other. Organized into a simple database.
 
-But once you look inside Git's guts, most of it is just text files. Small ones. Pointing at each other. Organized into a surprisingly elegant little database.
-
-That's it. That's the magic trick.
+That's it.
 
 ---
 
@@ -159,9 +157,7 @@ When you clone a repo, Git downloads all the objects. Once you have them, you ca
 
 ### This idea turns out to be pretty important
 
-Git basically built a content-addressed storage system before most people knew that phrase. The same core idea shows up in Docker (image layers), IPFS (distributed file storage), and Nix (reproducible builds). All of them store content by hash, reference by pointer, and deduplicate automatically.
-
-Git got there first. By accident, while trying to version-control the Linux kernel.
+Git basically built a content-addressed storage system. The same core idea shows up in Docker (image layers), IPFS (distributed file storage), and Nix (reproducible builds). All of them store content by hash, reference by pointer, and deduplicate automatically.
 
 ---
 
@@ -250,8 +246,6 @@ checkout = move the pointer, sync the files
 
 Once this settles in, Git stops feeling like a mysterious black box. It's a database of hashed objects, linked by pointers, with a few text files on top to track where you are.
 
-The design is more elegant than it has any right to be for something that started as a side project to manage Linux kernel patches.
-
 ---
 
-*If you want to poke around the object database yourself, look up `git cat-file`. It lets you read commits, trees, and blobs directly by their hash. Once you've done that, Git feels genuinely less mysterious. Worth ten minutes.*
+*If you want to explore the object database yourself, look up `git cat-file`. It lets you read commits, trees, and blobs directly by their hash.*

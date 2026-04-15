@@ -1,6 +1,6 @@
 ---
 title: "Building AI Projects"
-description: "The hardest part of building software with AI is not the code. It is knowing what to build, and having a clear enough brief that the AI can actually help you build it. Here is a workflow that works."
+description: "A step-by-step workflow for building software with AI — from idea to working app."
 date: 2026-01-21
 tags: [ai, workflow, building]
 draft: false
@@ -133,4 +133,4 @@ Set up GitHub Actions to run tests automatically on every pull request. Claude C
 
 The AI is good at execution once it knows what to build. Your job is to know what to build. The workflow above is mostly about generating clarity before asking the AI to do anything. The better the brief, the better the output. This is true whether you are working with an AI or a human developer.
 
-Garbage in. That'll do out.
+Better input, better output.

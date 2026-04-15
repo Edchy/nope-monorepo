@@ -1,6 +1,6 @@
 ---
 title: "The Model Landscape"
-description: "There are a lot of AI models. The names blend together quickly. Here is a map."
+description: "GPT, Claude, Gemini, Llama — what they are, who makes them, and how to choose."
 date: 2025-11-19
 tags: [ai, models]
 draft: false

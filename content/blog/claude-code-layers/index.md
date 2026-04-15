@@ -1,6 +1,6 @@
 ---
 title: "How Claude Code Decides What to Listen To"
-description: "Claude Code doesn't just follow one set of rules. It listens to several, layered on top of each other. Here's how that works."
+description: "Claude Code reads several layers of instructions at once. Here is what they are and how they interact."
 date: 2026-02-03
 draft: false
 ---

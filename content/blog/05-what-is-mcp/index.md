@@ -1,6 +1,6 @@
 ---
 title: "What is MCP"
-description: "By default, an AI model knows a lot but can do nothing. It cannot check the weather, read your files, look something up, or call an API. It is a brain in a jar: smart, but disconnected from the world. MCP is how you give it access."
+description: "MCP is the standard that lets AI models connect to external tools. Here is what it is and how it works."
 date: 2025-12-03
 tags: [ai, mcp, technical]
 draft: false

@@ -1,6 +1,6 @@
 ---
 title: "What AI Actually Is"
-description: "Most people treat AI like it's a person. They say please and thank you, apologize when they interrupt it, and feel slightly unsettled when it says something strange. This is understandable. It is also a bad mental model that will make you worse at using it."
+description: "AI is not magic and it is not a person. It is a prediction machine. Here is what that actually means."
 date: 2025-10-15
 tags: [ai, fundamentals]
 draft: false
@@ -44,7 +44,7 @@ Your phrasing changes the output. If you think of it as a conversation, you ask 
 
 There is a useful distinction between the raw model and the things built on top of it.
 
-The **raw model** is just the neural network. A file (a very large file) of numbers that transform input into output. It has no internet access. It does not remember previous conversations. It knows nothing about you. It is, essentially, a brain in a jar — capable, but completely disconnected from the world.
+The **raw model** is just the neural network. A file (a very large file) of numbers that transform input into output. It has no internet access. It does not remember previous conversations. It knows nothing about you. On its own, it is capable, but completely disconnected from the world.
 
 The **app** is what you actually use. ChatGPT, Claude.ai, Gemini. These are products built around the model. They add memory, tools, a user interface. The model inside is still doing the same probability calculations. The app makes it useful.
 

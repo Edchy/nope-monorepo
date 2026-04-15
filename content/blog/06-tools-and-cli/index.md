@@ -1,6 +1,6 @@
 ---
 title: "Tools and the CLI"
-description: "There are two main ways to work with AI on code: through an IDE (a visual code editor), and through the terminal. Understanding the difference matters, because the terminal approach changed how software gets built."
+description: "IDE extensions like Copilot versus terminal agents like Claude Code — what they are and when to use each."
 date: 2025-12-17
 tags: [ai, tools, cli]
 draft: false

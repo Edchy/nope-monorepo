@@ -1,20 +1,20 @@
 ---
 title: "You Can Have Multiple Branches Checked Out at the Same Time"
-description: "You don't have to drop everything when something urgent comes up. Git lets you have multiple branches open at once."
+description: "Git lets you have multiple branches checked out at the same time. Here is how that works and when it's useful."
 date: 2026-03-15
 draft: false
 ---
-You're halfway through a feature. Something breaks in production. Git expects you to either commit half-finished garbage or stash everything and hope for the best.
+Normally in Git, you can only be on one branch at a time. If you need to switch to something else, you have to set aside your current work first.
 
-Git worktrees fix that. And they do it in a way that feels slightly illegal once you understand it.
+Git worktrees let you skip that.
 
 ---
 
-## Your Repo Is Haunted (In a Good Way)
+## What a worktree is
 
-Normally, a Git repo is like a desk. One desk. One surface. If you want to work on a different branch, you have to clear everything off the desk first. Stash your changes, switch branches, and try to remember what you were doing when you come back.
+Normally, a Git repo is like a desk. One surface. If you want to work on a different branch, you have to clear everything off first — stash your changes, switch branches, and try to remember what you were doing when you come back.
 
-A worktree is like summoning a second desk that shares the same filing cabinet.
+A worktree is like having a second desk that shares the same filing cabinet.
 
 Same repo. Same history. Same commits. But now you've got two directories on your computer, each checked out to a different branch, both completely real and usable at the same time. Change something in one, it doesn't touch the other. Commit something in one, the other can pull it in whenever it's ready.
 
@@ -24,9 +24,9 @@ It's not a copy of your repo. There's no duplication happening. One repo, two wi
 
 ## When You'd Actually Use This
 
-The classic scenario: you're deep in a feature branch. Something breaks in production. You need to hotfix `main` right now, but your working directory looks like a crime scene.
+The classic scenario: you're deep in a feature branch. Something breaks in production. You need to hotfix `main` right now, but your working directory has half-finished changes.
 
-Without worktrees: stash everything, switch to main, fix it, switch back, unstash, try to remember what state you were in. You will forget something. This is law.
+Without worktrees: stash everything, switch to main, fix it, switch back, unstash, try to remember what state you were in.
 
 With worktrees:
 
@@ -65,10 +65,6 @@ One thing to know: you can't check out the same branch in two worktrees at the s
 
 ## That's Pretty Much It
 
-Worktrees are one of those features that sounds more complicated than it is. You add a folder, it's a real checkout, you work in it, you remove it when you're done. Your brain keeps working on the first thing the whole time.
+Worktrees sound more complicated than they are. You add a folder, it's a real checkout, you work in it, you remove it when you're done. Your original branch stays exactly as you left it.
 
-The filing cabinet metaphor holds up better than most Git metaphors. Most Git metaphors fall apart immediately upon contact with reality.
-
-Try it the next time you need to context-switch mid-feature. You will feel like you've been doing things the hard way for years.
-
-Because you have.
+Try it the next time you need to switch context mid-feature.
