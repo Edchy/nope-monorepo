@@ -77,7 +77,7 @@ export const navLinks = [
   <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <header class="mobile-header">
-      <a href="/" class="mobile-header__title">nope</a>
+      <a href="/" class="mobile-header__title" aria-label="nope"><img src="/images/nope_fonts.webp" alt="nope" class="mobile-header__wordmark" /></a>
       <button
         type="button"
         class="menu-trigger"
@@ -114,7 +114,7 @@ export const navLinks = [
     <div class="shell">
       <aside id="shell-aside" class="shell__aside" transition:persist="shell-aside">
         <div class="shell__aside-inner">
-          <a href="/" class="shell__wordmark">nope ジ</a>
+          <a href="/" class="shell__wordmark" aria-label="nope ジ"><img src="/images/nope_fonts.webp" alt="nope ジ" class="shell__wordmark-img" /></a>
 
           <nav class="shell__nav" aria-label="Main navigation">
             <ul class="shell__nav-links">
@@ -317,6 +317,13 @@ export const navLinks = [
 
   .shell__wordmark:hover {
     opacity: 0.7;
+  }
+
+  .shell__wordmark-img {
+    display: block;
+    width: auto;
+    max-width: 140px;
+    object-fit: contain;
   }
 
   /* ── Nav ── */
@@ -553,7 +560,7 @@ export const navLinks = [
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: var(--color-background);
+      background: var(--brand-purple);
       z-index: 120;
     }
 
@@ -568,6 +575,14 @@ export const navLinks = [
       text-decoration: none;
     }
 
+    .mobile-header__wordmark {
+      display: block;
+      width: auto;
+      max-width: 120px;
+      max-height: 30px;
+      object-fit: contain;
+    }
+
     .menu-trigger {
       display: inline-flex;
       align-items: center;
@@ -576,7 +591,7 @@ export const navLinks = [
       height: 44px;
       padding: 0;
       background: transparent;
-      color: var(--color-text-primary);
+      color: var(--neutral-100);
       border: none;
       z-index: 121;
     }

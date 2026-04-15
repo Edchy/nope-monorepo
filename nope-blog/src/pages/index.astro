@@ -302,6 +302,14 @@ const latestPost = posts[0];
     .cell--post {
       min-height: 12rem;
     }
+
+    .cell--post .cell__title {
+      font-size: var(--font-size-lg);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   }
 
   @media (max-width: 768px) {

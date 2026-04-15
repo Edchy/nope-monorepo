@@ -16,7 +16,7 @@ const currentPath = Astro.url.pathname;
 
 <header class="blog-header">
   <div class="blog-header__inner">
-    <a href="/" class="blog-header__title">{siteTitle}</a>
+    <a href="/" class="blog-header__title" aria-label={siteTitle}><img src="/images/nope_fonts.webp" alt={siteTitle} class="blog-header__wordmark" /></a>
     <nav aria-label="Main navigation">
       <ul class="blog-header__links">
         {navLinks.map(({ href, label, isExternal }) => (
@@ -70,6 +70,13 @@ const currentPath = Astro.url.pathname;
     color: var(--color-text-primary);
     text-decoration: none;
     transition: opacity 0.15s ease;
+  }
+
+  .blog-header__wordmark {
+    display: block;
+    width: auto;
+    max-width: 160px;
+    object-fit: contain;
   }
 
   .blog-header__title:hover {
