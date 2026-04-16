@@ -20,18 +20,6 @@ const latestPost = posts[0];
       <span class="cell__label cell__meta">nope.digital ↗</span>
     </a>
 
-    <!-- 2: Cycling quotes -->
-    <div class="cell cell--quote" id="quote-cell" data-quotes={JSON.stringify(quotes)}>
-      <blockquote class="cell__blockquote" id="quote-text"></blockquote>
-      <p class="cell__source cell__meta cell__meta--end" id="quote-source"></p>
-    </div>
-
-    <!-- 3: Art Int -->
-    <a href="/artificial" class="cell cell--dark cell--lift" data-lift-max="18">
-      <span class="cell__label-lg">AI</span>
-      <span class="cell__sublabel cell__meta">人工知能 - man-made wisdom </span>
-    </a>
-
     <!-- 2: Latest blog post -->
     {latestPost && (
       <a
@@ -53,6 +41,18 @@ const latestPost = posts[0];
         </p>
       </a>
     )}
+
+    <!-- 3: Art Int -->
+    <a href="/artificial" class="cell cell--dark cell--lift" data-lift-max="18">
+      <span class="cell__label-lg">AI</span>
+      <span class="cell__sublabel cell__meta">人工知能 - man-made wisdom </span>
+    </a>
+
+    <!-- 4: Cycling quotes -->
+    <div class="cell cell--quote" id="quote-cell" data-quotes={JSON.stringify(quotes)}>
+      <blockquote class="cell__blockquote" id="quote-text"></blockquote>
+      <p class="cell__source cell__meta cell__meta--end" id="quote-source"></p>
+    </div>
 
     <!-- 1: Gallery -->
     <a href="/room" class="cell cell--gallery cell--lift" data-lift-max="18">
@@ -236,13 +236,13 @@ const latestPost = posts[0];
     }
 
     .cell--post {
-      grid-column: 1;
-      grid-row: 1;
+      grid-column: 2;
+      grid-row: 2;
     }
 
     .cell--quote {
-      grid-column: 2;
-      grid-row: 2;
+      grid-column: 1;
+      grid-row: 1;
     }
 
     .cell--gallery {
@@ -273,7 +273,7 @@ const latestPost = posts[0];
     }
 
     .cell--post {
-      grid-row: 1;
+      grid-row: 4;
     }
 
     .cell--gallery {
@@ -285,7 +285,7 @@ const latestPost = posts[0];
     }
 
     .cell--quote {
-      grid-row: 4;
+      grid-row: 1;
     }
 
     .cell--voxel {
@@ -313,6 +313,12 @@ const latestPost = posts[0];
   }
 
   @media (max-width: 768px) {
+    .home-grid {
+      padding-top: var(--space-8);
+      box-sizing: border-box;
+      background: var(--color-background);
+    }
+
     .cell--lift {
       transform: none;
       transition: none;

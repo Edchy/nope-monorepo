@@ -204,6 +204,7 @@ export const navLinks = [
     --aside-toggle-hit-size: 2.25rem;
     --mobile-header-height: calc(var(--space-10) + var(--space-2));
     --mobile-header-offset: calc(var(--mobile-header-height) + env(safe-area-inset-top, 0px));
+    --mobile-main-gap: var(--space-4);
     --shell-aside-transition-duration: 360ms;
     --shell-aside-fade-duration: 240ms;
     --shell-aside-transition: var(--shell-aside-transition-duration) cubic-bezier(0.22, 1, 0.36, 1);
@@ -367,13 +368,14 @@ export const navLinks = [
 
   .shell__nav-indicator {
     position: absolute;
-    inset-inline: var(--space-2);
+    inset-inline: calc(var(--space-12) * -1);
     top: 0;
     height: 0;
     background: var(--brand-green);
     border-radius: var(--border-radius-sm);
     pointer-events: none;
     opacity: 0;
+    transform-origin: center;
     will-change: transform, height;
     transition:
       transform 0.26s var(--motion-ease-decelerate),
@@ -560,7 +562,7 @@ export const navLinks = [
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: var(--brand-purple);
+      background: var(--color-background);
       z-index: 120;
     }
 
@@ -591,7 +593,7 @@ export const navLinks = [
       height: 44px;
       padding: 0;
       background: transparent;
-      color: var(--neutral-100);
+      color: var(--color-text-primary);
       border: none;
       z-index: 121;
     }
@@ -625,6 +627,12 @@ export const navLinks = [
   @media (max-width: 480px) {
     .mobile-header {
       padding-inline: var(--space-4);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .shell__main {
+      padding-top: var(--mobile-main-gap);
     }
   }
 
@@ -789,7 +797,7 @@ export const navLinks = [
         const target = targetLink;
         const targetRect = target.getBoundingClientRect();
         const navListRect = navList.getBoundingClientRect();
-        navIndicator.style.transform = `translateY(${targetRect.top - navListRect.top}px)`;
+        navIndicator.style.transform = `translateY(${targetRect.top - navListRect.top}px) rotate(2deg)`;
         navIndicator.style.height = `${targetRect.height}px`;
         navIndicator.classList.add("is-visible");
       }

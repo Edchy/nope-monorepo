@@ -101,10 +101,18 @@ const {
 </html>
 
 <style>
+  :root {
+    --mobile-main-gap: var(--space-4);
+  }
+
   .site-main {
     flex: 1;
     min-height: 0;
     display: flex;
+  }
+
+  .site-main__stage {
+    width: 100%;
   }
 
   .site-main.site-main--viewport-floor {
@@ -113,6 +121,10 @@ const {
   }
 
   @media (max-width: 768px) {
+    .site-main__stage {
+      padding-top: var(--mobile-main-gap);
+    }
+
     .site-main.site-main--viewport-floor {
       min-height: 0;
     }
