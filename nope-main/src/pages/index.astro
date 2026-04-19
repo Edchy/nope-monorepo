@@ -63,11 +63,11 @@ import LiftButton from "../components/LiftButton.astro";
             </span>
           </h1>
           <div class="hero__summary-group">
-            <p class="hero__summary">
-              Websites. Apps. Design. For folks who want it done right.
+            <p class="hero__summary hero__summary--lead">
+              Websites. Apps. Design. All things digital.
             </p>
             <p class="hero__summary">
-              Come with an idea or without one. Either works. Say hello and
+              We'd be happy to create your next screen thing. Come with an idea or without one. Either works. Say hello and
               we'll figure it out.
             </p>
           </div>
@@ -110,7 +110,7 @@ import LiftButton from "../components/LiftButton.astro";
     grid-template-rows: auto 1fr;
     align-items: start;
     row-gap: var(--space-8);
-    padding-top: var(--space-20);
+    padding-top: 60px;
     padding-bottom: var(--space-20);
   }
 
@@ -139,8 +139,8 @@ import LiftButton from "../components/LiftButton.astro";
 
   .hero__title-word {
     display: block;
-    --hero-title-word-weight: var(--font-weight-bold);
-    --hero-title-word-hover-weight: var(--font-weight-bold);
+    --hero-title-word-weight: var(--font-weight-regular);
+    --hero-title-word-hover-weight: var(--font-weight-regular);
     --hero-title-word-transition-duration: var(
       --motion-duration-hero-weight-shift
     );
@@ -214,7 +214,7 @@ import LiftButton from "../components/LiftButton.astro";
   .hero__deliberate-letter {
     display: inline-block;
     pointer-events: none;
-    font-variation-settings: "wght" var(--font-weight-bold);
+    font-variation-settings: "wght" var(--font-weight-regular);
     transition: font-variation-settings 0.2s var(--motion-ease-hero-deliberate)
       calc(var(--i) * 40ms);
   }
@@ -269,10 +269,10 @@ import LiftButton from "../components/LiftButton.astro";
   .hero__title {
     max-width: 9ch;
     font-size: clamp(4.2rem, 8vw, 7rem);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-regular);
     line-height: var(--line-height-display);
-    letter-spacing: -0.03em;
-    text-indent: -0.03em;
+    letter-spacing: -0.02em;
+    text-indent: -0.02em;
     text-wrap: balance;
     color: var(--color-text-primary);
   }
@@ -296,14 +296,16 @@ import LiftButton from "../components/LiftButton.astro";
 
   .hero__summary {
     min-width: 0;
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-base);
     line-height: var(--line-height-snug);
     text-wrap: pretty;
-    color: color-mix(
-      in srgb,
-      var(--color-text-primary) 72%,
-      var(--neutral-500)
-    );
+    color: var(--color-text-secondary);
+  }
+
+  .hero__summary--lead {
+    font-size: var(--font-size-lg);
+    color: var(--brand-green);
+    font-weight: var(--font-weight-bold);
   }
 
   .hero__actions {
@@ -386,21 +388,6 @@ import LiftButton from "../components/LiftButton.astro";
     }
   }
 
-  @media (max-width: 380px) {
-    .hero__copy {
-      justify-items: center;
-      text-align: center;
-    }
-
-    .hero__title,
-    .hero__summary {
-      margin-inline: auto;
-    }
-
-    .hero__actions {
-      justify-content: center;
-    }
-  }
 </style>
 
 <script>

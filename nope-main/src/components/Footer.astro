@@ -1,0 +1,85 @@
+---
+interface Props {
+  siteTitle?: string;
+  email?: string;
+}
+
+const {
+  siteTitle = "nope",
+  email = "hello@nope.digital",
+} = Astro.props;
+---
+
+<footer class="site-footer">
+  <div class="site-footer__shell layout-shell">
+    <div class="site-footer__grid layout-grid">
+      <span class="site-footer__title">{siteTitle}</span>
+      <div class="site-footer__meta">
+        <a href={`mailto:${email}`} class="site-footer__email">{email}</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: auto;
+  }
+
+  .site-footer__shell {
+    padding-block: var(--space-4);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--space-4);
+    align-items: center;
+    padding-block: var(--space-4);
+  }
+
+  .site-footer__title {
+    grid-column: 10 / 12;
+    font-size: calc(var(--font-size-base) * 2);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.03em;
+    color: var(--color-text-primary);
+    line-height: 1;
+  }
+
+  .site-footer__meta {
+    grid-column: 10 / 12;
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-start;
+    gap: var(--space-6);
+  }
+
+  .site-footer__email {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+  }
+
+  .site-footer__email {
+    text-decoration: none;
+    transition: color 0.1s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .site-footer__email:hover {
+      color: var(--color-text-primary);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .site-footer__title {
+      grid-column: 1 / -1;
+      justify-self: end;
+    }
+
+    .site-footer__meta {
+      grid-column: 1 / -1;
+      justify-content: flex-end;
+    }
+  }
+</style>
