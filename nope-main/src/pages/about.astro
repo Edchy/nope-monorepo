@@ -93,6 +93,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       color: var(--color-text-primary);
     }
 
+    :global([data-theme="experimental"]) .about-chunk-3 p,
+    :global([data-theme="experimental"]) .about-chunk-6 p {
+      color: var(--color-text-inverse);
+    }
+
     .about-page,
     .about-page .page-grid {
       overflow-anchor: none;

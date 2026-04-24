@@ -19,11 +19,9 @@ const {
 const currentPath = Astro.url.pathname;
 
 export const navLinks = [
-  { href: "/about", label: "I" },
-  { href: "/artificial", label: "AI" },
-  { href: "/internetgoodies", label: "vibes" },
-  { href: "/room", label: "3DRoom" },
   { href: "/writing", label: "Writing" },
+  { href: "/about", label: "About" },
+  { href: "/room", label: "3DRoom" },
   { href: "https://nope.digital", label: "Nope.digital", isExternal: true },
 ];
 ---
@@ -198,7 +196,7 @@ export const navLinks = [
   }
 
   :root {
-    --shell-aside-width: 15rem;
+    --shell-aside-width: 10rem;
     --shell-aside-visible-width: 15rem;
     --aside-toggle-size: 1.25rem;
     --aside-toggle-hit-size: 2.25rem;
@@ -289,7 +287,7 @@ export const navLinks = [
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
-    padding: var(--space-8);
+    padding: 1rem 0 1rem 1rem;
   }
 
   @media (min-width: 768px) {
@@ -350,7 +348,7 @@ export const navLinks = [
     display: block;
     padding-inline: var(--space-2);
     margin-inline: calc(var(--space-2) * -1);
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -438,10 +436,6 @@ export const navLinks = [
 
     .aside-toggle--open {
       right: var(--space-3);
-      border-color: transparent;
-      background: transparent;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
       transform: translate(0, -50%);
     }
 

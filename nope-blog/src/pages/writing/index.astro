@@ -6,16 +6,14 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 
-const cellVariants = ["cell--post-1", "cell--post-2", "cell--post-3"];
-const cols = 3;
-const getVariant = (i: number) => cellVariants[(i + Math.floor(i / cols)) % cellVariants.length];
+const getVariant = (i: number) => i % 2 === 0 ? "cell--light" : "cell--dark";
 ---
 
 <BaseLayout title="Writing — NOPE" description="Notes on building, design, and the web.">
   <div class="writing-grid">
     {posts.map((post, i) => (
       <a
-        href={`/writing/${post.id.replace(/\/index$/, "")}`}
+        href={`/writing/${post.id.replace(/\/index\.md$/, "").replace(/\.md$/, "")}`}
         class={`cell cell--lift ${getVariant(i)}`}
         data-lift-max="18"
       >
@@ -23,8 +21,7 @@ const getVariant = (i: number) => cellVariants[(i + Math.floor(i / cols)) % cell
           <p class="cell__eyebrow cell__meta">
             {post.data.date.toLocaleDateString("en-US", {
               year: "numeric",
-              month: "short",
-              day: "numeric",
+              month: "long",
             })}
           </p>
           <h2 class="cell__title" transition:name={`post-title-${post.id}`}>{post.data.title}</h2>
@@ -44,6 +41,7 @@ const getVariant = (i: number) => cellVariants[(i + Math.floor(i / cols)) % cell
     grid-auto-rows: 40svh;
     min-height: 100svh;
     gap: var(--space-2);
+    padding: var(--space-4) var(--space-4) var(--space-4) 2rem;
   }
 
   /* ── Base cell (mirrors index.astro) ── */
@@ -72,19 +70,16 @@ const getVariant = (i: number) => cellVariants[(i + Math.floor(i / cols)) % cell
   }
 
   /* ── Variants ── */
-  .cell--post-1 {
-    background: var(--brand-purple);
-    color: var(--neutral-50);
+  .cell--light {
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    border: var(--border-width-1) solid var(--color-border-default);
   }
 
-  .cell--post-2 {
+  .cell--dark {
     background: var(--neutral-900);
     color: var(--neutral-50);
-  }
-
-  .cell--post-3 {
-    background: var(--brand-green);
-    color: var(--neutral-900);
+    border: var(--border-width-1) solid var(--neutral-900);
   }
 
   /* ── Typography (mirrors index.astro) ── */
@@ -100,7 +95,7 @@ const getVariant = (i: number) => cellVariants[(i + Math.floor(i / cols)) % cell
 
   .cell__title {
     margin: 0;
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
     line-height: var(--line-height-tight);
     letter-spacing: -0.02em;
@@ -112,6 +107,10 @@ const getVariant = (i: number) => cellVariants[(i + Math.floor(i / cols)) % cell
     margin: 0;
     line-height: var(--line-height-relaxed);
     text-transform: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .cell__meta {
@@ -121,6 +120,11 @@ const getVariant = (i: number) => cellVariants[(i + Math.floor(i / cols)) % cell
     line-height: var(--line-height-relaxed);
     color: currentColor;
     opacity: 0.62;
+  }
+
+  .cell__eyebrow {
+    color: var(--brand-green);
+    opacity: 1;
   }
 
   /* ── Responsive ── */

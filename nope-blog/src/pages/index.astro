@@ -42,12 +42,6 @@ const latestPost = posts[0];
       </a>
     )}
 
-    <!-- 3: Art Int -->
-    <a href="/artificial" class="cell cell--dark cell--lift" data-lift-max="18">
-      <span class="cell__label-lg">AI</span>
-      <span class="cell__sublabel cell__meta">人工知能 - man-made wisdom </span>
-    </a>
-
     <!-- 4: Cycling quotes -->
     <div class="cell cell--quote" id="quote-cell" data-quotes={JSON.stringify(quotes)}>
       <blockquote class="cell__blockquote" id="quote-text"></blockquote>
@@ -102,8 +96,8 @@ const latestPost = posts[0];
     grid-column: span 2;
     justify-content: stretch;
     padding: 0;
-    background: var(--neutral-900);
-    color: var(--neutral-50);
+    background: var(--color-background);
+    color: var(--color-text-primary);
     transition: background-color 0.45s ease;
   }
 
@@ -159,9 +153,10 @@ const latestPost = posts[0];
 
   /* ── Quote cell ── */
   .cell--quote {
+    grid-column: span 2;
     background: var(--color-background);
     color: var(--color-text-primary);
-    justify-content: space-between;
+    justify-content: center;
     padding: var(--space-8) var(--space-6);
     transition:
       background-color 0.45s ease,
@@ -184,13 +179,6 @@ const latestPost = posts[0];
   .cell--gallery {
     background: var(--neutral-800);
     color: var(--neutral-50);
-    gap: var(--space-2);
-  }
-
-  /* ── Dark / Art Int cell ── */
-  .cell--dark {
-    background: var(--brand-green);
-    color: var(--brand-purple);
     gap: var(--space-2);
   }
 
@@ -242,7 +230,7 @@ const latestPost = posts[0];
 
     .cell--quote {
       grid-column: 1;
-      grid-row: 1;
+      grid-row: 1 / 3;
     }
 
     .cell--gallery {
@@ -250,10 +238,6 @@ const latestPost = posts[0];
       grid-row: 1;
     }
 
-    .cell--dark {
-      grid-column: 1;
-      grid-row: 2;
-    }
   }
 
   @media (max-width: 480px) {
@@ -266,22 +250,17 @@ const latestPost = posts[0];
 
     .cell--post,
     .cell--gallery,
-    .cell--dark,
     .cell--quote,
     .cell--voxel {
       grid-column: 1;
     }
 
     .cell--post {
-      grid-row: 4;
+      grid-row: 3;
     }
 
     .cell--gallery {
       grid-row: 2;
-    }
-
-    .cell--dark {
-      grid-row: 3;
     }
 
     .cell--quote {
@@ -289,7 +268,7 @@ const latestPost = posts[0];
     }
 
     .cell--voxel {
-      grid-row: 5;
+      grid-row: 4;
       min-height: 60vw;
     }
 
@@ -297,7 +276,6 @@ const latestPost = posts[0];
       min-height: 18rem;
     }
 
-    .cell--dark,
     .cell--gallery,
     .cell--post {
       min-height: 12rem;
