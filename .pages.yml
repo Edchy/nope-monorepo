@@ -16,7 +16,7 @@ content:
     type: collection
     path: content/blog
     filename:
-      template: "{primary}/index.md"
+      template: "{primary}.md"
       field: true
     view:
       primary: title

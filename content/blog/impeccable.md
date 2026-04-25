@@ -1,10 +1,10 @@
 ---
-title: Impeccable
-description: A sweet skill
+title: "Most of them are forgettable. One is not."
+description: "Skills are portable instruction sets for AI coding agents. Here is why that matters, and one skill that actually gets design right."
 date: 2026-04-25
+tags: [ai, tools, design]
 draft: false
 ---
-```markdown
 
 A skill is a set of instructions you install into an AI coding agent. Not a plugin. Not a model change. Just a structured brief that tells the agent how to think about a specific domain.
 
@@ -34,9 +34,11 @@ That assumption is what Impeccable challenges.
 
 ## What Impeccable does
 
-[Impeccable]([[https://impeccable.style/](https://impeccable.style/)](https://impeccable.style/](https://impeccable.style/))) is an open-source design skill for AI coding agents. You install it with one command:
+[Impeccable](https://impeccable.style/) is an open-source design skill for AI coding agents. You install it with one command:
 
-```npx skills add pbakaus/impeccable```
+```
+npx skills add pbakaus/impeccable
+```
 
 Then you run `/impeccable teach`. That command scans your project, reads your existing design tokens and components, and gives the agent a working understanding of your system. Not a generic understanding. Yours.
 
@@ -71,5 +73,3 @@ Design is where that gap is widest. Most models have read enough code to be usef
 Impeccable fills that gap. It is free, Apache 2.0, and works across every major AI coding tool.
 
 That is the whole thing. Install it and see what your agent does differently.
-
-```
