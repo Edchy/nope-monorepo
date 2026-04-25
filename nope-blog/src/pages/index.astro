@@ -35,8 +35,7 @@ const latestPost = posts[0];
         <p class="cell__date cell__meta cell__meta--end">
           {latestPost.data.date.toLocaleDateString("en-US", {
             year: "numeric",
-            month: "short",
-            day: "numeric",
+            month: "long",
           })}
         </p>
       </a>
@@ -156,7 +155,7 @@ const latestPost = posts[0];
     grid-column: span 2;
     background: var(--color-background);
     color: var(--color-text-primary);
-    justify-content: center;
+    justify-content: space-between;
     padding: var(--space-8) var(--space-6);
     transition:
       background-color 0.45s ease,
