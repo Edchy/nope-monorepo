@@ -1,5 +1,5 @@
 ---
-title: "Most of them are forgettable. One is not."
+title: "Your agent doesn't know what good looks like"
 description: "Skills are portable instruction sets for AI coding agents. Here is why that matters, and one skill that actually gets design right."
 date: 2026-04-25
 tags: [ai, tools, design]

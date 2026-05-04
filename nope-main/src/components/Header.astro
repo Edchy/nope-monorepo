@@ -1,4 +1,10 @@
 ---
+import {
+  clearPageScrollLock,
+  lockPageScroll,
+  unlockPageScroll,
+} from "@nope/ui/src/scroll-lock";
+
 interface NavLink {
   href: string;
   label: string;
@@ -425,7 +431,7 @@ const currentPath = Astro.url.pathname;
             nav.classList.add("is-open");
             nav.setAttribute("aria-hidden", "false");
             trigger.setAttribute("aria-expanded", "true");
-            document.body.style.overflow = "hidden";
+            lockPageScroll();
             if (header) header.style.zIndex = "101";
           };
 
@@ -435,7 +441,7 @@ const currentPath = Astro.url.pathname;
             nav.classList.remove("is-open");
             nav.setAttribute("aria-hidden", "true");
             trigger.setAttribute("aria-expanded", "false");
-            document.body.style.overflow = "";
+            unlockPageScroll();
             if (header) {
               setTimeout(() => {
                 header.style.zIndex = "";
@@ -460,7 +466,7 @@ const currentPath = Astro.url.pathname;
                     nav!.classList.remove("is-open");
                     nav!.setAttribute("aria-hidden", "true");
                     trigger.setAttribute("aria-expanded", "false");
-                    document.body.style.overflow = "";
+                    clearPageScrollLock();
                     if (header) header.style.zIndex = "";
                     document.removeEventListener("astro:after-swap", onAfterSwap);
                   };
@@ -498,7 +504,7 @@ const currentPath = Astro.url.pathname;
 
         cleanup = () => {
           controller.abort();
-          document.body.style.overflow = "";
+          clearPageScrollLock();
         };
       }
 
