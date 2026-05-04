@@ -11,5 +11,5 @@ images:
   - "./tow1.avif"
   - "./tow2.avif"
   - "./tow3.avif"
-url: "https://edchy.github.io/to.w/"
+url: "https://tovewatte.se"
 ---

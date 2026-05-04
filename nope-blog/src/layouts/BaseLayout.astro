@@ -2,11 +2,6 @@
 import { Font } from "astro:assets";
 import "../styles/global.css";
 import Footer from "@nope/ui/src/Footer.astro";
-import {
-  clearPageScrollLock,
-  lockPageScroll,
-  unlockPageScroll,
-} from "@nope/ui/src/scroll-lock";
 import { ClientRouter } from "astro:transitions";
 
 interface Props {
@@ -647,6 +642,7 @@ export const navLinks = [
 </style>
 
 <script>
+  import { clearPageScrollLock, lockPageScroll, unlockPageScroll } from "@nope/ui/src/scroll-lock";
   {
     let cleanup: (() => void) | undefined;
     const desktopAsideStorageKey = "nope-blog:desktop-aside-collapsed";

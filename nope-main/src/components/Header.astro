@@ -1,10 +1,4 @@
 ---
-import {
-  clearPageScrollLock,
-  lockPageScroll,
-  unlockPageScroll,
-} from "@nope/ui/src/scroll-lock";
-
 interface NavLink {
   href: string;
   label: string;
@@ -391,6 +385,7 @@ const currentPath = Astro.url.pathname;
 </style>
 
 <script>
+  import { clearPageScrollLock, lockPageScroll, unlockPageScroll } from "@nope/ui/src/scroll-lock";
   {
     const mainHeader = document.querySelector<HTMLElement>(".site-header");
     if (mainHeader) {

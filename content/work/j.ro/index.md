@@ -12,5 +12,5 @@ images:
   - "./jro2.avif"
   - "./jro3.avif"
   - "./jro4.avif"
-url: "https://edchy.github.io/j.ro/"
+url: "https://edchy.github.io/J.Ro/"
 ---
