@@ -135,6 +135,11 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
     color: var(--color-text-primary);
   }
 
+  :global([data-theme="experimental"]) .work-item-featured.is-hovered .project-year,
+  :global([data-theme="experimental"]) .work-item-featured.is-hovered .project-type {
+    color: var(--brand-green);
+  }
+
   .work-page,
   .work-page .page-grid,
   .work-page .work-list {

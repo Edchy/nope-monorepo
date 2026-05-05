@@ -22,7 +22,7 @@ const { title, description, date, postId, prev, next } = Astro.props;
 
 <BaseLayout title={title} description={description} noFooter>
   <article class="post">
-    <header class="post__header post__constrained">
+    <header class="post__header">
       <h1 class="post__title" transition:name={postId ? `post-title-${postId}` : undefined}>{title}</h1>
       {description && <p class="post__desc">{description}</p>}
       {date && <p class="post__date">{date}</p>}
@@ -86,9 +86,10 @@ const { title, description, date, postId, prev, next } = Astro.props;
   }
 
   .post__title {
+    font-family: var(--font-newsreader);
     font-size: clamp(2.5rem, 8vw, 6rem);
     font-weight: var(--font-weight-bold);
-    line-height: 1.1;
+    line-height: 1.05;
     letter-spacing: -0.03em;
     margin: 0;
     color: var(--color-text-primary);
@@ -125,11 +126,11 @@ const { title, description, date, postId, prev, next } = Astro.props;
     color: var(--color-text-primary);
   }
 
-  /* Reset headings to base font */
   .post__body :global(h2),
   .post__body :global(h3),
   .post__body :global(h4) {
-    font-family: var(--font-nature);
+    font-family: var(--font-newsreader);
+    font-weight: var(--font-weight-bold);
   }
 
   /* Paragraphs */

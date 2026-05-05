@@ -12,16 +12,32 @@ export default defineConfig({
   },
   fonts: [
     {
-      name: "ZT Nature",
-      cssVariable: "--font-zt-nature",
+      name: "Chillax",
+      cssVariable: "--font-chillax",
       provider: fontProviders.local(),
       fallbacks: ["system-ui", "sans-serif"],
       options: {
         variants: [
           {
             style: "normal",
-            weight: "100 900",
-            src: ["./src/assets/fonts/ZT Nature Variable-VF.woff2"],
+            weight: "200 700",
+            src: ["./src/assets/fonts/Chillax-Variable.ttf"],
+            display: "swap",
+          },
+        ],
+      },
+    },
+    {
+      name: "Newsreader",
+      cssVariable: "--font-newsreader",
+      provider: fontProviders.local(),
+      fallbacks: ["Georgia", "serif"],
+      options: {
+        variants: [
+          {
+            style: "normal",
+            weight: "400",
+            src: ["./src/assets/fonts/Newsreader_9pt-Regular.ttf"],
             display: "swap",
           },
         ],
