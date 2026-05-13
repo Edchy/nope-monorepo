@@ -7,38 +7,16 @@ export default defineConfig({
   site: "https://blog.nope.digital",
   fonts: [
     {
-      name: "Chillax",
-      cssVariable: "--font-chillax",
+      name: "ZT Nature",
+      cssVariable: "--font-zt-nature",
       provider: fontProviders.local(),
       fallbacks: ["system-ui", "sans-serif"],
       options: {
         variants: [
           {
             style: "normal",
-            weight: "200 700",
-            src: ["./src/assets/fonts/Chillax-Variable.ttf"],
-            display: "swap",
-          },
-        ],
-      },
-    },
-    {
-      name: "Newsreader",
-      cssVariable: "--font-newsreader",
-      provider: fontProviders.local(),
-      fallbacks: ["Georgia", "serif"],
-      options: {
-        variants: [
-          {
-            style: "normal",
-            weight: "400",
-            src: ["./src/assets/fonts/Newsreader_9pt-Regular.ttf"],
-            display: "swap",
-          },
-          {
-            style: "normal",
-            weight: "700",
-            src: ["./src/assets/fonts/Newsreader_24pt-Bold.ttf"],
+            weight: "100 900",
+            src: ["./src/assets/fonts/ZT Nature Variable-VF.woff2"],
             display: "swap",
           },
         ],

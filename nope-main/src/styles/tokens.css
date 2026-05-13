@@ -132,7 +132,7 @@
   /* Layout */
   --max-width-content: 720px;
   --max-width-wide: 1024px;
-  --max-width-layout: 1200px;
+  --max-width-layout: 2000px;
 
   /* Motion */
   --motion-duration-page-transition: 0.55s;
@@ -149,8 +149,8 @@
   --motion-ease-footer-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Font families */
-  --font-family-base: var(--font-newsreader, Georgia, serif);
-  --font-family-display: var(--font-chillax, system-ui, sans-serif);
+  --font-family-base: var(--font-zt-nature, system-ui, sans-serif);
+  --font-family-display: var(--font-zt-nature, system-ui, sans-serif);
 
   /* Hero */
   --hero-word-stagger: 80ms;

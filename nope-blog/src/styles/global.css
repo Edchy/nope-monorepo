@@ -32,8 +32,7 @@ body {
 }
 
 .site-footer {
-  overflow: clip;
-  contain: layout style paint;
+  contain: layout style;
 }
 
 .site-footer__wordmark {

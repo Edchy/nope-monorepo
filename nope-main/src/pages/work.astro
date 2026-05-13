@@ -280,8 +280,9 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
   }
 
   :global(.work-list-featured__pill) {
-    position: absolute;
-    inset-inline: calc(var(--space-4) * -1);
+    position: fixed;
+    left: 0;
+    right: 0;
     top: 0;
     z-index: 0;
     background: var(--color-background-surface);
@@ -303,7 +304,11 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
   .work-item-featured {
     position: relative;
     z-index: 1;
-    padding-block: var(--space-3);
+    padding-block: var(--space-4);
+  }
+
+  .work-item-featured .project-name {
+    font-size: var(--font-size-lg);
   }
 
   .work-item-archive {
@@ -438,8 +443,8 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
   function initWorkPreview() {
     cleanupWorkPreview?.();
 
-    const items = document.querySelectorAll(
-      ".work-item-featured .work-item-main",
+    const items = document.querySelectorAll<HTMLElement>(
+      ".work-item-featured",
     );
     const preview = document.getElementById("preview");
     const media = document.getElementById("preview-media");
@@ -462,11 +467,9 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
     }
 
     const movePillTo = (li: HTMLElement) => {
-      if (!pill || !featuredList) return;
-      const listRect = featuredList.getBoundingClientRect();
+      if (!pill) return;
       const liRect = li.getBoundingClientRect();
-      const offsetY = liRect.top - listRect.top + featuredList.scrollTop;
-      pill.style.transform = `translateY(${offsetY}px)`;
+      pill.style.transform = `translateY(${liRect.top}px)`;
       pill.style.height = `${liRect.height}px`;
       pill.classList.add("is-visible");
     };
@@ -649,9 +652,17 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
       rafId = requestAnimationFrame(updatePreviewPosition);
     };
 
+    const handleScroll = () => {
+      updatePreviewPosition();
+      if (activeItem) {
+        const li = activeItem.closest<HTMLElement>(".work-item-featured");
+        if (li) movePillTo(li);
+      }
+    };
+
     document.addEventListener("mousemove", handleMouseMove, { signal });
     window.addEventListener("resize", updatePreviewPosition, { signal });
-    window.addEventListener("scroll", updatePreviewPosition, { signal, passive: true });
+    window.addEventListener("scroll", handleScroll, { signal, passive: true });
     featuredList?.addEventListener(
       "mouseleave",
       () => {
@@ -670,19 +681,16 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
       item.addEventListener(
         "mouseenter",
         () => {
-          const el = item as HTMLElement;
+          const dataEl = item.querySelector<HTMLElement>(".work-item-main");
           const mode = getPreviewMode();
-          const color = el.dataset.color ?? "";
-          const href = el.dataset.href ?? "";
-          const text = el.dataset.desc;
-          const images = readImages(el.dataset.images);
+          const color = dataEl?.dataset.color ?? "";
+          const href = dataEl?.dataset.href ?? "";
+          const text = dataEl?.dataset.desc;
+          const images = readImages(dataEl?.dataset.images);
 
-          const li = el.closest<HTMLElement>(".work-item-featured");
-          if (li) {
-            document.querySelectorAll(".work-item-featured.is-hovered").forEach((el) => el.classList.remove("is-hovered"));
-            li.classList.add("is-hovered");
-            movePillTo(li);
-          }
+          document.querySelectorAll(".work-item-featured.is-hovered").forEach((el) => el.classList.remove("is-hovered"));
+          item.classList.add("is-hovered");
+          movePillTo(item);
 
           if (mode === "none") {
             stopSlideshow();
@@ -698,10 +706,8 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
           if (desc) desc.textContent = text ?? "";
           preview.classList.add("visible");
 
-          if (li) {
-            activeItem = li;
-            updatePreviewPosition();
-          }
+          activeItem = item;
+          updatePreviewPosition();
         },
         { signal },
       );

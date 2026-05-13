@@ -69,8 +69,7 @@ export const navLinks = [
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <Font cssVariable="--font-chillax" />
-    <Font cssVariable="--font-newsreader" />
+    <Font cssVariable="--font-zt-nature" preload={true} />
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -109,6 +108,7 @@ export const navLinks = [
       </button>
     </header>
 
+    <div class="site-frame">
     <div class="shell">
       <aside id="shell-aside" class="shell__aside" transition:persist="shell-aside">
         <div class="shell__aside-inner">
@@ -163,6 +163,7 @@ export const navLinks = [
         <slot />
       </main>
     </div>
+    </div>
 
     <button
       type="button"
@@ -189,6 +190,16 @@ export const navLinks = [
 </html>
 
 <style>
+  .site-frame {
+    max-width: var(--max-width-layout);
+    margin-inline: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
   @property --shell-aside-visible-width {
     syntax: "<length>";
     inherits: false;
@@ -451,7 +462,7 @@ export const navLinks = [
 
     .aside-toggle--closed {
       position: fixed;
-      left: var(--space-2);
+      left: max(var(--space-2), calc(50vw - var(--max-width-layout) / 2 + var(--space-2)));
       border-color: transparent;
       background: color-mix(in oklch, var(--brand-purple) 50%, transparent);
       color: var(--neutral-50);
@@ -460,7 +471,7 @@ export const navLinks = [
       pointer-events: none;
     }
 
-    .shell.shell--aside-collapsed ~ .aside-toggle--closed {
+    .site-frame:has(.shell.shell--aside-collapsed) ~ .aside-toggle--closed {
       opacity: 1;
       pointer-events: auto;
       transform: translate(0, -50%);

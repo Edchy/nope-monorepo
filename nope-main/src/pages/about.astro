@@ -12,22 +12,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <h1 class="page-title visually-hidden">About</h1>
       <div class="about-chunk-1">
         <p>
-          Nope digital is a small studio. We make websites, apps, and digital things.
+          Nope is a small studio (one person to be precise). I make websites, apps, anything that renders on a screen.
         </p>
-      </div>
-
-      <div class="about-chunk-2">
-        <p>
-          Digital comes from <em>digitus</em>, Latin for finger. Fingers became
-          digits, digits became numbers, and numbers became everything on a
-          screen. Ones and zeros.
-        </p>
-        <p> We like that. We still make things with our fingers.</p>
       </div>
 
       <div class="about-chunk-3">
         <p>
-          The name nope is intentional. We say no to most things. Not out of
+          The name nope is intentional. I say no to most things. Not out of
           stubbornness. Out of conviction.
         </p>
       </div>
@@ -38,7 +29,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           Pages that fill space. Design that decorates instead of communicates.
         </p>
         <p>
-          We remove all of it. What's left is usually better.
+          I try to remove all of it. What's left is usually better.
         </p>
       </div>
 
@@ -52,14 +43,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </p>
 
         <p>
-          We apply this to everything: the work we take on, the words we write,
-          the pixels we place.
+          I apply this to everything: life, the work i take on, the words i write,
+          the pixels i place.
         </p>
       </div>
 
       <div class="about-chunk-6">
         <p>
-          We take design seriously. Not as decoration. As communication.
+          I take design seriously. Not as decoration. As communication.
         </p>
 
         <p>
@@ -80,8 +71,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <p>
           The name wasn't a strategy. It was just the first honest thing.
         </p>
-        <span class="signature">— Eddie, CEOO (Chief of Editing Out the Obvious
-)</span>
       </div>
     </div>
   </section>
@@ -114,7 +103,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     .about-chunk-1,
-    .about-chunk-2,
     .about-chunk-3,
     .about-chunk-4,
     .about-chunk-5,
@@ -128,7 +116,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     .about-chunk-1 p { color: var(--neutral-900); font-weight: var(--font-weight-bold); }
-    .about-chunk-2 p { color: var(--brand-green); font-weight: var(--font-weight-bold); }
     .about-chunk-3 p { color: var(--brand-purple); font-weight: var(--font-weight-bold); }
     .about-chunk-4 p { color: var(--neutral-900); font-weight: var(--font-weight-bold); }
     .about-chunk-5 p { color: var(--brand-green); font-weight: var(--font-weight-bold); }
@@ -136,15 +123,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     .about-chunk-7 p { color: var(--neutral-900); font-weight: var(--font-weight-bold); }
 
     .about-chunk-1 {
-      grid-column: 3 / 8;
-      grid-row: 2;
-      padding-top: 0;
-    }
-
-    .about-chunk-2 {
       grid-column: 6 / 11;
-      grid-row: 3;
+      grid-row: 2;
       margin-left: auto;
+      padding-top: 0;
     }
 
     .about-chunk-3 {
@@ -174,15 +156,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       grid-row: 8;
     }
 
-    .signature {
-      display: block;
-      margin-top: var(--space-10);
-      color: var(--color-text-secondary);
-      font-style: italic;
-      letter-spacing: 0.02em;
-      font-size: var(--font-size-sm);
-    }
-
     @media (max-width: 1024px) {
       .about-chunk-1,
       .about-chunk-3,
@@ -191,7 +164,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         grid-column: 3 / 9;
       }
 
-      .about-chunk-2,
       .about-chunk-4,
       .about-chunk-6 {
         grid-column: 3 / 9;
@@ -205,7 +177,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       .page-title,
       .about-chunk-1,
-      .about-chunk-2,
       .about-chunk-3,
       .about-chunk-4,
       .about-chunk-5,
@@ -218,7 +189,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         margin-inline: auto;
       }
 
-      .about-chunk-2,
       .about-chunk-3,
       .about-chunk-4,
       .about-chunk-5,
@@ -228,12 +198,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         text-align: left;
       }
 
-      .signature {
-        margin-top: var(--space-6);
-      }
-
       .about-chunk-1 p,
-      .about-chunk-2 p,
       .about-chunk-3 p,
       .about-chunk-4 p,
       .about-chunk-5 p,

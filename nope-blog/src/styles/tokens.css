@@ -121,10 +121,10 @@
   /* Layout */
   --max-width-content: 720px;
   --max-width-wide: 1024px;
-  --max-width-layout: 1200px;
+  --max-width-layout: 2000px;
 
   /* Font families */
-  --font-family-base: var(--font-chillax, system-ui, sans-serif);
+  --font-family-base: var(--font-zt-nature, system-ui, sans-serif);
 
   /* Motion */
   --motion-ease-decelerate: cubic-bezier(0.19, 1, 0.22, 1);
