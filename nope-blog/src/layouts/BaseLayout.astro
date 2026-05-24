@@ -375,6 +375,12 @@ export const navLinks = [
     color: var(--2);
   }
 
+  @media (max-width: 767px) {
+    .shell__nav-link:hover {
+      color: var(--2);
+    }
+  }
+
   .shell__nav-link-text {
     display: inline-flex;
     align-items: baseline;
@@ -558,7 +564,8 @@ export const navLinks = [
     }
 
     .shell__nav-indicator {
-      inset-inline: var(--space-4);
+      left: -1rem;
+      right: 0;
     }
 
     .mobile-header {
@@ -607,7 +614,7 @@ export const navLinks = [
     }
 
     .menu-trigger[aria-expanded="true"] {
-      color: var(--color-text-primary);
+      color: var(--3);
     }
 
     .menu-trigger .menu-icon__top,
@@ -807,7 +814,8 @@ export const navLinks = [
         const target = targetLink;
         const targetRect = target.getBoundingClientRect();
         const navListRect = navList.getBoundingClientRect();
-        navIndicator.style.transform = `translateY(${targetRect.top - navListRect.top}px) rotate(2deg)`;
+        const rotate = desktopMedia.matches ? " rotate(2deg)" : "";
+        navIndicator.style.transform = `translateY(${targetRect.top - navListRect.top}px)${rotate}`;
         navIndicator.style.height = `${targetRect.height}px`;
         navIndicator.classList.add("is-visible");
       }

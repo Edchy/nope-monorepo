@@ -163,9 +163,6 @@ const latestPost = posts[0];
     color: var(--3);
     justify-content: space-between;
     padding: var(--space-8) var(--space-6);
-    transition:
-      background-color 0.45s ease,
-      color 0.45s ease;
   }
 
   .cell__blockquote {
@@ -216,12 +213,7 @@ const latestPost = posts[0];
       color: var(--2);
     }
 
-    .cell--quote:hover {
-      background: var(--3);
-      color: var(--2);
-    }
-
-    .cell--lift:is(:hover, :focus-visible) {
+.cell--lift:is(:hover, :focus-visible) {
       z-index: 2;
     }
   }
@@ -270,16 +262,16 @@ const latestPost = posts[0];
       grid-column: 1;
     }
 
-    .cell--post {
-      grid-row: 3;
+    .cell--quote {
+      grid-row: 1;
     }
 
-    .cell--gallery {
+    .cell--post {
       grid-row: 2;
     }
 
-    .cell--quote {
-      grid-row: 1;
+    .cell--gallery {
+      grid-row: 3;
     }
 
     .cell--voxel {

@@ -27,6 +27,7 @@ function postHref(id: string) {
       </p>
     </header>
 
+    <h3 class="section-heading">Recent posts</h3>
     <div class="writing-grid">
       {recentPosts.map((post, i) => (
         <a
@@ -52,7 +53,7 @@ function postHref(id: string) {
 
     {olderPosts.length > 0 && (
       <section class="older-posts">
-        <h3 class="older-posts__heading">Older</h3>
+        <h3 class="older-posts__heading">Older posts</h3>
         <ul class="older-posts__list">
           {olderPosts.map((post) => (
             <li>
@@ -87,17 +88,28 @@ function postHref(id: string) {
   /* ── Header ── */
   .writing-header {
     padding: var(--space-10) var(--space-8) var(--space-6);
-    border-bottom: var(--border-width-1) solid color-mix(in oklch, var(--3) 30%, var(--2));
   }
 
   .writing-intro {
     margin: 0;
+    padding: var(--space-6);
     font-size: var(--font-size-sm);
     line-height: var(--line-height-relaxed);
     text-transform: none;
     max-width: 52ch;
     opacity: 0.55;
     letter-spacing: 0;
+  }
+
+  /* ── Section headings ── */
+  .section-heading {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: 0;
+    padding: var(--space-6) var(--space-6) var(--space-4);
   }
 
   /* ── Cards grid ── */
@@ -190,7 +202,7 @@ function postHref(id: string) {
 
   /* ── Older posts ── */
   .older-posts {
-    padding: var(--space-10) var(--space-8) var(--space-12);
+    padding: var(--space-6) var(--space-6) var(--space-12);
   }
 
   .older-posts__heading {
@@ -225,7 +237,11 @@ function postHref(id: string) {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     letter-spacing: 0.04em;
-    flex-shrink: 0;
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .older-posts__leader {
@@ -281,11 +297,19 @@ function postHref(id: string) {
       grid-template-columns: 1fr;
     }
 
-    .writing-header {
-      padding: var(--space-6) var(--space-4) var(--space-5);
+    .writing-grid .cell {
+      padding: var(--space-8) var(--space-6);
     }
 
-    .older-posts {
+    .writing-header {
+      padding: var(--space-6) var(--space-8) var(--space-5);
+    }
+
+    .writing-intro {
+      max-width: 100%;
+    }
+
+.older-posts {
       padding: var(--space-6) var(--space-4) var(--space-8);
     }
   }
