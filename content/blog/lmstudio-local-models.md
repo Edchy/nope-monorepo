@@ -4,6 +4,7 @@ description: "Downloaded LM Studio today, tried a Google Gemma model, and immedi
 date: 2026-05-01
 tags: [ai, local-models, tools]
 draft: false
+color: "1"
 ---
 
 Today I downloaded LM Studio and ran an AI model entirely on my MacBook Air. No internet required. No API. No subscription. Just my computer, doing the thing.
@@ -50,7 +51,7 @@ The model I downloaded was `google/gemma-4-e4b`. Let me break that down.
 
 **Google** made it. **Gemma** is their family of small, open-source models. And that word "small" is important. Gemma models are specifically built to run on limited hardware. Phones, tablets, edge devices. They're not Google's frontier AI (that's Gemini). Gemma is more like Google saying "here's a capable little model you can actually run yourself." So running it on a MacBook Air is actually quite fitting. This model was designed for exactly this kind of constrained environment.
 
-**4** is the version. **4b** means 4 billion parameters. A parameter is one of those numbers I mentioned above. As for the **e**: I'm not 100% sure. It likely marks a specific efficient variant, tuned to run fast on limited hardware. The naming conventions in this space are a bit all over the place. (idk, someone smarter than me probably knows.)
+`4` is the version. `4b` means 4 billion parameters. A parameter is one of those numbers I mentioned above. As for the `e`: I'm not 100% sure. It likely marks a specific efficient variant, tuned to run fast on limited hardware. The naming conventions in this space are a bit all over the place. (idk, someone smarter than me probably knows.)
 
 What I can tell you is that it used about 5GB of my RAM and generated responses noticeably slower than Claude. Which makes sense. It's a small model on a consumer laptop doing billions of calculations per response.
 
@@ -60,7 +61,7 @@ What I can tell you is that it used about 5GB of my RAM and generated responses 
 
 Models come in different sizes, measured in parameter count, usually written in billions (B). A 4B model has 4 billion parameters. A 70B model has seventy billion. Bigger generally means smarter. Bigger also means more memory to run it, more disk space to store it, and slower generation on the same hardware.
 
-There's a compression trick called quantization. Full precision models store each parameter as a large number. Quantization squashes them down to smaller numbers, making the whole file smaller and faster to run, at a tiny cost to quality. Most models you download through LM Studio are already quantized. A Q4 quantized model takes roughly 0.6 to 0.7GB per billion parameters. So a 4B model at Q4 is around 2.5GB on disk.
+There's a compression trick called **quantization**. Full precision models store each parameter as a large number. Quantization squashes them down to smaller numbers, making the whole file smaller and faster to run, at a tiny cost to quality. Most models you download through LM Studio are already quantized. A Q4 quantized model takes roughly 0.6 to 0.7GB per billion parameters. So a 4B model at Q4 is around 2.5GB on disk.
 
 The model I ran was around 3GB on disk, 5GB in memory once loaded. That 5GB sits in RAM the entire time the model is running. On a 16GB MacBook Air, that leaves 11GB for everything else. Manageable, but you feel it.
 

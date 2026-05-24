@@ -24,6 +24,9 @@
   --brand-green: oklch(0.767 0.261 142.495);
   --experimental-3: oklch(0.75 0.1 125);
 
+  --2: #0000d2;
+  --3: #ffff04;
+
   /* Spacing primitives */
   --space-1: 4px;
   --space-2: 8px;
@@ -125,6 +128,7 @@
 
   /* Font families */
   --font-family-base: var(--font-zt-nature, system-ui, sans-serif);
+  --font-family-prose: var(--font-literata, Georgia, serif);
 
   /* Motion */
   --motion-ease-decelerate: cubic-bezier(0.19, 1, 0.22, 1);

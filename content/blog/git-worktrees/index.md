@@ -3,10 +3,11 @@ title: "Multiple git branches"
 description: "Git lets you have multiple branches checked out at the same time. Here is how that works and when it's useful."
 date: 2026-03-15
 draft: false
+color: "6"
 ---
 Normally in Git, you can only be on one branch at a time. If you need to switch to something else, you have to set aside your current work first.
 
-Git worktrees let you skip that.
+**Git worktrees** let you skip that.
 
 ---
 

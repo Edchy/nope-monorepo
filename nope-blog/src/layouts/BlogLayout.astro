@@ -23,9 +23,15 @@ const { title, description, date, postId, prev, next } = Astro.props;
 <BaseLayout title={title} description={description} noFooter>
   <article class="post">
     <header class="post__header">
-      <h1 class="post__title" transition:name={postId ? `post-title-${postId}` : undefined}>{title}</h1>
-      {description && <p class="post__desc">{description}</p>}
-      {date && <p class="post__date">{date}</p>}
+      <div class="post__header-content">
+        <h1 class="post__title" transition:name={postId ? `post-title-${postId}` : undefined}>{title}</h1>
+        {(date || description) && (
+          <div class="post__meta">
+            {date && <p class="post__date">{date}</p>}
+            {description && <p class="post__desc">{description}</p>}
+          </div>
+        )}
+      </div>
     </header>
     <div class="post__body post__constrained">
       <slot />
@@ -62,7 +68,11 @@ const { title, description, date, postId, prev, next } = Astro.props;
     width: 100%;
     display: flex;
     flex-direction: column;
-    padding-inline: 1rem;
+  }
+
+  .post__body.post__constrained,
+  .post-nav {
+    padding-inline: clamp(1.25rem, 5vw, 2rem);
   }
 
   .post__constrained {
@@ -77,60 +87,77 @@ const { title, description, date, postId, prev, next } = Astro.props;
 
   /* ── Header ── */
   .post__header {
+    width: 100%;
     min-height: 100svh;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    margin-bottom: clamp(2rem, 4vw, 2.75rem);
+    align-items: flex-end;
+    padding: clamp(2rem, 5vw, 3rem);
+    margin-bottom: clamp(2.5rem, 6vw, 4rem);
+    background: var(--2);
+    color: var(--3);
+  }
+
+  .post__header-content {
+    width: 100%;
   }
 
   .post__title {
     font-family: var(--font-zt-nature);
-    font-size: clamp(2.5rem, 8vw, 6rem);
-    font-weight: var(--font-weight-bold);
-    line-height: 1.05;
-    letter-spacing: -0.03em;
+    font-size: clamp(2.75rem, 8vw, 6.5rem);
+    font-weight: var(--font-weight-black);
+    line-height: 0.9;
+    letter-spacing: -0.035em;
     margin: 0;
-    color: var(--color-text-primary);
-    align-self: center;
-    text-align: center;
-  }
-
-  .post__desc {
-    margin: 0.75rem 0 0;
-    font-size: var(--font-size-base);
-    line-height: 1.7;
-    color: var(--color-text-secondary);
-    align-self: center;
-    text-align: center;
-    max-width: 48ch;
+    color: inherit;
     text-wrap: balance;
   }
 
+  @media (max-width: 767px) {
+    .post__header {
+      align-items: center;
+    }
+    .post__meta {
+      display: none;
+    }
+    .post__body.post__constrained,
+    .post-nav {
+      padding-inline: var(--space-4);
+    }
+  }
+
+  .post__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: clamp(2rem, 5vw, 3rem);
+  }
+
   .post__date {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
-    color: var(--brand-green);
-    letter-spacing: 0.08em;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: inherit;
+    opacity: 1;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    margin: 0.9rem 0 0;
-    align-self: center;
+    margin: 0;
+  }
+
+  .post__desc {
+    font-size: var(--font-size-base);
+    line-height: 1.55;
+    color: inherit;
+    opacity: 0.6;
+    margin: 0;
+    max-width: 52ch;
+    text-wrap: pretty;
   }
 
   /* ── Body prose ── */
   .post__body {
-    font-family: var(--font-zt-nature);
+    font-family: var(--font-family-prose);
     font-size: var(--font-size-base);
     line-height: 1.75;
     color: var(--color-text-primary);
-  }
-
-  .post__body :global(h2),
-  .post__body :global(h3),
-  .post__body :global(h4) {
-    font-family: var(--font-zt-nature);
-    font-weight: var(--font-weight-bold);
   }
 
   /* Paragraphs */
@@ -138,39 +165,55 @@ const { title, description, date, postId, prev, next } = Astro.props;
     margin: 0 0 1.5em;
   }
 
-  /* Headings — hierarchy through contrast in size, weight, and space above */
-  .post__body :global(h2) {
-    font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+  /* Headings */
+  .post__body :global(h2),
+  .post__body :global(h3),
+  .post__body :global(h4),
+  .post__body :global(h5) {
+    font-family: var(--font-zt-nature);
     font-weight: var(--font-weight-bold);
-    letter-spacing: -0.02em;
-    line-height: 1.3;
-    margin: 3.5em 0 0.6em;
+    line-height: 1.25;
     color: var(--color-text-primary);
+    text-wrap: balance;
+  }
+
+  .post__body :global(h2) {
+    font-size: var(--font-size-xl);
+    letter-spacing: -0.025em;
+    margin: 3em 0 0.35em;
   }
 
   .post__body :global(h3) {
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: -0.01em;
-    line-height: 1.4;
-    margin: 2.5em 0 0.4em;
-    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    letter-spacing: -0.02em;
+    margin: 2.5em 0 0.25em;
   }
 
   .post__body :global(h4) {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: -0.01em;
+    margin: 2em 0 0.2em;
+  }
+
+  .post__body :global(h5) {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    line-height: 1.4;
-    margin: 2em 0 0.4em;
+    letter-spacing: 0;
+    margin: 1.5em 0 0.2em;
     color: var(--color-text-secondary);
   }
 
-  /* Tighten spacing when heading immediately follows another heading */
+  /* Tighten when heading follows heading */
   .post__body :global(h2 + h3),
-  .post__body :global(h3 + h4) {
-    margin-top: 1em;
+  .post__body :global(h3 + h4),
+  .post__body :global(h4 + h5) {
+    margin-top: 0.75em;
+  }
+
+  /* First element — no extra top gap */
+  .post__body :global(> *:first-child) {
+    margin-top: 0;
   }
 
   /* Links */
@@ -254,7 +297,7 @@ const { title, description, date, postId, prev, next } = Astro.props;
     max-width: 100%;
     height: auto;
     display: block;
-    margin: 2.5em 0;
+    margin: 2.5em auto;
   }
 
   /* Strong / em */
@@ -262,16 +305,11 @@ const { title, description, date, postId, prev, next } = Astro.props;
     font-weight: var(--font-weight-semibold);
   }
 
-  /* Footnote-style italicised closing lines */
-  .post__body :global(p > em:only-child) {
+  /* Footnote-style italicised closing lines — use class="footnote" on the <em> */
+  .post__body :global(em.footnote) {
     font-size: var(--font-size-sm);
     color: var(--color-text-secondary);
     font-style: italic;
-  }
-
-  /* First paragraph after header — no extra top gap */
-  .post__body :global(p:first-child) {
-    margin-top: 0;
   }
 
   /* ── Post nav footer ── */
@@ -338,7 +376,7 @@ const { title, description, date, postId, prev, next } = Astro.props;
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     line-height: var(--line-height-tight);
-    color: var(--brand-green);
+    color: var(--color-text-primary);
   }
 
   @media (max-width: 768px) {

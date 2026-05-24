@@ -3,6 +3,7 @@ title: "How Claude Code Decides What to Listen To"
 description: "Claude Code reads several layers of instructions at once. Here is what they are and how they interact."
 date: 2026-02-03
 draft: false
+color: "1"
 ---
 When you use Claude Code, there isn't just one thing telling Claude how to behave. There's a whole stack of instructions layered on top of each other. Knowing how they work saves you a lot of confusion.
 
@@ -22,11 +23,11 @@ When you install a Claude Code plugin, it injects its own instructions into the 
 
 ### 3. Your Global CLAUDE.md
 
-Located at `~/.claude/CLAUDE.md`, this file is your personal layer. It loads in every Claude Code session regardless of what project you're in. Think of it as your standing preferences: how you like responses formatted, coding conventions you always follow, things you never want Claude to do.
+Located at `~/.claude/CLAUDE.md`, this file is your *personal* layer. It loads in every Claude Code session regardless of what project you're in. Think of it as your standing preferences: how you like responses formatted, coding conventions you always follow, things you never want Claude to do.
 
 ### 4. Your Project CLAUDE.md
 
-Located at the root of a project (or inside `.claude/CLAUDE.md`), this one is project-scoped. It only loads when you're working inside that specific project. This is where you put things like architecture decisions, project-specific conventions, or notes about the codebase that Claude should always keep in mind.
+Located at the root of a project (or inside `.claude/CLAUDE.md`), this one is *project-scoped*. It only loads when you're working inside that specific project. This is where you put things like architecture decisions, project-specific conventions, or notes about the codebase that Claude should always keep in mind.
 
 ### 5. The Conversation Itself
 

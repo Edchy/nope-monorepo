@@ -4,6 +4,7 @@ description: "MCP is the standard that lets AI models connect to external tools.
 date: 2025-12-03
 tags: [ai, mcp, technical]
 draft: false
+color: "6"
 ---
 
 By default, an AI model knows a lot but can do nothing. It cannot check the weather, read your files, look something up, or call an API. It is a brain in a jar: smart, but disconnected from the world.
@@ -16,7 +17,7 @@ MCP is how you give it access.
 
 Before MCP, if you wanted to connect an AI to an external tool — say, a calendar, a database, or a web API — you had to build a custom integration. Different apps built different integrations in different ways. Nothing was portable. If you built something for ChatGPT, it would not work with Claude. Everything had to be rebuilt from scratch.
 
-MCP (Model Context Protocol) is an open standard that defines a single way for AI models to talk to external tools. Build a tool once, using the MCP format, and any AI client that supports MCP can use it.
+**MCP** (Model Context Protocol) is an open standard that defines a single way for AI models to talk to external tools. Build a tool once, using the MCP format, and any AI client that supports MCP can use it.
 
 Think of it like USB. Before USB, every device had its own connector. You needed a different cable for everything. USB standardized the interface. MCP does the same thing, but for AI and tools.
 

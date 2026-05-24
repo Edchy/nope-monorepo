@@ -4,6 +4,7 @@ description: "AI is not magic and it is not a person. It is a prediction machine
 date: 2025-10-15
 tags: [ai, fundamentals]
 draft: false
+color: "1"
 ---
 
 Most people treat AI like it's a person. They say please and thank you, apologize when they interrupt it, and feel slightly unsettled when it says something strange. This is understandable. It is also a bad mental model that will make you worse at using it.
@@ -32,7 +33,7 @@ When you ask it a question, it does not look up the answer. It generates the mos
 
 Once you know this, a few things make sense.
 
-It can be wrong with total confidence. A person who does not know something will often say so. The prediction machine does not have that instinct. It will produce a plausible-sounding answer whether or not a plausible answer exists. This is called hallucination. It is not a bug to be fixed. It is a feature of how the system works.
+It can be wrong with total confidence. A person who does not know something will often say so. The prediction machine does not have that instinct. It will produce a plausible-sounding answer whether or not a plausible answer exists. This is called **hallucination**. It is not a bug to be fixed. It is a feature of how the system works.
 
 The same question can get different answers. Because the model is sampling from probabilities, not retrieving a fixed answer, it will sometimes say different things to the same question. The output is not deterministic. You are not getting truth. You are getting the most likely response, with some randomness built in.
 

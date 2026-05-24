@@ -4,6 +4,7 @@ description: "A step-by-step workflow for building software with AI — from ide
 date: 2026-01-21
 tags: [ai, workflow, building]
 draft: false
+color: "4"
 ---
 
 The hardest part of building software with AI is not the code. It is knowing what to build, and having a clear enough brief that the AI can actually help you build it. Here is a workflow that works.
@@ -26,7 +27,7 @@ When the cynical VC critique stops surprising you, the idea is probably solid en
 
 ## Step 1: Lean Canvas
 
-A Lean Canvas is a one-page business plan. Not a 20-page document. One page. It forces clarity.
+A **Lean Canvas** is a one-page business plan. Not a 20-page document. One page. It forces clarity.
 
 Cover four things:
 
@@ -60,7 +61,7 @@ Tools like Whimsical or Relume can generate flowcharts from a description. Or sk
 
 ## Step 3: PRD
 
-A PRD — Product Requirements Document — is the source of truth for what gets built. Not every product needs a formal one. But having something written down prevents the AI from making assumptions, and it prevents you from changing the spec halfway through a build without realizing it.
+A **PRD** — Product Requirements Document — is the source of truth for what gets built. Not every product needs a formal one. But having something written down prevents the AI from making assumptions, and it prevents you from changing the spec halfway through a build without realizing it.
 
 A useful PRD includes:
 

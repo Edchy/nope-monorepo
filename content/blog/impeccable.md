@@ -4,6 +4,7 @@ description: "Skills are portable instruction sets for AI coding agents. Here is
 date: 2026-04-25
 tags: [ai, tools, design]
 draft: false
+color: "4"
 ---
 
 A skill is a set of instructions you install into an AI coding agent. Not a plugin. Not a model change. Just a structured brief that tells the agent how to think about a specific domain.

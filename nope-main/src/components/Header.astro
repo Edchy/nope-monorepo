@@ -407,7 +407,7 @@ const currentPath = Astro.url.pathname;
 
       function init() {
         cleanup?.();
-        applyTheme(localStorage.getItem("theme") === "experimental");
+        applyTheme(localStorage.getItem("theme") !== "default");
 
         const trigger = document.querySelector<HTMLButtonElement>(
           ".site-header__menu-trigger",
@@ -492,7 +492,7 @@ const currentPath = Astro.url.pathname;
                 const next =
                   document.documentElement.dataset.theme !== "experimental";
                 applyTheme(next);
-                localStorage.setItem("theme", next ? "experimental" : "");
+                localStorage.setItem("theme", next ? "experimental" : "default");
               },
               { signal },
             );

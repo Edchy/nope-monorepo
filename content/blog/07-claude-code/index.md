@@ -4,6 +4,7 @@ description: "How to install Claude Code, what it can do, and how to get the mos
 date: 2026-01-07
 tags: [ai, claude-code, tools]
 draft: false
+color: "1"
 ---
 
 Claude Code is Anthropic's terminal-based AI coding agent. It runs in your terminal, reads your project, and writes code. It can also run tests, commit to Git, search the web, and call external tools. You do not need a GUI.

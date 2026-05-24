@@ -4,6 +4,7 @@ description: "IDE extensions like Copilot versus terminal agents like Claude Cod
 date: 2025-12-17
 tags: [ai, tools, cli]
 draft: false
+color: "7"
 ---
 
 There are two main ways to work with AI on code: through an IDE (a visual code editor), and through the terminal. Understanding the difference matters, because the terminal approach changed how software gets built.
@@ -12,7 +13,7 @@ There are two main ways to work with AI on code: through an IDE (a visual code e
 
 ## What an IDE is
 
-An IDE — Integrated Development Environment — is a desktop application for writing code. VS Code is the most popular one. It gives you a file tree on the left, a code editor in the middle, syntax highlighting, error detection, debugging tools, and a terminal at the bottom.
+An **IDE** — Integrated Development Environment — is a desktop application for writing code. VS Code is the most popular one. It gives you a file tree on the left, a code editor in the middle, syntax highlighting, error detection, debugging tools, and a terminal at the bottom.
 
 For most of the history of software development, this was how you wrote code. You opened a file, typed, saved, ran.
 
@@ -26,7 +27,7 @@ Copilot was significant because it moved AI from a tool you went to separately i
 
 ## What the CLI is
 
-CLI stands for Command Line Interface. The terminal. The black box where you type commands.
+**CLI** stands for Command Line Interface. The terminal. The black box where you type commands.
 
 In 2024 and 2025, a new category emerged: CLI-native AI coding agents. These are tools that run in your terminal and can operate on your entire project autonomously. They can:
 

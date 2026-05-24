@@ -274,7 +274,11 @@ import LiftButton from "../components/LiftButton.astro";
     letter-spacing: -0.02em;
     text-indent: -0.02em;
     text-wrap: balance;
-    color: var(--color-text-primary);
+    color: var(--brand-purple);
+  }
+
+  :global([data-theme="experimental"]) .hero__title {
+    color: var(--neutral-50);
   }
 
   .hero__title-break {
@@ -305,7 +309,7 @@ import LiftButton from "../components/LiftButton.astro";
   .hero__summary--lead {
     font-family: var(--font-family-display);
     font-size: var(--font-size-lg);
-    color: var(--brand-green);
+    color: var(--color-text-primary);
     font-weight: var(--font-weight-bold);
   }
 

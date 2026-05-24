@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(grep -E \"\\\\.\\(ts|js|astro\\)$\")"
+      "Bash(grep -E \"\\\\.\\(ts|js|astro\\)$\")",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/astro/package.json'\\).version\\)\")",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/@astrojs/mdx/package.json'\\).version\\)\")"
     ]
   }
 }

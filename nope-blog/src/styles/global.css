@@ -36,11 +36,11 @@ body {
 }
 
 .site-footer__wordmark {
-  color: var(--brand-green, #00d900);
+  color: var(--3);
 }
 
 .site-footer__mobile-title {
-  color: var(--brand-green, #00d900);
+  color: var(--3);
 }
 
 .site-footer__marquee {

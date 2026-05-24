@@ -1,0 +1,52 @@
+---
+interface Props {
+  src: ImageMetadata | string;
+  alt: string;
+  caption?: string;
+  cc?: string;
+  width?: number;
+  height?: number;
+}
+const { src, alt, caption, cc, width, height } = Astro.props;
+const imgSrc = typeof src === "string" ? src : src.src;
+---
+
+<figure class="blog-image">
+  <img
+    src={imgSrc}
+    alt={alt}
+    width={width}
+    height={height}
+    loading="lazy"
+    decoding="async"
+  />
+  {(caption || cc) && (
+    <figcaption>
+      {caption}
+      {cc && <a href={cc} target="_blank" rel="noopener noreferrer" class="blog-image__cc">source</a>}
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .blog-image {
+    margin-block: 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .blog-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  figcaption {
+    font-size: 0.8em;
+    opacity: 0.65;
+    margin-top: 0.5rem;
+  }
+  .blog-image__cc {
+    margin-left: 0.4em;
+  }
+</style>

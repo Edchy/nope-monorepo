@@ -4,61 +4,137 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 <BaseLayout title="me" description="About Eddie, frontend engineer and creative builder.">
   <article class="about">
-    <div class="about__body">
-      <p>
-        I studied web at university for two years. Then started a two-year vocational program in frontend engineering. Left four months before the end.
-      </p>
-      <p>
-        Not because it got hard. Because it had stopped being useful.
-      </p>
 
-      <p>
-        Every placement at a real company meant old codebases, maintenance tasks, and no room to do anything new. I'm a creative person. Constraints are fine. Boredom isn't.
-      </p>
-      <p>
-        The other thing that pushed me out: the program had almost nothing to say about AI. That felt wrong. AI was already changing how software gets built, and sitting in classes that ignored it started to feel like training for a world that was going away.
-      </p>
+    <p class="p--intro">
+      I studied web at university for two years. Then started a two-year vocational program in frontend engineering. Left four months before the end.
+    </p>
 
-      <p>
-        I've built the standard stack: HTML, CSS, JavaScript, React, some backend, some APIs. The foundation is there.
-      </p>
-      <p>
-        But the courses that actually held my attention were design, UI, UX. Not because code doesn't interest me. Problem-solving with code is genuinely satisfying. It's just that the most important thing to me is how something looks and how it feels to use.
-      </p>
-      <p>
-        Frontend sits between design and engineering. That's why it fits.
-      </p>
+    <p class="p--punch">
+      Not because it got hard.<br>Because it had <strong>stopped being useful</strong>.
+    </p>
 
-      <p>
-        The past year has been learning on my own. Building with AI, breaking things, figuring out where agents are actually useful and where they're noise. The landscape moves fast. Staying close to it is the only way to keep up.
-      </p>
-      <p>
-        NOPE is where I do the work. The bet is that building with AI is the most useful skill right now.
-      </p>
-    </div>
+    <p class="p--tilt-left">
+      Every placement at a real company meant old codebases, maintenance tasks, and no room to do anything new. I'm a creative person. Constraints are fine. <em>Boredom isn't.</em>
+    </p>
+
+    <p class="p--body p--right">
+      The other thing that pushed me out: the program had almost nothing to say about AI. That felt wrong. AI was already changing how software gets built, and sitting in classes that ignored it started to feel like <em>training for a world that was going away</em>.
+    </p>
+
+    <p class="p--body">
+      I've built the standard stack: HTML, CSS, JavaScript, React, some backend, some APIs. The foundation is there.
+    </p>
+
+    <p class="p--display">
+      design,<br>UI,<br>UX.
+    </p>
+
+    <p class="p--body p--tilt-right">
+      Not because code doesn't interest me. Problem-solving with code is genuinely satisfying. It's just that the most important thing to me is <em>how something looks and how it feels to use</em>.
+    </p>
+
+    <p class="p--punch p--center">
+      Frontend sits between<br>design and engineering.<br><strong>That's why it fits.</strong>
+    </p>
+
+    <p class="p--body">
+      The past year has been learning on my own. Building with AI, breaking things, figuring out where agents are actually useful and where they're noise. The landscape moves fast. <em>Staying close to it is the only way to keep up.</em>
+    </p>
+
+    <p class="p--outro">
+      <strong>NOPE</strong> is where I do the work.<br>The bet is that <strong>building with AI is the most useful skill right now</strong>.
+    </p>
+
   </article>
 </BaseLayout>
 
 <style>
   .about {
     width: 100%;
-    max-width: 62ch;
-    margin-inline: auto;
-    padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 5vw, 2rem) clamp(4rem, 10vw, 8rem);
+    min-height: 100svh;
+    padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 6vw, 4rem) clamp(6rem, 14vw, 12rem);
+    background: var(--2);
+    color: var(--3);
+    overflow-x: hidden;
   }
 
-  .about__body {
-    font-family: var(--font-zt-nature);
-    font-size: var(--font-size-base);
+  .about p {
+    font-family: var(--font-family-prose);
+    color: var(--3);
+    margin: 0;
+  }
+
+  /* Large intro paragraph */
+  .about .p--intro {
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    line-height: 1.6;
+    max-width: 52ch;
+    margin-bottom: clamp(4rem, 8vw, 7rem);
+  }
+
+  /* Big punchy one-liners */
+  .about .p--punch {
+    font-family: var(--font-family-base);
+    font-size: clamp(2rem, 6vw, 4.5rem);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    max-width: 18ch;
+    margin-bottom: clamp(4rem, 8vw, 7rem);
+  }
+
+  /* Normal body text */
+  .about .p--body {
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
     line-height: 1.75;
-    color: var(--color-text-primary);
+    max-width: 48ch;
+    margin-bottom: clamp(3rem, 6vw, 5rem);
   }
 
-  .about__body p {
-    margin: 0 0 1.5em;
+  /* Right-aligned body */
+  .about .p--right {
+    margin-inline-start: auto;
+    text-align: right;
   }
 
-  .about__body p:last-child {
-    margin-bottom: 0;
+  /* Giant display word stack */
+  .about .p--display {
+    font-family: var(--font-family-base);
+    font-size: clamp(3.5rem, 12vw, 10rem);
+    font-weight: var(--font-weight-black);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+    margin-block: clamp(4rem, 8vw, 7rem);
+  }
+
+  /* Center-aligned punch */
+  .about .p--center {
+    text-align: center;
+    max-width: 100%;
+    margin-inline: auto;
+  }
+
+  /* Outro */
+  .about .p--outro {
+    font-family: var(--font-family-base);
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    margin-top: clamp(4rem, 8vw, 7rem);
+  }
+
+  /* Tilt variants */
+  .about .p--tilt-left {
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
+    line-height: 1.75;
+    max-width: 44ch;
+    transform: rotate(-1.5deg);
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .about .p--tilt-right {
+    transform: rotate(1deg);
   }
 </style>

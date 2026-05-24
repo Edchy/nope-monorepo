@@ -35,7 +35,7 @@ const { Content } = await render(post);
   tags={post.data.tags}
   author={post.data.author}
   postId={post.id}
-  prev={prev ? { title: prev.data.title, href: `/writing/${prev.id.replace(/\/index\.md$/, '').replace(/\.md$/, '')}` } : null}
+prev={prev ? { title: prev.data.title, href: `/writing/${prev.id.replace(/\/index\.md$/, '').replace(/\.md$/, '')}` } : null}
   next={next ? { title: next.data.title, href: `/writing/${next.id.replace(/\/index\.md$/, '').replace(/\.md$/, '')}` } : null}
 >
   <Content />

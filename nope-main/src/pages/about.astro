@@ -7,205 +7,137 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   description="A bit about us."
   enableClientRouter={true}
 >
-  <section class="page-shell layout-shell about-page">
-    <div class="page-grid layout-grid">
-      <h1 class="page-title visually-hidden">About</h1>
-      <div class="about-chunk-1">
-        <p>
-          Nope is a small studio (one person to be precise). I make websites, apps, anything that renders on a screen.
-        </p>
-      </div>
+  <article class="about">
 
-      <div class="about-chunk-3">
-        <p>
-          The name nope is intentional. I say no to most things. Not out of
-          stubbornness. Out of conviction.
-        </p>
-      </div>
+    <p class="p--intro">
+      Nope is a small studio — one person, to be precise. I make websites, apps, anything that renders on a screen.
+    </p>
 
-      <div class="about-chunk-4">
-        <p>
-          Most things don't need to exist. Extra features nobody asked for.
-          Pages that fill space. Design that decorates instead of communicates.
-        </p>
-        <p>
-          I try to remove all of it. What's left is usually better.
-        </p>
-      </div>
+    <p class="p--punch">
+      The name is<br>intentional.
+    </p>
 
-      <div class="about-chunk-5">
-        <p>
-          This is minimalism, but not as an aesthetic. As a method.
-        </p>
-        <p>
-          Every decision starts with a question: Does this need to be here? If
-          the answer isn't clearly yes, it goes.
-        </p>
+    <p class="p--body p--tilt-left">
+      I say no to most things. Not out of stubbornness. Out of conviction. Most things don't need to exist — extra features nobody asked for, pages that fill space, design that decorates instead of communicates.
+    </p>
 
-        <p>
-          I apply this to everything: life, the work i take on, the words i write,
-          the pixels i place.
-        </p>
-      </div>
+    <p class="p--body p--right">
+      I try to remove all of it. <em>What's left is usually better.</em>
+    </p>
 
-      <div class="about-chunk-6">
-        <p>
-          I take design seriously. Not as decoration. As communication.
-        </p>
+    <p class="p--display">
+      method,<br>not<br>aesthetic.
+    </p>
 
-        <p>
-          The typeface, the spacing, the colour, the weight of a line. These
-          are all decisions. Decisions made carelessly produce work that feels
-          wrong even when people can't say why.
-        </p>
-        <p>
-          We make them carefully.
-        </p>
+    <p class="p--body p--tilt-right">
+      Every decision starts with a question: Does this need to be here? If the answer isn't clearly yes, it goes. I apply this to everything — the work I take on, the words I write, the pixels I place.
+    </p>
 
-        <p>
-          Good design disappears. You stop noticing it and start using it.
-        </p>
-      </div>
+    <p class="p--punch p--center">
+      Good design<br>disappears.
+    </p>
 
-      <div class="about-chunk-7">
-        <p>
-          The name wasn't a strategy. It was just the first honest thing.
-        </p>
-      </div>
-    </div>
-  </section>
+    <p class="p--body">
+      The typeface, the spacing, the colour, the weight of a line — these are all decisions. Decisions made carelessly produce work that feels wrong even when people can't say why. We make them carefully.
+    </p>
 
-  <style>
-    :global([data-theme="experimental"]) .about-page {
-      --color-text-primary: var(--color-text-inverse);
-      --color-text-secondary: var(--color-text-inverse);
-      color: var(--color-text-primary);
-    }
+    <p class="p--outro">
+      The name wasn't a strategy.<br>It was just the <strong>first honest thing</strong>.
+    </p>
 
-    :global([data-theme="experimental"]) .about-chunk-3 p,
-    :global([data-theme="experimental"]) .about-chunk-6 p {
-      color: var(--color-text-inverse);
-    }
-
-    .about-page,
-    .about-page .page-grid {
-      overflow-anchor: none;
-    }
-
-    .page-title {
-      grid-column: 1 / 4;
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-regular);
-      color: var(--color-text-secondary);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      padding-top: 0.2em; /* optical alignment with body text */
-    }
-
-    .about-chunk-1,
-    .about-chunk-3,
-    .about-chunk-4,
-    .about-chunk-5,
-    .about-chunk-6,
-    .about-chunk-7 {
-      display: grid;
-      gap: var(--space-4);
-      padding-block: var(--space-12);
-      text-wrap: pretty;
-      max-width: 32ch;
-    }
-
-    .about-chunk-1 p { color: var(--neutral-900); font-weight: var(--font-weight-bold); }
-    .about-chunk-3 p { color: var(--brand-purple); font-weight: var(--font-weight-bold); }
-    .about-chunk-4 p { color: var(--neutral-900); font-weight: var(--font-weight-bold); }
-    .about-chunk-5 p { color: var(--brand-green); font-weight: var(--font-weight-bold); }
-    .about-chunk-6 p { color: var(--brand-purple); font-weight: var(--font-weight-bold); }
-    .about-chunk-7 p { color: var(--neutral-900); font-weight: var(--font-weight-bold); }
-
-    .about-chunk-1 {
-      grid-column: 6 / 11;
-      grid-row: 2;
-      margin-left: auto;
-      padding-top: 0;
-    }
-
-    .about-chunk-3 {
-      grid-column: 3 / 8;
-      grid-row: 4;
-    }
-
-    .about-chunk-4 {
-      grid-column: 6 / 11;
-      grid-row: 5;
-      margin-left: auto;
-    }
-
-    .about-chunk-5 {
-      grid-column: 3 / 8;
-      grid-row: 6;
-    }
-
-    .about-chunk-6 {
-      grid-column: 6 / 11;
-      grid-row: 7;
-      margin-left: auto;
-    }
-
-    .about-chunk-7 {
-      grid-column: 3 / 8;
-      grid-row: 8;
-    }
-
-    @media (max-width: 1024px) {
-      .about-chunk-1,
-      .about-chunk-3,
-      .about-chunk-5,
-      .about-chunk-7 {
-        grid-column: 3 / 9;
-      }
-
-      .about-chunk-4,
-      .about-chunk-6 {
-        grid-column: 3 / 9;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .page-grid {
-        row-gap: var(--space-8);
-      }
-
-      .page-title,
-      .about-chunk-1,
-      .about-chunk-3,
-      .about-chunk-4,
-      .about-chunk-5,
-      .about-chunk-6,
-      .about-chunk-7 {
-        grid-column: 1 / -1;
-        grid-row: auto;
-        padding-block: 0;
-        width: min(100%, 42rem);
-        margin-inline: auto;
-      }
-
-      .about-chunk-3,
-      .about-chunk-4,
-      .about-chunk-5,
-      .about-chunk-6,
-      .about-chunk-7 {
-        margin-top: 0;
-        text-align: left;
-      }
-
-      .about-chunk-1 p,
-      .about-chunk-3 p,
-      .about-chunk-4 p,
-      .about-chunk-5 p,
-      .about-chunk-6 p,
-      .about-chunk-7 p {
-        overflow-wrap: anywhere;
-      }
-    }
-  </style>
+  </article>
 </BaseLayout>
+
+<style>
+  .about {
+    width: 100%;
+    min-height: 100svh;
+    padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 6vw, 4rem) clamp(6rem, 14vw, 12rem);
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    overflow-x: hidden;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  .about p {
+    font-family: var(--font-family-prose);
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  .about .p--intro {
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    line-height: 1.6;
+    max-width: 52ch;
+    margin-bottom: clamp(4rem, 8vw, 7rem);
+  }
+
+  .about .p--punch {
+    font-family: var(--font-family-base);
+    font-size: clamp(2rem, 6vw, 4.5rem);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    max-width: 18ch;
+    margin-bottom: clamp(4rem, 8vw, 7rem);
+  }
+
+  .about .p--body {
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
+    line-height: 1.75;
+    max-width: 48ch;
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .about .p--right {
+    margin-inline-start: auto;
+    text-align: right;
+  }
+
+  .about .p--display {
+    font-family: var(--font-family-base);
+    font-size: clamp(3.5rem, 12vw, 10rem);
+    font-weight: var(--font-weight-black);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+    margin-block: clamp(4rem, 8vw, 7rem);
+  }
+
+  .about .p--center {
+    text-align: center;
+    max-width: 100%;
+    margin-inline: auto;
+  }
+
+  .about .p--outro {
+    font-family: var(--font-family-base);
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    margin-top: clamp(4rem, 8vw, 7rem);
+  }
+
+  .about .p--tilt-left {
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
+    line-height: 1.75;
+    max-width: 44ch;
+    transform: rotate(-1.5deg);
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .about .p--tilt-right {
+    transform: rotate(1deg);
+  }
+
+  /* Experimental theme */
+  :global([data-theme="experimental"]) .about {
+    background: var(--brand-purple);
+    color: var(--brand-green);
+  }
+
+  :global([data-theme="experimental"]) .about p {
+    color: var(--brand-green);
+  }
+</style>

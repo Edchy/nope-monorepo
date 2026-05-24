@@ -4,6 +4,7 @@ description: "Tokens, context windows, temperature, attention — the basics of 
 date: 2025-11-05
 tags: [ai, technical, llm]
 draft: false
+color: "4"
 ---
 
 You do not need to understand what is happening inside an AI model to use one well. But knowing the basics changes how you think about what the model can and cannot do. Here is what is actually going on.
@@ -26,7 +27,7 @@ The critical thing: the model does not store knowledge the way a database stores
 
 The model does not process words. It processes tokens.
 
-A token is a chunk of text. Roughly speaking, one token is about three-quarters of a word in English. The word "hamburger" might be two tokens. A space counts. A punctuation mark counts. Code is usually more token-dense than plain prose.
+A **token** is a chunk of text. Roughly speaking, one token is about three-quarters of a word in English. The word "hamburger" might be two tokens. A space counts. A punctuation mark counts. Code is usually more token-dense than plain prose.
 
 Everything is measured in tokens. The cost of using a model is calculated in tokens. The limits of a conversation are measured in tokens. When someone says a model has a large "context window," they mean it can hold a lot of tokens at once.
 
@@ -64,7 +65,7 @@ LLMs are not deterministic. Ask the same question twice and you may get differen
 
 When the model generates each token, it is not simply picking the single most likely next word. It is sampling from a probability distribution. The model might assign 40% probability to one word, 25% to another, 15% to a third, and so on. It draws from that distribution. This is what makes the output feel natural rather than robotic.
 
-A setting called temperature controls how much randomness is introduced.
+A setting called **temperature** controls how much randomness is introduced.
 
 At temperature zero, the model always picks the most probable token. Responses are consistent and predictable. At temperature one, it samples more freely from the distribution. Responses are more varied and sometimes more creative. Above one, things get chaotic.
 
@@ -88,7 +89,7 @@ This is why large models can reason across long documents in a way earlier model
 
 A model's training data has a cutoff date. Anything that happened after training is unknown to it. You cannot add new knowledge to a model without retraining it, and retraining is enormously expensive.
 
-RAG — Retrieval Augmented Generation — is the solution.
+**RAG** — Retrieval Augmented Generation — is the solution.
 
 Instead of baking new facts into the model, you store documents in a database. When a question comes in, the relevant documents are retrieved and injected into the context window alongside the question. The model answers using that retrieved information.
 

@@ -4,6 +4,7 @@ description: "How to ask AI better questions — not vague, not clever, just spe
 date: 2026-02-25
 tags: [ai, prompting, workflow]
 draft: false
+color: "6"
 ---
 
 Most people underuse AI because they ask bad questions. Not bad as in rude. Bad as in vague. The model cannot give you a useful answer if it does not know what useful means to you.

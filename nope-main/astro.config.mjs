@@ -8,9 +8,40 @@ export default defineConfig({
         usePolling: true,
         interval: 100,
       },
+      fs: {
+        allow: [".."],
+      },
     },
   },
   fonts: [
+    {
+      name: "Literata",
+      cssVariable: "--font-literata",
+      provider: fontProviders.local(),
+      fallbacks: ["Georgia", "serif"],
+      options: {
+        variants: [
+          {
+            style: "normal",
+            weight: "400",
+            src: ["../packages/fonts/Literata-Regular.woff2"],
+            display: "swap",
+          },
+          {
+            style: "italic",
+            weight: "400",
+            src: ["../packages/fonts/Literata-Italic.woff2"],
+            display: "swap",
+          },
+          {
+            style: "normal",
+            weight: "700",
+            src: ["../packages/fonts/Literata-Bold.woff2"],
+            display: "swap",
+          },
+        ],
+      },
+    },
     {
       name: "ZT Nature",
       cssVariable: "--font-zt-nature",
@@ -21,7 +52,7 @@ export default defineConfig({
           {
             style: "normal",
             weight: "100 900",
-            src: ["./src/assets/fonts/ZT Nature Variable-VF.woff2"],
+            src: ["../packages/fonts/ZT Nature Variable-VF.woff2"],
             display: "swap",
           },
         ],

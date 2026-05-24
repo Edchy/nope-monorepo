@@ -4,6 +4,7 @@ description: "From the 1956 Dartmouth conference to ChatGPT and beyond — the s
 date: 2025-10-22
 tags: [ai, history]
 draft: false
+color: "1"
 ---
 
 The idea of artificial intelligence is older than computers. But most of what matters happened in the last decade. Here is the short version.
@@ -14,7 +15,7 @@ The idea of artificial intelligence is older than computers. But most of what ma
 
 The word "artificial intelligence" was coined in 1956 at a summer conference at Dartmouth College. A group of researchers gathered to figure out whether machines could think. They decided the answer was probably yes, and named the discipline.
 
-For the next few decades, AI meant rules. Programmers would hand-code logic. If X, then Y. Expert systems that knew a lot about a narrow topic, nothing about anything else. They were brittle. They broke constantly. Progress came in cycles, followed by loss of funding and interest. These slow periods became known as "AI winters."
+For the next few decades, AI meant rules. Programmers would hand-code logic. If X, then Y. Expert systems that knew a lot about a narrow topic, nothing about anything else. They were brittle. They broke constantly. Progress came in cycles, followed by loss of funding and interest. These slow periods became known as **AI winters**.
 
 The core problem: you cannot write enough rules to cover the real world.
 
@@ -32,7 +33,7 @@ Within a few years, the entire field moved to this approach: large neural networ
 
 ## The paper that changed everything (2017)
 
-In 2017, a team at Google published a research paper called "Attention Is All You Need." It described a new way to build neural networks, called the Transformer architecture.
+In 2017, a team at Google published a research paper called *"Attention Is All You Need."* It described a new way to build neural networks, called the **Transformer** architecture.
 
 Without getting into the details: before Transformers, language models were slow and struggled with long-range context. The attention mechanism the paper introduced let models relate any word in a sentence to any other word, regardless of how far apart they were. This was a major improvement. It made large language models possible at scale.
 
@@ -58,7 +59,7 @@ The two years after that saw model after model. GPT-4, Claude, Gemini, Llama, Mi
 
 **OpenAI** was founded in 2015 as a non-profit, by Sam Altman, Elon Musk, Greg Brockman, and others. The stated mission: build safe artificial general intelligence for the benefit of humanity. It later became a capped-profit company to raise investment. It built ChatGPT and the GPT model family, and became the most recognized name in AI.
 
-**Anthropic** was founded in 2021 by Dario Amodei, Daniela Amodei, and several other researchers who left OpenAI. The reason they left was a disagreement about safety. Anthropic's focus is on understanding why models behave the way they do, and building systems that behave reliably. Their model family is Claude.
+**Anthropic** was founded in 2021 by Dario Amodei, Daniela Amodei, and several other researchers who left OpenAI. The reason they left was a disagreement about *safety*. Anthropic's focus is on understanding why models behave the way they do, and building systems that behave reliably. Their model family is **Claude**.
 
 ---
 

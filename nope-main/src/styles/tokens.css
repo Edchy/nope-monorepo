@@ -20,8 +20,8 @@
   --neutral-950: #080808;
   --neutral-warm-600: oklch(0.5 0.012 70);
 
-  --brand-purple: #7c2bdd;
-  --brand-green: #00d900;
+  --brand-purple: #0000d2;
+  --brand-green: #ffff04;
   --experimental-3: oklch(0.75 0.1 125);
 
   /* Spacing primitives */
@@ -151,6 +151,7 @@
   /* Font families */
   --font-family-base: var(--font-zt-nature, system-ui, sans-serif);
   --font-family-display: var(--font-zt-nature, system-ui, sans-serif);
+  --font-family-prose: var(--font-literata, Georgia, serif);
 
   /* Hero */
   --hero-word-stagger: 80ms;
@@ -165,7 +166,7 @@
    Experimental theme override
    ------------------------------------------------------------ */
 :root {
-  --button-theme-toggle-color: var(--brand-green);
+  --button-theme-toggle-color: var(--brand-purple);
 }
 
 [data-theme="experimental"] {

@@ -17,7 +17,7 @@ const latestPost = posts[0];
     <!-- 1: Voxel -->
     <a href="https://nope.digital" class="cell cell--voxel" aria-label="Work" target="_blank" rel="noopener noreferrer">
       <VoxelWork />
-      <span class="cell__label cell__meta">nope.digital ↗</span>
+      <span class="cell__label cell__meta">nope ↗</span>
     </a>
 
     <!-- 2: Latest blog post -->
@@ -101,8 +101,8 @@ const latestPost = posts[0];
     grid-column: span 2;
     justify-content: stretch;
     padding: 0;
-    background: var(--color-background);
-    color: var(--color-text-primary);
+    background: var(--2);
+    color: var(--3);
     transition: background-color 0.45s ease;
   }
 
@@ -123,8 +123,8 @@ const latestPost = posts[0];
 
   /* ── Blog post cells ── */
   .cell--post {
-    background: var(--brand-purple);
-    color: var(--neutral-50);
+    background: var(--3);
+    color: var(--2);
     gap: var(--space-3);
   }
 
@@ -159,8 +159,8 @@ const latestPost = posts[0];
 
   /* ── Quote cell ── */
   .cell--quote {
-    background: var(--color-background);
-    color: var(--color-text-primary);
+    background: var(--2);
+    color: var(--3);
     justify-content: space-between;
     padding: var(--space-8) var(--space-6);
     transition:
@@ -184,15 +184,15 @@ const latestPost = posts[0];
 
   /* ── Coming soon cell ── */
   .cell--coming-soon {
-    background: var(--brand-green);
-    color: var(--neutral-50);
+    background: var(--3);
+    color: var(--2);
     gap: var(--space-2);
   }
 
   /* ── Gallery cell ── */
   .cell--gallery {
-    background: var(--neutral-800);
-    color: var(--neutral-50);
+    background: var(--2);
+    color: var(--3);
     gap: var(--space-2);
   }
 
@@ -212,12 +212,13 @@ const latestPost = posts[0];
 
   @media (hover: hover) and (pointer: fine) {
     .cell--voxel:hover {
-      background: var(--brand-green);
+      background: var(--3);
+      color: var(--2);
     }
 
     .cell--quote:hover {
-      background: var(--color-text-primary);
-      color: var(--color-background);
+      background: var(--3);
+      color: var(--2);
     }
 
     .cell--lift:is(:hover, :focus-visible) {

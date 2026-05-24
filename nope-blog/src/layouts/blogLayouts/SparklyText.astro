@@ -1,0 +1,26 @@
+---
+interface Props {
+  num?: number;
+  color?: string;
+}
+// num and color props accepted for compat but unused — keep it simple
+---
+
+<span class="sparkly"><slot /></span>
+
+<style>
+  @keyframes shimmer {
+    to { background-position: 200% center; }
+  }
+
+  .sparkly,
+  .sparkly :global(p),
+  .sparkly :global(span) {
+    background: linear-gradient(90deg, currentColor, oklch(0.7 0.2 300), currentColor);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 2s linear infinite;
+  }
+</style>

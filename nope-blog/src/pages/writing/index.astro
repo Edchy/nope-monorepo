@@ -6,45 +6,109 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 
+const recentPosts = posts.slice(0, 6);
+const olderPosts = posts.slice(6);
+
 const getVariant = (i: number) => i % 2 === 0 ? "cell--light" : "cell--dark";
+
+function postHref(id: string) {
+  return `/writing/${id.replace(/\/index\.md$/, "").replace(/\.md$/, "")}`;
+}
 ---
 
 <BaseLayout title="Writing — NOPE" description="Notes on building, design, and the web.">
-  <div class="writing-grid">
-    {posts.map((post, i) => (
-      <a
-        href={`/writing/${post.id.replace(/\/index\.md$/, "").replace(/\.md$/, "")}`}
-        class={`cell cell--lift ${getVariant(i)}`}
-        data-lift-max="18"
-      >
-        <div class="cell__top">
-          <p class="cell__eyebrow cell__meta">
-            {post.data.date.toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-            })}
-          </p>
-          <h2 class="cell__title" transition:name={`post-title-${post.id}`}>{post.data.title}</h2>
-        </div>
-        {post.data.description && (
-          <p class="cell__desc cell__meta">{post.data.description}</p>
-        )}
-      </a>
-    ))}
+  <div class="writing-page">
+
+    <header class="writing-header">
+      <p class="writing-intro">
+        A place for scribbles and notes — mostly so I can revisit things I find interesting,
+        instead of leaving them to rot in my phone's notes app. If something here is useful
+        to you too, that's a bonus.
+      </p>
+    </header>
+
+    <div class="writing-grid">
+      {recentPosts.map((post, i) => (
+        <a
+          href={postHref(post.id)}
+          class={`cell cell--lift ${getVariant(i)}`}
+          data-lift-max="14"
+        >
+          <div class="cell__top">
+            <p class="cell__eyebrow cell__meta">
+              {post.data.date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+              })}
+            </p>
+            <h2 class="cell__title" transition:name={`post-title-${post.id}`}>{post.data.title}</h2>
+          </div>
+          {post.data.description && (
+            <p class="cell__desc cell__meta">{post.data.description}</p>
+          )}
+        </a>
+      ))}
+    </div>
+
+    {olderPosts.length > 0 && (
+      <section class="older-posts">
+        <h3 class="older-posts__heading">Older</h3>
+        <ul class="older-posts__list">
+          {olderPosts.map((post) => (
+            <li>
+              <a href={postHref(post.id)} class="older-posts__link">
+                <span class="older-posts__title">{post.data.title}</span>
+                <span class="older-posts__leader" aria-hidden="true"></span>
+                <span class="older-posts__date">
+                  {post.data.date.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                  })}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
   </div>
 </BaseLayout>
 
 <style>
+  .writing-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    background: var(--2);
+    color: var(--3);
+  }
+
+  /* ── Header ── */
+  .writing-header {
+    padding: var(--space-10) var(--space-8) var(--space-6);
+    border-bottom: var(--border-width-1) solid color-mix(in oklch, var(--3) 30%, var(--2));
+  }
+
+  .writing-intro {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-relaxed);
+    text-transform: none;
+    max-width: 52ch;
+    opacity: 0.55;
+    letter-spacing: 0;
+  }
+
+  /* ── Cards grid ── */
   .writing-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 40svh;
-    min-height: 100svh;
-    gap: var(--space-2);
-    padding: var(--space-4) 0;
+    grid-auto-rows: clamp(220px, 36svh, 340px);
+    gap: 0;
   }
 
-  /* ── Base cell (mirrors index.astro) ── */
+  /* ── Base cell ── */
   .cell {
     display: flex;
     flex-direction: column;
@@ -55,8 +119,9 @@ const getVariant = (i: number) => i % 2 === 0 ? "cell--light" : "cell--dark";
     color: inherit;
     position: relative;
     overflow: hidden;
-    border: none;
     text-transform: uppercase;
+    border: var(--border-width-1) solid color-mix(in oklch, var(--3) 30%, var(--2));
+    margin: -1px 0 0 -1px;
   }
 
   .cell--lift {
@@ -69,20 +134,18 @@ const getVariant = (i: number) => i % 2 === 0 ? "cell--light" : "cell--dark";
     will-change: transform;
   }
 
-  /* ── Variants ── */
   .cell--light {
-    background: var(--color-background);
-    color: var(--color-text-primary);
-    border: var(--border-width-1) solid var(--color-border-default);
+    background: var(--3);
+    color: var(--2);
+    border-color: var(--3);
   }
 
   .cell--dark {
-    background: var(--neutral-900);
-    color: var(--neutral-50);
-    border: var(--border-width-1) solid var(--neutral-900);
+    background: var(--2);
+    color: var(--3);
+    border-color: var(--2);
   }
 
-  /* ── Typography (mirrors index.astro) ── */
   .cell__top {
     display: flex;
     flex-direction: column;
@@ -91,6 +154,8 @@ const getVariant = (i: number) => i % 2 === 0 ? "cell--light" : "cell--dark";
 
   .cell__eyebrow {
     margin: 0;
+    color: currentColor;
+    opacity: 1;
   }
 
   .cell__title {
@@ -123,31 +188,84 @@ const getVariant = (i: number) => i % 2 === 0 ? "cell--light" : "cell--dark";
     opacity: 0.62;
   }
 
-  .cell__eyebrow {
-    color: var(--brand-green);
-    opacity: 1;
+  /* ── Older posts ── */
+  .older-posts {
+    padding: var(--space-10) var(--space-8) var(--space-12);
+  }
+
+  .older-posts__heading {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: 0 0 var(--space-4);
+  }
+
+  .older-posts__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .older-posts__link {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    text-decoration: none;
+    color: inherit;
+    text-transform: uppercase;
+    transition: opacity 0.12s ease;
+  }
+
+  .older-posts__title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+
+  .older-posts__leader {
+    flex: 1;
+    border-bottom: var(--border-width-1) dashed color-mix(in oklch, var(--3) 35%, var(--2));
+    margin: 0 var(--space-3) 0.2em;
+  }
+
+  .older-posts__date {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── Interactions ── */
+  @media (hover: hover) and (pointer: fine) {
+    .older-posts__link:hover {
+      opacity: 0.5;
+    }
+
+    .cell--lift:is(:hover, :focus-visible) {
+      z-index: 2;
+    }
   }
 
   /* ── Responsive ── */
   @media (max-width: 900px) {
     .writing-grid {
       grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: 44vw;
     }
-  }
 
-  @media (max-width: 480px) {
-    .writing-grid {
-      grid-template-columns: 1fr;
-      grid-auto-rows: minmax(14rem, auto);
-      min-height: auto;
-      gap: 0;
+    .writing-header {
+      padding: var(--space-8) var(--space-6) var(--space-5);
     }
-  }
 
-  @media (hover: hover) and (pointer: fine) {
-    .cell--lift:is(:hover, :focus-visible) {
-      z-index: 2;
+    .older-posts {
+      padding: var(--space-8) var(--space-6) var(--space-10);
     }
   }
 
@@ -155,6 +273,20 @@ const getVariant = (i: number) => i % 2 === 0 ? "cell--light" : "cell--dark";
     .cell--lift {
       transform: none;
       transition: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .writing-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .writing-header {
+      padding: var(--space-6) var(--space-4) var(--space-5);
+    }
+
+    .older-posts {
+      padding: var(--space-6) var(--space-4) var(--space-8);
     }
   }
 
@@ -194,7 +326,7 @@ const getVariant = (i: number) => i % 2 === 0 ? "cell--light" : "cell--dark";
       const { signal } = controller;
 
       cells.forEach((cell) => {
-        const max = Number(cell.dataset.liftMax ?? 18);
+        const max = Number(cell.dataset.liftMax ?? 14);
 
         cell.addEventListener("mousemove", (e) => {
           const rect = cell.getBoundingClientRect();

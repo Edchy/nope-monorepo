@@ -4,6 +4,7 @@ description: "Claude uses .claude/. Other agents use .agents/. Nobody agreed on 
 date: 2026-05-01
 tags: [ai, tools, dev]
 draft: false
+color: "6"
 ---
 
 I've been keeping two copies of the same folder.
@@ -22,7 +23,7 @@ Nobody's wrong exactly. The ecosystem is just young and a bit fragmented, and th
 
 ## The fix: a symlink
 
-Today I fixed it with a symlink. A symlink is a filesystem shortcut. It looks like a real folder, but it just points somewhere else. So `.claude/skills` now points to `.agents/skills`. One source of truth. Both tools see the same thing.
+Today I fixed it with a **symlink**. A symlink is a filesystem shortcut. It looks like a real folder, but it just points somewhere else. So `.claude/skills` now points to `.agents/skills`. One source of truth. Both tools see the same thing.
 
 Run this from your project root:
 

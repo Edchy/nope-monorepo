@@ -1,0 +1,181 @@
+---
+title: "React"
+description: "Understanding React"
+date: 2025-04-21
+tags: [js]
+draft: false
+color: "5"
+---
+import InfoBox from "@/components/InfoBox.astro"
+
+Coming into web development in the 2020s can be really daunting. There have been two decades of evolution in the ecosystem — a lot of stuff built on top of each other, solving an ever-growing list of problems that shift as the web platform matures.
+
+At least it was for me. I can imagine it being easier for people who have been around a while and experienced the pain points firsthand. You work with vanilla JS, hit its limitations, a tool comes along that solves exactly that problem, and you get it immediately. Then another tool builds on top of that one, and so on.
+
+If you just get dropped into this mess in 2025 and told to "use React" without any context, it can be really hard to understand why you have to learn so many things.
+
+This post is an attempt to provide some of that context — what React is, how it fits into the web ecosystem, and why it exists in the first place.
+
+## The problem
+
+To understand React, we first need to understand the problem it was created to solve.
+
+When you visit a website, the server sends HTML to your browser. The browser turns that HTML into a [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model) — a live, interactive tree of the page — and renders it to the screen. Any time the DOM changes, the browser re-renders the affected parts.
+
+### Imperative vs declarative programming
+
+This is a key concept in React, and it comes up constantly in web development.
+
+**Imperative programming** is when you tell the computer exactly how to do something, step by step. Here's a simple counter in vanilla JS:
+
+```html
+<article>
+  <h2>counter</h2>
+  <p>You clicked the button <span id="count">0</span> times</p>
+  <button onclick="setCount()">Click me</button>
+</article>
+```
+```javascript
+const countText = document.getElementById('count');
+
+function setCount() {
+  let count = Number(countText.textContent);
+  count++;
+  countText.textContent = count;
+}
+```
+
+This is imperative because it spells out every step: find the element, read its value, increment it, write it back.
+
+JavaScript is an old language. It wasn't originally designed to handle complex, dynamic UIs the way we expect today. For a single counter this is fine. But things fall apart quickly once your UI becomes more dynamic.
+
+Imagine instead of one counter you have ten. Or the same count appears in multiple places. Or several buttons all affect the same value. Now every time state changes, you have to manually update every part of the DOM that depends on it. Forget one update, and your UI is out of sync with your data.
+
+The root issue is that your application's state lives scattered across the DOM — in text content, attributes, class names. That makes the app hard to reason about:
+
+- **Unpredictable** — you don't always know which parts of the UI reflect which pieces of state
+- **Manual** — you're responsible for remembering to update everything, everywhere
+- **Bug-prone** — forget one DOM update and your UI is out of sync
+- **Hard to scale** — as interactive elements multiply, the code becomes harder to maintain and debug
+
+**Declarative programming** is when you describe what you want, not how to get there. You define what the end result should look like, and let the system figure out how to make it happen.
+
+Here's the same counter, refactored toward a more declarative style:
+
+```javascript
+const countApp = {
+  getCount: () => {
+    const el = document.getElementById('count');
+    return Number(el.textContent);
+  },
+  setCount: (newCount) => {
+    const el = document.getElementById('count');
+    el.textContent = newCount;
+  },
+}
+
+function setCount() {
+  countApp.setCount(countApp.getCount() + 1);
+}
+```
+
+We've created an abstraction — `countApp` — that handles the low-level DOM work. The `setCount` function now just says "increment the count." It describes intent, not steps.
+
+Now imagine `countApp` lives in a separate file or npm package:
+
+```javascript
+import { countApp } from 'count-app';
+
+function setCount() {
+  countApp.setCount(countApp.getCount() + 1);
+}
+```
+
+Clean. We're no longer touching the DOM directly — we're calling functions that describe what we want.
+
+*(The counter example is adapted from [Tony Alicea's excellent YouTube video on React](https://www.youtube.com/watch?v=-XKvVyC6si0&t=20419s).)*
+
+## So what is React?
+
+React is basically the same idea — but way more powerful.
+
+Just like `countApp` abstracted DOM manipulation for one element, React abstracts DOM creation and updates for your **entire UI**. You describe what the UI should look like at any given moment, and React figures out how to make the browser match that description. Under the hood it's still JavaScript — imperative code that smart people wrote so you don't have to.
+
+This leads to an important principle:
+
+**Declarative code is always built on top of imperative code.**
+
+When you write React, you're writing on top of someone else's imperative logic — exactly like how `setCount` was written on top of `countApp`. The abstraction handles the hard parts; you handle the intent.
+
+A common metaphor: imperative code is like driving a manual car — you control every gear change. Declarative code is like an automatic: you say "go forward" and the system handles the mechanics. Someone still wrote the logic for the automatic transmission. You just don't deal with it.
+
+You already know declarative languages. HTML is declarative — you write `<button>` and the browser figures out how to render it. CSS is declarative — you write `color: red` and the browser figures out how to paint it. SQL is declarative — you write `SELECT * FROM users` and the database figures out how to fetch it.
+
+Imperative languages are the ones where you're in charge of every step: JavaScript, C, Python. They're more powerful and flexible, but you do more work. The pattern in modern development is to write declarative code (React, CSS, HTML) on top of imperative code (the browser engine, the JS runtime) that someone else wrote.
+
+Some examples to make it concrete:
+
+**Declarative:** HTML, CSS, SQL, React, regular expressions
+**Imperative:** vanilla JavaScript, C, Assembly, Python
+
+<InfoBox title="Etymology corner">
+*Imperative* comes from Latin *imperare* — "to command." Imperative programming is literally commanding the computer step by step. An emperor (*imperator*) is one who commands.
+
+*Declarative* comes from Latin *declarare* — "to make clear." Declarative programming makes clear what you want, not how to get it. *Clarus* meant bright or easy to see — which is also where *clear* comes from. Declare and clear are basically cousins.
+</InfoBox>
+
+## React in practice
+
+In React, you write **components** — functions that return a description of what the UI should look like. Here's the same counter, written in React:
+
+```jsx
+function Counter() {
+  const [count, setCount] = React.useState(0);
+
+  return (
+    <article>
+      <h2>counter</h2>
+      <p>You clicked the button {count} times</p>
+      <button onClick={() => setCount(count + 1)}>Click me</button>
+    </article>
+  );
+}
+```
+
+A few things worth noticing:
+
+- The HTML-like syntax is called **JSX**. It's not actually HTML — it gets compiled to JavaScript. It lets you describe UI structure in a familiar way without leaving JS.
+- `useState` is how you declare a piece of state. React tracks it, and when it changes, React re-renders the component automatically.
+- You never touch the DOM. You just describe what the UI should look like given the current state, and React handles the rest.
+- The component is just a **function**. You call it with props, it returns a description of the UI. That's it.
+
+### Components compose
+
+The real power comes from composing components together. A `Counter` component can be used inside a `Dashboard` component. A `Button` component can be reused across dozens of places. Each component manages its own state, and they communicate through props.
+
+This is what makes React scale. Instead of one giant file full of DOM queries, you have a tree of focused components — each one responsible for one piece of the UI.
+
+```jsx
+function App() {
+  return (
+    <Dashboard>
+      <Counter label="Clicks" />
+      <Counter label="Views" />
+    </Dashboard>
+  );
+}
+```
+
+### State lives in JavaScript, not the DOM
+
+This is the big shift. In vanilla JS, state was scattered across DOM nodes — you read it back out with `getElementById` and `.textContent`. In React, state lives in JavaScript variables managed by `useState`. The DOM is just a rendered reflection of that state, not the source of truth.
+
+That means you can always look at your state variables and know exactly what the UI should look like. No more hunting through the DOM to figure out what changed.
+
+## The tradeoffs
+
+React isn't magic. It adds real complexity: JSX, a build step, hooks, component patterns, state management, and an ecosystem of tooling you'll need to learn. For a simple static page it's complete overkill.
+
+But for anything with dynamic, interactive UI — especially where the same state affects multiple parts of the screen — React's model makes your code dramatically easier to reason about and maintain. The more your UI scales, the more the abstraction earns its keep.
+
+That's the core case for React. Not because vanilla JS is bad, but because at a certain scale of interactivity, having a single source of truth for your state — and a system that keeps the UI in sync with it automatically — is a fundamentally better mental model than manually wiring up DOM updates yourself.

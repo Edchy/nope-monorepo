@@ -3,6 +3,7 @@ title: "Git Is Just Text Files Pointing at Other Text Files"
 description: "Inside every Git repo is just a folder of small text files pointing at each other. Here is what they are."
 date: 2026-03-10
 draft: false
+color: "5"
 ---
 Git has a reputation for being complicated. But once you look inside, most of it is just text files. Small ones. Pointing at each other. Organized into a simple database.
 
@@ -157,7 +158,7 @@ When you clone a repo, Git downloads all the objects. Once you have them, you ca
 
 ### This idea turns out to be pretty important
 
-Git basically built a content-addressed storage system. The same core idea shows up in Docker (image layers), IPFS (distributed file storage), and Nix (reproducible builds). All of them store content by hash, reference by pointer, and deduplicate automatically.
+Git basically built a **content-addressed storage** system. The same core idea shows up in Docker (image layers), IPFS (distributed file storage), and Nix (reproducible builds). All of them store content by hash, reference by pointer, and deduplicate automatically.
 
 ---
 

@@ -4,6 +4,7 @@ description: "GPT, Claude, Gemini, Llama — what they are, who makes them, and 
 date: 2025-11-19
 tags: [ai, models]
 draft: false
+color: "5"
 ---
 
 There are a lot of AI models. The names blend together quickly. Here is a map.
@@ -76,12 +77,12 @@ Because the company's business model does not require charging users directly. T
 
 Training happens in stages.
 
-First, the model reads an enormous amount of text from the internet — books, code, articles, websites. It learns to predict the next word in a sequence. This is called pre-training. It is unsupervised and very expensive.
+First, the model reads an enormous amount of text from the internet — books, code, articles, websites. It learns to predict the next word in a sequence. This is called **pre-training**. It is unsupervised and very expensive.
 
-Second, the model is trained further on curated examples of good responses to questions and instructions. This is called fine-tuning or supervised fine-tuning. It teaches the model to be helpful rather than just a text predictor.
+Second, the model is trained further on curated examples of good responses to questions and instructions. This is called **fine-tuning** or supervised fine-tuning. It teaches the model to be helpful rather than just a text predictor.
 
-Third, human raters evaluate outputs and the model learns to produce responses humans prefer. This is called RLHF — reinforcement learning from human feedback.
+Third, human raters evaluate outputs and the model learns to produce responses humans prefer. This is called **RLHF** — reinforcement learning from human feedback.
 
-Anthropic uses a variation called Constitutional AI, where the model evaluates its own responses against a set of principles rather than relying only on human raters.
+Anthropic uses a variation called **Constitutional AI**, where the model evaluates its own responses against a set of principles rather than relying only on human raters.
 
 The result of all three stages is the model you use.
