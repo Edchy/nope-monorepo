@@ -12,9 +12,13 @@ const {
 
 <footer class="site-footer">
   <div class="site-footer__shell layout-shell">
-    <div class="site-footer__grid layout-grid">
-      <span class="site-footer__title">{siteTitle}</span>
-      <div class="site-footer__meta">
+    <div class="site-footer__inner layout-grid">
+      <div class="site-footer__kaomoji" aria-hidden="true">ツ</div>
+      <div class="site-footer__bar">
+        <div class="site-footer__title-group">
+          <span class="site-footer__title">{siteTitle}</span>
+          <span class="site-footer__copy">© {new Date().getFullYear()} i guess</span>
+        </div>
         <a href={`mailto:${email}`} class="site-footer__email">{email}</a>
       </div>
     </div>
@@ -27,60 +31,78 @@ const {
   }
 
   .site-footer__shell {
-    padding-block: var(--space-4);
+    padding-block: var(--space-8) var(--space-6);
   }
 
-  .site-footer__grid {
+  .site-footer__inner {
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: var(--space-4);
-    align-items: center;
-    padding-block: var(--space-4);
+  }
+
+  .site-footer__kaomoji,
+  .site-footer__bar {
+    grid-column: 3 / 11;
+  }
+
+  .site-footer__kaomoji {
+    font-size: clamp(6rem, 20vw, 14rem);
+    line-height: 1;
+    color: var(--color-text-primary);
+    user-select: none;
+    text-align: center;
+    margin-bottom: var(--space-4);
+  }
+
+  .site-footer__bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-block: var(--space-2);
+  }
+
+  .site-footer__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .site-footer__copy {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    letter-spacing: 0.01em;
   }
 
   .site-footer__title {
-    grid-column: 10 / 12;
     font-family: var(--font-family-display);
-    font-size: calc(var(--font-size-base) * 2);
+    font-size: clamp(2rem, 6vw, 4rem);
     font-weight: var(--font-weight-bold);
     letter-spacing: -0.03em;
     color: var(--color-text-primary);
     line-height: 1;
   }
 
-  .site-footer__meta {
-    grid-column: 10 / 12;
-    display: flex;
-    align-items: baseline;
-    justify-content: flex-start;
-    gap: var(--space-6);
-  }
-
   .site-footer__email {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-secondary);
-  }
-
-  .site-footer__email {
+    font-size: clamp(1.25rem, 3.5vw, 2.5rem);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: -0.02em;
+    color: var(--color-text-primary);
     text-decoration: none;
     transition: color 0.1s ease;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .site-footer__email:hover {
-      color: var(--color-text-primary);
+      color: var(--color-text-secondary);
     }
   }
 
   @media (max-width: 768px) {
-    .site-footer__title {
+    .site-footer__kaomoji,
+    .site-footer__bar {
       grid-column: 1 / -1;
-      justify-self: end;
     }
 
-    .site-footer__meta {
-      grid-column: 1 / -1;
-      justify-content: flex-end;
+    .site-footer__kaomoji {
+      font-size: clamp(5rem, 28vw, 8rem);
     }
   }
 </style>

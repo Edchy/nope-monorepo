@@ -7,53 +7,59 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   description="A bit about us."
   enableClientRouter={true}
 >
-  <article class="about">
+  <section class="about-shell layout-shell page-shell">
+    <div class="about-grid layout-grid">
+      <article class="about">
 
-    <p class="p--intro">
-      Nope is a small studio — one person, to be precise. I make websites, apps, anything that renders on a screen.
-    </p>
+        <p class="p--intro">
+          Nope is a small studio — one person, to be precise. I make websites, apps, anything that renders on a screen.
+        </p>
 
-    <p class="p--punch">
-      The name is<br>intentional.
-    </p>
+        <p class="p--punch">
+          The name is<br>intentional.
+        </p>
 
-    <p class="p--body p--tilt-left">
-      I say no to most things. Not out of stubbornness. Out of conviction. Most things don't need to exist — extra features nobody asked for, pages that fill space, design that decorates instead of communicates.
-    </p>
+        <p class="p--body p--tilt-left">
+          I say no to most things. Not out of stubbornness. Out of conviction. Most things don't need to exist — extra features nobody asked for, pages that fill space, design that decorates instead of communicates.
+        </p>
 
-    <p class="p--body p--right">
-      I try to remove all of it. <em>What's left is usually better.</em>
-    </p>
+        <p class="p--body p--right">
+          I try to remove all of it. <em>What's left is usually better.</em>
+        </p>
 
-    <p class="p--display">
-      method,<br>not<br>aesthetic.
-    </p>
+        <p class="p--display">
+          method,<br>not<br>aesthetic.
+        </p>
 
-    <p class="p--body p--tilt-right">
-      Every decision starts with a question: Does this need to be here? If the answer isn't clearly yes, it goes. I apply this to everything — the work I take on, the words I write, the pixels I place.
-    </p>
+        <p class="p--body p--tilt-right">
+          Every decision starts with a question: Does this need to be here? If the answer isn't clearly yes, it goes. I apply this to everything — the work I take on, the words I write, the pixels I place.
+        </p>
 
-    <p class="p--punch p--center">
-      Good design<br>disappears.
-    </p>
+        <p class="p--punch p--center">
+          Good design<br>disappears.
+        </p>
 
-    <p class="p--body">
-      The typeface, the spacing, the colour, the weight of a line — these are all decisions. Decisions made carelessly produce work that feels wrong even when people can't say why. We make them carefully.
-    </p>
+        <p class="p--body">
+          The typeface, the spacing, the colour, the weight of a line — these are all decisions. Decisions made carelessly produce work that feels wrong even when people can't say why. We make them carefully.
+        </p>
 
-    <p class="p--outro">
-      The name wasn't a strategy.<br>It was just the <strong>first honest thing</strong>.
-    </p>
+        <p class="p--outro">
+          The name wasn't a strategy.<br>It was just the <strong>first honest thing</strong>.
+        </p>
 
-  </article>
+      </article>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
+  .about-grid {
+    display: grid;
+  }
+
   .about {
-    width: 100%;
-    min-height: 100svh;
-    padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 6vw, 4rem) clamp(6rem, 14vw, 12rem);
-    background: var(--color-background);
+    grid-column: 3 / 11;
+    padding-block: clamp(4rem, 10vw, 8rem) clamp(6rem, 14vw, 12rem);
     color: var(--color-text-primary);
     overflow-x: hidden;
     transition: background 0.3s ease, color 0.3s ease;
@@ -133,11 +139,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   /* Experimental theme */
   :global([data-theme="experimental"]) .about {
-    background: var(--brand-purple);
     color: var(--brand-green);
   }
 
   :global([data-theme="experimental"]) .about p {
     color: var(--brand-green);
+  }
+
+  @media (max-width: 768px) {
+    .about {
+      grid-column: 1 / -1;
+    }
   }
 </style>
