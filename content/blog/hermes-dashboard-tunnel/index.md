@@ -1,15 +1,21 @@
 ---
 title: "Alfred, the Batcave, and the Tiny SSH Tunnel"
-description: "How I access a private Hermes dashboard on a VPS without putting it on the public internet: SSH keys, tunnels, ports, root, and the small command that hides the plumbing."
+description: "How I access a private Hermes dashboard on a VPS without putting it on the public internet: SSH keys, tunnels, ports, and the small command that hides the plumbing."
 date: 2026-06-04
 tags: [ai, tools, nerdstuff]
 draft: false
 color: "6"
 ---
 
+This is a follow-up to [Alfred lives in Helsinki now](/blog/alfred-lives-in-helsinki). If you haven't read that one, the short version: I run a persistent AI agent on a VPS. His name is Alfred. He's modelled on Alfred Pennyworth from Batman, and he texts me good morning.
+
+Alfred wrote most of this post. I prompted him to explain the SSH tunnel setup we built together, and he ran with it. I cleaned up a few parts but kept his voice. It's more formal than how I usually write. He can't help it.
+
+---
+
 I recently wanted a simpler way to open my Hermes dashboard.
 
-Hermes lives on my VPS. My browser lives on my Mac. The dashboard lives on the VPS, but I did not want to expose it to the public internet, because the dashboard can manage Hermes settings, sessions, and potentially secrets.
+Hermes lives on my VPS. My browser lives on my Mac. The dashboard lives on the VPS, but I did not want to expose it to the public internet — the dashboard can manage Hermes settings, sessions, and potentially secrets.
 
 That would be like leaving the Batcave door open with a sign saying: *please be normal*.
 
@@ -24,79 +30,47 @@ That hallway is SSH.
 There are two computers in this story:
 
 ```txt
-My Mac          → where my browser is
-The VPS         → where Hermes actually runs
+My Mac    → where my browser is
+The VPS   → where Hermes actually runs
 ```
 
-The VPS is the manor.
+The VPS is the manor. Hermes is Alfred. The dashboard is the control room. SSH is the private tunnel into the house.
 
-Hermes is Alfred.
-
-The dashboard is the control room.
-
-SSH is the private tunnel into the house.
-
-The gateway is the telephone switchboard.
-
-This helped me understand the whole setup. Before that, it was just a pile of words: VPS, SSH, tunnel, localhost, port, gateway, root, service. Very powerful words. Very poor bedside manner.
+This framing helped me understand the whole setup. Before that it was just a pile of words: VPS, SSH, tunnel, localhost, port, gateway, root, service. Very powerful words. Very poor bedside manner.
 
 ---
 
 ## The dashboard problem
 
-The Hermes dashboard is a small website running on the VPS.
-
-In my setup it listens on:
+The Hermes dashboard is a small website running on the VPS, listening on:
 
 ```txt
 127.0.0.1:9119
 ```
 
-That means:
+That means *only this machine, port 9119*. But "this machine" depends on where you're standing.
 
-```txt
-only this machine, port 9119
-```
+On my Mac, `127.0.0.1` is my Mac. On the VPS, `127.0.0.1` is the VPS. So if the dashboard is running on the VPS at that address, my Mac can't normally see it. The dashboard is inside the manor with no outside door.
 
-But "this machine" depends on where you are standing.
-
-On my Mac:
-
-```txt
-127.0.0.1 = my Mac
-```
-
-On the VPS:
-
-```txt
-127.0.0.1 = the VPS
-```
-
-So if the dashboard is running on the VPS at `127.0.0.1:9119`, my Mac cannot normally see it. The dashboard is inside the manor. No outside door.
-
-Which is good.
-
-The point is not to put the dashboard on:
+Which is good. Putting it on the public IP would make it accessible to everyone:
 
 ```txt
 http://95.217.233.210:9119
 ```
 
-That would make it public. Convenient, in the same way that removing your front door is convenient for guests.
+Convenient, in the same way that removing your front door is convenient for guests.
 
 ---
 
 ## The SSH tunnel
 
-Instead, we use SSH to create a private tunnel.
-
-The full command looks like this:
+Instead, SSH creates a private tunnel. The command looks like this:
 
 ```bash
 ssh -p 8022 -fN -L 9119:127.0.0.1:9119 root@95.217.233.210
 ```
 
-This looks like someone dropped a cutlery drawer into the terminal, so here is the simple version:
+This looks like someone dropped a cutlery drawer into the terminal. The simple version:
 
 ```txt
 When my Mac opens localhost:9119,
@@ -104,15 +78,7 @@ quietly send that traffic through SSH,
 and deliver it to localhost:9119 on the VPS.
 ```
 
-So my browser opens:
-
-```txt
-http://127.0.0.1:9119
-```
-
-It feels local.
-
-But the request actually travels like this:
+So my browser opens `http://127.0.0.1:9119` and it feels local. But the request actually travels like this:
 
 ```txt
 Browser on my Mac
@@ -126,7 +92,7 @@ VPS port 9119
 Hermes dashboard
 ```
 
-The browser thinks it is talking to my Mac. The Mac is really whispering through a private hallway to the VPS.
+The browser thinks it's talking to my Mac. The Mac is really whispering through a private hallway to the VPS.
 
 Very Alfred. Present, useful, and not standing in the doorway.
 
@@ -134,239 +100,62 @@ Very Alfred. Present, useful, and not standing in the doorway.
 
 ## What the flags mean
 
-Here is the command again:
-
 ```bash
 ssh -p 8022 -fN -L 9119:127.0.0.1:9119 root@95.217.233.210
 ```
 
-### `ssh`
+**`-p 8022`** — use port 8022 for SSH. The default is 22, but I changed it during hardening. Not magic security, but it avoids noise.
 
-Connect securely to another computer.
+**`-L 9119:127.0.0.1:9119`** — the tunnel itself. Shape is `-L MAC_PORT:VPS_ADDRESS:VPS_PORT`. The middle `127.0.0.1` is from the VPS's point of view — that's the part that briefly made my brain leave the room.
 
-### `-p 8022`
+**`-N`** — don't open a shell. I only want the tunnel, not a terminal prompt on the VPS.
 
-Use port `8022` for SSH.
+**`-f`** — run in the background. Without this the SSH session sits visibly in the terminal. With it, it disappears quietly and lets me keep working.
 
-SSH normally uses port `22`, but my VPS listens on `8022`. We changed that during hardening. It is not magic security, but it avoids some of the usual noise that hits port 22 all day.
-
-### `root@95.217.233.210`
-
-Log into the VPS at `95.217.233.210` as the Linux user `root`.
-
-More on `root` in a moment.
-
-### `-L 9119:127.0.0.1:9119`
-
-This is the tunnel.
-
-The shape is:
-
-```txt
--L MAC_PORT:VPS_ADDRESS:VPS_PORT
-```
-
-So this:
-
-```txt
--L 9119:127.0.0.1:9119
-```
-
-means:
-
-```txt
-Mac port 9119 → VPS localhost port 9119
-```
-
-Or even simpler:
-
-```txt
-When I visit localhost:9119 on my Mac,
-show me localhost:9119 on the VPS.
-```
-
-The middle `127.0.0.1` is from the VPS's point of view. That is the part that made my brain briefly leave the room.
-
-### `-N`
-
-Do not open a normal shell.
-
-Usually SSH gives you a terminal prompt on the VPS. But for the dashboard, I do not want to type commands on the server. I only want the tunnel.
-
-So `-N` means:
-
-```txt
-No remote command. Just keep the tunnel open.
-```
-
-### `-f`
-
-Run in the background.
-
-Without `-f`, the SSH tunnel stays visibly running in the terminal. With `-f`, it disappears into the background and lets me keep using the terminal.
-
-So `-fN` together means:
-
-```txt
-Open the tunnel quietly in the background. Do not give me a VPS shell.
-```
+**`root@95.217.233.210`** — log into the VPS as root. More on that in a moment.
 
 ---
 
-## SSH keys: the lock and the hand
+## SSH keys
 
-The tunnel works because my Mac is allowed to SSH into the VPS.
-
-That permission comes from an SSH key pair.
-
-There are two keys:
+The tunnel works because my Mac is allowed to SSH into the VPS. That permission comes from a key pair:
 
 ```txt
-Private key  → stays on my Mac
-Public key   → copied onto the VPS
+Private key  → stays on my Mac (~/.ssh/id_ed25519)
+Public key   → copied onto the VPS (/root/.ssh/authorized_keys)
 ```
 
-The public key is safe to share. It is like installing a lock on the server.
+The public key is safe to share — it's like installing a lock on the server. The private key must stay private — it's the only thing that can prove I'm allowed through.
 
-The private key must stay private. It is the only thing that can prove I am allowed through that lock.
+When I SSH in, my private key is never sent to the VPS. The VPS sends a challenge. My Mac signs it with the private key. The VPS checks the signature against the public key in `authorized_keys`. If it matches, I'm in.
 
-On my Mac, the private key usually lives somewhere like:
-
-```txt
-~/.ssh/id_ed25519
-```
-
-The matching public key is usually:
-
-```txt
-~/.ssh/id_ed25519.pub
-```
-
-On the VPS, the public key is stored in:
-
-```txt
-/root/.ssh/authorized_keys
-```
-
-That file means:
-
-```txt
-These public keys are allowed to log in as root.
-```
-
-When I SSH in, my private key is not sent to the VPS. That would be spectacularly missing the point.
-
-Instead, the VPS sends a little challenge. My Mac signs that challenge with the private key. The VPS checks the signature using the public key in `authorized_keys`.
-
-If the signature matches, the VPS knows:
-
-```txt
-This Mac has the private key that belongs to one of my approved public keys.
-```
-
-Then it lets me in.
-
-So the private key never leaves my computer. My Mac proves it has the key without handing the key over.
-
-A public key is like telling the doorman what my signature looks like.
-
-A private key is my hand.
-
-Best not to mail that to the doorman.
+A public key is like telling the doorman what my signature looks like. A private key is my hand. Best not to mail that to the doorman.
 
 ---
 
-## Why `root`?
+## Why root?
 
-`root` is the administrator account on Linux.
+`root` is the administrator account on Linux. It can do everything — install software, edit system files, delete things with terrifying confidence.
 
-It can do everything:
+My Hermes installation lives under `/root/.hermes`, so logging in as root means I'm working directly with everything. The downside is obvious: if I make a bad command, Linux will helpfully execute it. No questions.
 
-- install software
-- edit system files
-- restart services
-- change firewall rules
-- delete important things with terrifying confidence
+The safer setup would be a normal user plus `sudo` only when needed. For now root is fine because the server is locked down — SSH keys only, password login disabled, port 8022, firewall, fail2ban. Not reckless. Just powerful.
 
-Using `root` is convenient because this VPS was set up with Hermes under:
-
-```txt
-/root/.hermes
-```
-
-So when I log in as root, I am working directly with the Hermes installation, its config, its services, and its files.
-
-The downside is obvious: root is powerful. If I make a bad command, Linux may helpfully execute it. No questions. No concern. Just obedience.
-
-The safer alternative would be a normal user, like:
-
-```txt
-edward
-```
-
-Then I would log in with:
-
-```bash
-ssh -p 8022 edward@95.217.233.210
-```
-
-And use `sudo` only when I need administrator powers:
-
-```bash
-sudo systemctl restart hermes-dashboard.service
-```
-
-That is the more polished setup:
-
-```txt
-root                    → walking around with the master key all day
-normal user + sudo      → normal key, admin powers only when needed
-```
-
-For now, root is acceptable because the server is locked down:
-
-- SSH uses keys
-- password login is disabled
-- SSH listens on port 8022
-- the firewall only allows what is needed
-- fail2ban blocks repeated bad login attempts
-
-Not reckless. Just powerful. Like giving Alfred access to the armory. Sensible, provided Alfred remains Alfred.
+Like giving Alfred access to the armory. Sensible, provided Alfred remains Alfred.
 
 ---
 
 ## Making it one command
 
-I did not want to type the full SSH tunnel every time.
+I didn't want to type the full SSH command every time, so Alfred added a shell function to `~/.zshrc` — the file my terminal reads on startup.
 
-So we added a small shell function to my Mac's:
-
-```txt
-~/.zshrc
-```
-
-`.zshrc` is the file my terminal reads when it starts. It is where you can teach your terminal little shortcuts.
-
-The command is called:
-
-```bash
-hdash
-```
-
-It does three things:
+The command is `hdash`. It does three things:
 
 1. Starts the Hermes dashboard service on the VPS
-2. Opens the SSH tunnel from my Mac to the VPS
-3. Opens the dashboard in my browser
+2. Opens the SSH tunnel
+3. Opens the dashboard in the browser
 
-So instead of remembering:
-
-```bash
-ssh -p 8022 -fN -L 9119:127.0.0.1:9119 root@95.217.233.210
-open http://127.0.0.1:9119
-```
-
-I type:
+So instead of remembering the full command, I just type:
 
 ```bash
 hdash
@@ -374,139 +163,52 @@ hdash
 
 A small mercy.
 
----
+There's also `hstop` to close the tunnel and stop the dashboard service. We also made `hdash` start a one-hour timer — if I forget to close it manually, the tunnel closes itself.
 
-## Closing it again
+If I forget it's open, it's not a disaster. The tunnel only exists on my Mac and the dashboard is still not public. But it is untidy.
 
-There are two things involved:
-
-```txt
-Dashboard service on the VPS
-SSH tunnel on my Mac
-```
-
-The dashboard service is the website running inside the VPS.
-
-The SSH tunnel is my Mac's private hallway into it.
-
-Closing the browser does not necessarily close the tunnel. The browser is just the guest. The hallway may still be open.
-
-So we added another command:
-
-```bash
-hstop
-```
-
-That closes the SSH tunnel and stops the dashboard service on the VPS.
-
-We also made `hdash` start a one-hour timer. If I forget to close it manually, the tunnel closes itself after an hour.
-
-If I forget, it is not a disaster. The tunnel only exists on my Mac, and the dashboard is still not public. But it is untidy.
-
-A sock left on the floor, not a burglary.
+A sock on the floor, not a burglary.
 
 ---
 
-## What about the Hermes gateway?
+## The dashboard vs the gateway
 
-The dashboard is not the same thing as the Hermes gateway.
+One thing that confused me: the dashboard is not the same as the Hermes gateway.
 
-This took me a minute.
+The dashboard is the browser control room. The gateway is the messaging bridge — it lets Hermes talk through Telegram, Discord, Slack, email, and so on.
 
-The dashboard is the browser control room.
-
-The gateway is the messaging bridge.
-
-It lets Hermes talk through apps like:
-
-- Telegram
-- Discord
-- Slack
-- WhatsApp
-- Signal
-- Matrix
-- email
-- webhooks
-
-If I message my Telegram bot, the path looks roughly like this:
+When I message my Telegram bot:
 
 ```txt
 Telegram
   ↓
 Hermes gateway on the VPS
   ↓
-Hermes agent
+Hermes agent (Alfred)
   ↓
 Gateway again
   ↓
 Telegram reply
 ```
 
-The gateway is the telephone switchboard.
-
-Telegram rings. The gateway answers and hands the message to Alfred. Alfred thinks, uses tools if needed, and hands the answer back to the gateway. The gateway sends the reply.
-
-So in manor terms:
-
-```txt
-VPS        → the manor
-Hermes     → Alfred
-Dashboard  → the control room
-SSH        → private tunnel into the manor
-Gateway    → telephone switchboard
-Telegram   → one of the phones
-```
-
-Different servant, different tray.
+The gateway is the telephone switchboard. Different servant, different tray.
 
 ---
 
-## Why not make it public?
-
-Because the dashboard is powerful.
-
-It can manage Hermes. It can see sessions. It can touch configuration. Depending on setup, it may expose sensitive things.
-
-Putting it directly on the internet would be simpler, yes.
-
-So is leaving your house keys under a mat labelled `HOUSE KEYS`.
-
-The SSH tunnel gives me the good version:
-
-```txt
-Easy access from my Mac
-without exposing the dashboard to everyone else
-```
-
-That is the whole point.
-
----
-
-## The final mental model
-
-This is now how I think about it:
+## The mental model
 
 ```txt
 Hermes lives on the VPS.
 The dashboard is a local-only website inside the VPS.
-My Mac cannot see it directly.
+My Mac can't see it directly.
 SSH creates a private tunnel.
 My browser opens localhost:9119.
 The tunnel forwards that to localhost:9119 on the VPS.
 The dashboard appears.
 ```
 
-And the commands become:
+The machinery is still there — SSH keys, ports, services, tunnels, root, authorized keys, gateway processes. None of it disappeared.
 
-```bash
-hdash   # open the dashboard
-hstop   # close it when done
-```
-
-The machinery is still there. SSH keys, ports, services, tunnels, root, authorized keys, gateway processes. None of it disappeared.
-
-But now it has a front door.
-
-Or perhaps more accurately: a hidden passage behind a grandfather clock.
+But now it has a front door. Or more accurately: a hidden passage behind a grandfather clock.
 
 Which is exactly how Alfred would have preferred it.
