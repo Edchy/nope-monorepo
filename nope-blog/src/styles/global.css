@@ -167,7 +167,7 @@ summary {
 ::-webkit-scrollbar-thumb {
   border-radius: 9999px;
   border: 0.125rem solid transparent;
-  background-color: var(--color-text-primary);
+  background-color: var(--3);
   background-clip: padding-box;
   min-height: 2.5rem;
   contain: paint;
