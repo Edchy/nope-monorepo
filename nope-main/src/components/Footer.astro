@@ -1,24 +1,55 @@
 ---
 interface Props {
-  siteTitle?: string;
   email?: string;
 }
 
-const {
-  siteTitle = "nope",
-  email = "hello@nope.digital",
-} = Astro.props;
+const { email = "hello@nope.digital" } = Astro.props;
+
+const year = new Date().getFullYear();
+
+const footerLinks = [
+  { href: "/work", label: "Work" },
+  { href: "/about", label: "About" },
+  { href: "https://blog.nope.digital", label: "Blog" },
+];
 ---
 
 <footer class="site-footer">
   <div class="site-footer__shell layout-shell">
-    <div class="site-footer__inner layout-grid">
-      <div class="site-footer__kaomoji" aria-hidden="true">ツ</div>
-      <div class="site-footer__bar">
-        <div class="site-footer__title-group">
-          <span class="site-footer__title">{siteTitle}</span>
-          <span class="site-footer__copy">© {new Date().getFullYear()} i guess</span>
+    <div class="site-footer__grid layout-grid">
+      <!-- Signature: "nope" ✌ "studio" with the crossed-fingers mark
+           between them; taglines tucked under each word. -->
+      <div
+        class="site-footer__signature"
+        aria-label="nope studio — human made, digital work"
+      >
+        <div class="site-footer__mark" aria-hidden="true">
+          <span class="site-footer__word">“nope”</span>
+          <span class="site-footer__tagline">“human made”</span>
         </div>
+
+        <span class="site-footer__fingers" aria-hidden="true"></span>
+
+        <div class="site-footer__mark site-footer__mark--right" aria-hidden="true">
+          <span class="site-footer__word">“studio”</span>
+          <span class="site-footer__tagline">“digital work”</span>
+        </div>
+      </div>
+
+      <!-- Meta row -->
+      <div class="site-footer__meta" aria-label="Footer">
+        <span class="site-footer__copy">© {year}. still here.</span>
+
+        <nav class="site-footer__nav" aria-label="Footer navigation">
+          {
+            footerLinks.map(({ href, label }) => (
+              <a href={href} class="site-footer__link">
+                {label}
+              </a>
+            ))
+          }
+        </nav>
+
         <a href={`mailto:${email}`} class="site-footer__email">{email}</a>
       </div>
     </div>
@@ -26,83 +57,239 @@ const {
 </footer>
 
 <style>
+  /* ============================================================
+     FOOTER — mobile-first, responsive.
+     Mobile: wordmarks stacked, mark centered. Tablet+: single
+     horizontal line "nope ✌ studio" like the brand mark.
+     ============================================================ */
+
   .site-footer {
     margin-top: auto;
+    overflow: clip;
   }
 
   .site-footer__shell {
-    padding-block: var(--space-8) var(--space-6);
+    padding-block: var(--space-20) var(--space-8);
   }
 
-  .site-footer__inner {
+  .site-footer__grid {
     display: grid;
+    row-gap: var(--space-12);
   }
 
-  .site-footer__kaomoji,
-  .site-footer__bar {
-    grid-column: 3 / 11;
+  .site-footer__signature,
+  .site-footer__meta {
+    grid-column: 1 / -1;
   }
 
-  .site-footer__kaomoji {
-    font-size: clamp(6rem, 20vw, 14rem);
-    line-height: 1;
-    color: var(--color-text-primary);
-    user-select: none;
-    text-align: center;
-    margin-bottom: var(--space-4);
-  }
-
-  .site-footer__bar {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    padding-block: var(--space-2);
-  }
-
-  .site-footer__title-group {
+  /* ----- Signature ----- */
+  .site-footer__signature {
+    --fz: clamp(3.5rem, 18vw, 6rem);
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
+    align-items: center;
+    gap: clamp(0.5rem, 3vw, 1.5rem);
+    color: var(--color-text-primary);
+    font-family: var(--font-family-display);
+    text-align: center;
+  }
+
+  /* The word defines the box; the tagline is absolutely centered
+     over it (dead center of each wordmark). */
+  .site-footer__mark {
+    position: relative;
+    display: inline-block;
+  }
+
+  .site-footer__word {
+    display: block;
+    font-size: var(--fz);
+    font-weight: var(--font-weight-black);
+    line-height: 0.85;
+    letter-spacing: -0.02em;
+    text-transform: lowercase;
+    white-space: nowrap;
+  }
+
+  /* Solid crossed-fingers mark, recolored via mask to currentColor. */
+  .site-footer__fingers {
+    display: block;
+    height: clamp(3.5rem, 18vw, 6rem);
+    width: auto;
+    aspect-ratio: 379 / 642;
+    background: currentColor;
+    color: var(--color-text-primary);
+    mask: url("/nope_fingers.svg") center / contain no-repeat;
+    -webkit-mask: url("/nope_fingers.svg") center / contain no-repeat;
+  }
+
+  /* Knocked out of the wordmark: background-colored text centered on
+     the foreground-colored word, so it reads in either theme. */
+  .site-footer__tagline {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-family-display);
+    font-size: clamp(0.9rem, 4vw, 1.15rem);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: lowercase;
+    white-space: nowrap;
+    color: var(--neutral-900);
+  }
+
+  /* ----- Meta row ----- */
+  .site-footer__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    text-align: center;
   }
 
   .site-footer__copy {
     font-size: var(--font-size-xs);
     color: var(--color-text-secondary);
-    letter-spacing: 0.01em;
+    letter-spacing: 0;
+    order: 3;
   }
 
-  .site-footer__title {
-    font-family: var(--font-family-display);
-    font-size: clamp(2rem, 6vw, 4rem);
-    font-weight: var(--font-weight-bold);
-    letter-spacing: -0.03em;
-    color: var(--color-text-primary);
-    line-height: 1;
+  /* Nav hidden on mobile (minimal) — shown from tablet up */
+  .site-footer__nav {
+    display: none;
+    align-items: baseline;
+    gap: var(--space-6);
+    order: 2;
   }
 
+  .site-footer__link,
   .site-footer__email {
-    font-size: clamp(1.25rem, 3.5vw, 2.5rem);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: -0.02em;
-    color: var(--color-text-primary);
+    color: var(--color-text-secondary);
     text-decoration: none;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
     transition: color 0.1s ease;
   }
 
+  .site-footer__email {
+    order: 1;
+    font-size: var(--font-size-sm);
+  }
+
+  .site-footer__link:focus-visible,
+  .site-footer__email:focus-visible {
+    color: var(--color-text-primary);
+  }
+
   @media (hover: hover) and (pointer: fine) {
+    .site-footer__link:hover,
     .site-footer__email:hover {
-      color: var(--color-text-secondary);
+      color: var(--color-text-primary);
+      text-decoration: none;
     }
   }
 
-  @media (max-width: 768px) {
-    .site-footer__kaomoji,
-    .site-footer__bar {
+  /* ----- Experimental theme ----- */
+  /* Taglines: black on experimental (yellow word), yellow on default
+     (black/white theme) for a pop against the dark wordmark. */
+  :global(:root:not([data-theme="experimental"])) .site-footer__tagline {
+    color: var(--brand-green);
+  }
+
+  :global([data-theme="experimental"]) .site-footer__copy {
+    color: var(--color-text-secondary);
+    opacity: 0.72;
+  }
+
+  :global([data-theme="experimental"]) .site-footer__link:hover,
+  :global([data-theme="experimental"]) .site-footer__email:hover {
+    color: var(--neutral-50);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-footer__link,
+    .site-footer__email {
+      transition: none;
+    }
+  }
+
+  /* ============================================================
+     TABLET (≥ 768px) — single horizontal line: nope ✌ studio.
+     Marks sit either side of the centered mark; nav returns.
+     ============================================================ */
+  @media (min-width: 768px) {
+    .site-footer__meta {
+      grid-column: 3 / 11;
+    }
+
+    /* Signature goes edge-to-edge so the one-line lockup has room */
+    .site-footer__signature {
       grid-column: 1 / -1;
     }
 
-    .site-footer__kaomoji {
-      font-size: clamp(5rem, 28vw, 8rem);
+    .site-footer__shell {
+      padding-block: clamp(7rem, 14vw, 11rem) var(--space-8);
+    }
+
+    .site-footer__signature {
+      --fz: clamp(3.5rem, 9vw, 9rem);
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: clamp(1rem, 3.5vw, 3.5rem);
+    }
+
+    .site-footer__fingers {
+      height: clamp(6rem, 14vw, 13rem);
+    }
+
+    .site-footer__tagline {
+      font-size: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    .site-footer__meta {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-6);
+      text-align: left;
+      margin-top: var(--space-8);
+    }
+
+    .site-footer__copy {
+      order: 0;
+    }
+
+    .site-footer__nav {
+      display: flex;
+      order: 0;
+    }
+
+    .site-footer__email {
+      order: 0;
+      font-size: var(--font-size-xs);
+    }
+  }
+
+  /* ============================================================
+     DESKTOP (≥ 1100px) — larger, generous spacing.
+     ============================================================ */
+  @media (min-width: 1100px) {
+    .site-footer__signature {
+      --fz: clamp(6rem, 9vw, 11rem);
+      gap: clamp(2rem, 5vw, 6rem);
+    }
+
+    .site-footer__fingers {
+      height: clamp(9rem, 14vw, 16rem);
+    }
+
+    .site-footer__tagline {
+      font-size: clamp(1.25rem, 1.8vw, 2rem);
     }
   }
 </style>
