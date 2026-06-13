@@ -17,8 +17,8 @@ const footerLinks = [
 <footer class="site-footer">
   <div class="site-footer__shell layout-shell">
     <div class="site-footer__grid layout-grid">
-      <!-- Signature: "nope" ✌ "studio" with the crossed-fingers mark
-           between them; taglines tucked under each word. -->
+      <!-- Signature: crossed-fingers above the stacked mobile lockup;
+           "nope" ✌ "studio" in the horizontal lockup. -->
       <div
         class="site-footer__signature"
         aria-label="nope studio — human made, digital work"
@@ -85,9 +85,10 @@ const footerLinks = [
   /* ----- Signature ----- */
   .site-footer__signature {
     --fz: clamp(3.5rem, 18vw, 6rem);
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: auto;
     align-items: center;
+    justify-content: center;
     gap: clamp(0.5rem, 3vw, 1.5rem);
     color: var(--color-text-primary);
     font-family: var(--font-family-display);
@@ -114,6 +115,8 @@ const footerLinks = [
   /* Solid crossed-fingers mark, recolored via mask to currentColor. */
   .site-footer__fingers {
     display: block;
+    grid-row: 1;
+    justify-self: center;
     height: clamp(3.5rem, 18vw, 6rem);
     width: auto;
     aspect-ratio: 379 / 642;
@@ -123,15 +126,23 @@ const footerLinks = [
     -webkit-mask: url("/nope_fingers.svg") center / contain no-repeat;
   }
 
-  /* Knocked out of the wordmark: background-colored text centered on
-     the foreground-colored word, so it reads in either theme. */
+  .site-footer__mark:not(.site-footer__mark--right) {
+    grid-row: 2;
+  }
+
+  .site-footer__mark--right {
+    grid-row: 3;
+  }
+
+  /* Knocked out of the wordmark: background-colored text centered in
+     the exact box occupied by the foreground word. */
   .site-footer__tagline {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    inset: 0;
+    display: grid;
+    place-items: center;
     font-family: var(--font-family-display);
-    font-size: clamp(0.9rem, 4vw, 1.15rem);
+    font-size: var(--footer-tagline-font-size);
     font-weight: var(--font-weight-bold);
     line-height: 1;
     letter-spacing: 0;
@@ -237,6 +248,7 @@ const footerLinks = [
 
     .site-footer__signature {
       --fz: clamp(3.5rem, 9vw, 9rem);
+      display: flex;
       flex-direction: row;
       justify-content: center;
       align-items: center;
@@ -247,8 +259,13 @@ const footerLinks = [
       height: clamp(6rem, 14vw, 13rem);
     }
 
+    .site-footer__mark,
+    .site-footer__fingers {
+      grid-row: auto;
+    }
+
     .site-footer__tagline {
-      font-size: clamp(1rem, 2vw, 1.5rem);
+      font-size: var(--footer-tagline-font-size-tablet);
     }
 
     .site-footer__meta {
@@ -289,7 +306,7 @@ const footerLinks = [
     }
 
     .site-footer__tagline {
-      font-size: clamp(1.25rem, 1.8vw, 2rem);
+      font-size: var(--footer-tagline-font-size-desktop);
     }
   }
 </style>

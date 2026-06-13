@@ -68,6 +68,10 @@
     9rem
   ); /* Hero/footer wordmark — intentionally outside step scale */
 
+  --footer-tagline-font-size: clamp(1.1rem, 4.8vw, 1.4rem);
+  --footer-tagline-font-size-tablet: clamp(1.25rem, 2.4vw, 1.8rem);
+  --footer-tagline-font-size-desktop: clamp(1.5rem, 2.1vw, 2.4rem);
+
   --font-weight-regular: 400;
   --font-weight-semibold: 600;
   --font-weight-thin: 100;
