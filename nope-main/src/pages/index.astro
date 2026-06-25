@@ -67,8 +67,10 @@ import LiftButton from "../components/LiftButton.astro";
               Websites. Apps. Design.<br/> All things digital.
             </p>
             <p class="hero__summary">
-              I'd be happy to create your next screen thing. Come with an idea or without one. Either works. Say hello and
-              we'll figure it out.
+              Human, because real people build it, with soul.<br/>
+              Minimal, because we cut what doesn't earn its place.<br/>
+              Deliberate, because nothing here is by accident.<br/>
+              Got an idea, or just the itch to build something? Say hello and we'll take it from there.
             </p>
           </div>
           <nav class="hero__actions">
@@ -268,7 +270,7 @@ import LiftButton from "../components/LiftButton.astro";
 
   .hero__title {
     max-width: 9ch;
-    font-size: clamp(4.2rem, 8vw, 7rem);
+    font-size: clamp(3rem, 9vw, 8rem);
     font-weight: var(--font-weight-regular);
     line-height: var(--line-height-display);
     letter-spacing: -0.02em;
@@ -278,7 +280,7 @@ import LiftButton from "../components/LiftButton.astro";
   }
 
   :global([data-theme="experimental"]) .hero__title {
-    color: var(--neutral-50);
+    color: var(--brand-green);
   }
 
   .hero__title-break {
@@ -295,15 +297,19 @@ import LiftButton from "../components/LiftButton.astro";
     gap: var(--space-8);
     min-width: 0;
     width: 100%;
-    max-width: 28rem;
+    max-width: 34rem;
   }
 
   .hero__summary {
     min-width: 0;
-    font-size: var(--font-size-base);
+    font-size: 0.875rem;
     line-height: var(--line-height-snug);
     text-wrap: pretty;
     color: var(--color-text-secondary);
+  }
+
+  :global([data-theme="experimental"]) .hero__summary {
+    color: var(--neutral-50);
   }
 
   .hero__summary--lead {

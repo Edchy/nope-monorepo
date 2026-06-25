@@ -2,6 +2,7 @@
 title: "How Claude Code Decides What to Listen To"
 description: "Claude Code reads several layers of instructions at once. Here is what they are and how they interact."
 date: 2026-02-03
+tags: [ai, claude-code, tools]
 draft: false
 color: "1"
 ---

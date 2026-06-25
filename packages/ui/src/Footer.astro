@@ -1,12 +1,14 @@
 ---
 interface Props {
   siteTitle?: string;
+  studioName?: string;
   email?: string;
   tagline?: string;
 }
 
 const {
   siteTitle = "NOPE ジ",
+  studioName = "nope studio",
   email = "hello@nope.digital",
   tagline = "That'll do",
 } = Astro.props;
@@ -39,14 +41,11 @@ const footerLetters = [...footerWordmark];
       <a href="/" class="site-footer__wordmark site-footer__wordmark--mobile">{siteTitle}</a>
     </div>
     <div class="site-footer__meta" aria-label="Footer details">
-      <a href="/" class="site-footer__mobile-title">{siteTitle}</a>
+      <a href="/" class="site-footer__mobile-title">{studioName}</a>
       <p class="site-footer__copy">
         <a href={`mailto:${email}`}>{email}</a>
       </p>
-      <p class="site-footer__copy site-footer__copy--center">
-        © {year}
-        {siteTitle}
-      </p>
+      <p class="site-footer__copy site-footer__copy--center">© {year} {studioName}</p>
       <p class="site-footer__tagline">{tagline}</p>
     </div>
   </div>
@@ -164,72 +163,55 @@ const footerLetters = [...footerWordmark];
     text-align: right;
   }
 
+  /* ── Simplified footer on mobile/tablet: no image, no giant wordmark ── */
   @media (max-width: 768px) {
-    .site-footer__shell {
-      padding-top: var(--space-10, 2.5rem);
-    }
-
-    .site-footer__wordmark {
-      margin-left: calc(var(--space-container-x, var(--space-4, 1rem)) * -1);
-      margin-right: calc(var(--space-container-x, var(--space-4, 1rem)) * -1);
-      font-size: clamp(4rem, 20vw, 8rem);
-      line-height: 0.8;
-    }
-  }
-
-  @media (max-width: 480px) {
     .site-footer {
+      min-height: 0;
       contain: none;
     }
 
-    .site-footer__shell {
-      padding-top: var(--space-8, 2rem);
-      padding-bottom: var(--space-3, 0.75rem);
-      overflow: visible;
-    }
-
-    .site-footer__marquee--desktop {
+    .site-footer__peeker {
       display: none;
     }
 
+    .site-footer__marquee--desktop,
     .site-footer__marquee--mobile {
       display: none;
     }
 
+    .site-footer__shell {
+      padding-top: var(--space-8, 2rem);
+      padding-bottom: var(--space-6, 1.5rem);
+      overflow: visible;
+    }
+
     .site-footer__meta {
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: center;
-      gap: var(--space-2, 0.5rem);
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+      gap: var(--space-1, 0.25rem);
     }
 
     .site-footer__mobile-title {
       display: block;
       font-family: var(--font-family-base, sans-serif);
-      font-size: clamp(3.5rem, 18vw, 6rem);
+      font-size: clamp(2.75rem, 13vw, 4.5rem);
       font-weight: var(--font-weight-bold, 700);
-      line-height: 0.86;
-      letter-spacing: -0.08em;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
       color: var(--3);
-      justify-self: start;
-      align-self: center;
-      text-align: left;
-      grid-column: 1;
-      grid-row: 1;
+      margin-bottom: var(--space-4, 1rem);
     }
 
-    .site-footer__copy:first-child {
-      justify-self: end;
-      align-self: center;
-      text-align: right;
-      grid-column: 2;
-      grid-row: 1;
+    .site-footer__copy {
+      justify-self: center;
+      text-align: center;
+      font-size: var(--font-size-sm, 0.9rem);
     }
 
     .site-footer__copy--center {
-      justify-self: center;
-      text-align: center;
-      grid-column: 1 / -1;
-      grid-row: 2;
+      font-size: var(--font-size-xs, 0.7rem);
+      opacity: 0.55;
     }
 
     .site-footer__tagline {

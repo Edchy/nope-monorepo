@@ -24,8 +24,11 @@
   --brand-green: oklch(0.767 0.261 142.495);
   --experimental-3: oklch(0.75 0.1 125);
 
-  --2: #0000d2;
-  --3: #ffff04;
+  /* Core duo — off-white surface (--2) / off-black ink (--3).
+     Named --2/--3 for historical reasons; many components pair them as
+     background/foreground, so swapping these recolors the whole site. */
+  --2: #f5f4f1;
+  --3: #18171c;
 
   /* Spacing primitives */
   --space-1: 4px;
@@ -87,13 +90,13 @@
    ------------------------------------------------------------ */
 :root {
   /* Backgrounds */
-  --color-background: var(--neutral-100);
+  --color-background: var(--2);
   --color-background-surface: #ffffff;
-  --color-background-subtle: var(--neutral-100);
+  --color-background-subtle: var(--2);
 
   /* Text */
-  --color-text-primary: var(--neutral-900);
-  --color-text-secondary: var(--neutral-warm-600);
+  --color-text-primary: var(--3);
+  --color-text-secondary: color-mix(in oklch, var(--3) 55%, var(--2));
   --color-text-disabled: color-mix(
     in oklch,
     var(--color-text-primary) 25%,
@@ -102,20 +105,12 @@
   --color-text-inverse: var(--neutral-50);
 
   /* Actions */
-  --color-action-primary: var(--neutral-900);
-  --color-action-primary-hover: var(--neutral-700);
+  --color-action-primary: var(--3);
+  --color-action-primary-hover: color-mix(in oklch, var(--3) 70%, var(--2));
 
-  /* Borders */
-  --color-border-default: color-mix(
-    in oklch,
-    var(--color-background) 97%,
-    black
-  );
-  --color-border-strong: color-mix(
-    in oklch,
-    var(--color-background) 70%,
-    black
-  );
+  /* Borders — hairlines derived from the ink */
+  --color-border-default: color-mix(in oklch, var(--3) 12%, var(--2));
+  --color-border-strong: color-mix(in oklch, var(--3) 28%, var(--2));
 
   /* Semantic spacing */
   --space-section: var(--space-20);
@@ -125,6 +120,10 @@
   --max-width-content: 720px;
   --max-width-wide: 1024px;
   --max-width-layout: 2000px;
+
+  /* Site container — constrains header + page content to a readable column */
+  --max-width-site: 1080px;
+  --space-container: clamp(1.25rem, 5vw, 2.5rem);
 
   /* Font families */
   --font-family-base: var(--font-zt-nature, system-ui, sans-serif);

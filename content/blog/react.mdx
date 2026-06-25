@@ -8,19 +8,19 @@ color: "5"
 ---
 import InfoBox from "@/components/InfoBox.astro"
 
-Coming into web development in the 2020s can be really daunting. There have been two decades of evolution in the ecosystem — a lot of stuff built on top of each other, solving an ever-growing list of problems that shift as the web platform matures.
+Coming into web development in the 2020s can be really daunting. There have been two decades of evolution in the ecosystem, a lot of stuff built on top of each other, solving an ever-growing list of problems that shift as the web platform matures.
 
 At least it was for me. I can imagine it being easier for people who have been around a while and experienced the pain points firsthand. You work with vanilla JS, hit its limitations, a tool comes along that solves exactly that problem, and you get it immediately. Then another tool builds on top of that one, and so on.
 
 If you just get dropped into this mess in 2025 and told to "use React" without any context, it can be really hard to understand why you have to learn so many things.
 
-This post is an attempt to provide some of that context — what React is, how it fits into the web ecosystem, and why it exists in the first place.
+This post is an attempt to provide some of that context, what React is, how it fits into the web ecosystem, and why it exists in the first place.
 
 ## The problem
 
 To understand React, we first need to understand the problem it was created to solve.
 
-When you visit a website, the server sends HTML to your browser. The browser turns that HTML into a [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model) — a live, interactive tree of the page — and renders it to the screen. Any time the DOM changes, the browser re-renders the affected parts.
+When you visit a website, the server sends HTML to your browser. The browser turns that HTML into a [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model), a live, interactive tree of the page, and renders it to the screen. Any time the DOM changes, the browser re-renders the affected parts.
 
 ### Imperative vs declarative programming
 
@@ -51,12 +51,12 @@ JavaScript is an old language. It wasn't originally designed to handle complex, 
 
 Imagine instead of one counter you have ten. Or the same count appears in multiple places. Or several buttons all affect the same value. Now every time state changes, you have to manually update every part of the DOM that depends on it. Forget one update, and your UI is out of sync with your data.
 
-The root issue is that your application's state lives scattered across the DOM — in text content, attributes, class names. That makes the app hard to reason about:
+The root issue is that your application's state lives scattered across the DOM, in text content, attributes, class names. That makes the app hard to reason about:
 
-- **Unpredictable** — you don't always know which parts of the UI reflect which pieces of state
-- **Manual** — you're responsible for remembering to update everything, everywhere
-- **Bug-prone** — forget one DOM update and your UI is out of sync
-- **Hard to scale** — as interactive elements multiply, the code becomes harder to maintain and debug
+- **Unpredictable**, you don't always know which parts of the UI reflect which pieces of state
+- **Manual**, you're responsible for remembering to update everything, everywhere
+- **Bug-prone**, forget one DOM update and your UI is out of sync
+- **Hard to scale**, as interactive elements multiply, the code becomes harder to maintain and debug
 
 **Declarative programming** is when you describe what you want, not how to get there. You define what the end result should look like, and let the system figure out how to make it happen.
 
@@ -79,7 +79,7 @@ function setCount() {
 }
 ```
 
-We've created an abstraction — `countApp` — that handles the low-level DOM work. The `setCount` function now just says "increment the count." It describes intent, not steps.
+We've created an abstraction, `countApp`, that handles the low-level DOM work. The `setCount` function now just says "increment the count." It describes intent, not steps.
 
 Now imagine `countApp` lives in a separate file or npm package:
 
@@ -91,7 +91,7 @@ function setCount() {
 }
 ```
 
-Clean. We're no longer touching the DOM directly — we're calling functions that describe what we want.
+Clean. We're no longer touching the DOM directly, we're calling functions that describe what we want.
 
 *(The counter example is adapted from [Tony Alicea's excellent YouTube video on React](https://www.youtube.com/watch?v=-XKvVyC6si0&t=20419s).)*
 
@@ -99,7 +99,7 @@ Clean. We're no longer touching the DOM directly — we're calling functions tha
 
 React is basically the same idea — but way more powerful.
 
-Just like `countApp` abstracted DOM manipulation for one element, React abstracts DOM creation and updates for your **entire UI**. You describe what the UI should look like at any given moment, and React figures out how to make the browser match that description. Under the hood it's still JavaScript — imperative code that smart people wrote so you don't have to.
+Just like `countApp` abstracted DOM manipulation for one element, React abstracts DOM creation and updates for your **entire UI**. You describe what the UI should look like at any given moment, and React figures out how to make the browser match that description. Under the hood it's still JavaScript, imperative code that smart people wrote so you don't have to.
 
 This leads to an important principle:
 

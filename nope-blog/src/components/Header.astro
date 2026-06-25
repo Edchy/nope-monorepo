@@ -6,130 +6,388 @@ interface NavLink {
 }
 
 interface Props {
-  siteTitle: string;
   navLinks: NavLink[];
+  dark?: boolean;
 }
 
-const { siteTitle, navLinks } = Astro.props;
+const { navLinks, dark = false } = Astro.props;
 const currentPath = Astro.url.pathname;
+
+const isActive = (href: string, isExternal?: boolean) =>
+  !isExternal &&
+  (href === "/" ? currentPath === "/" : currentPath.startsWith(href));
 ---
 
-<header class="blog-header">
-  <div class="blog-header__inner">
-    <a href="/" class="blog-header__title" aria-label={siteTitle}><img src="/images/nope_fonts.webp" alt={siteTitle} class="blog-header__wordmark" /></a>
-    <nav aria-label="Main navigation">
-      <ul class="blog-header__links">
+<header class:list={["site-header", { "site-header--dark": dark }]}>
+  <div class="site-header__shell">
+    <a href="/" class="site-header__logo" aria-label="NOPE home">
+      <img src="/images/nope_fonts.webp" alt="nope" class="site-header__wordmark" width="623" height="144" />
+    </a>
+
+    <nav class="site-header__nav" aria-label="Main navigation">
+      <ul class="site-header__links">
         {navLinks.map(({ href, label, isExternal }) => (
           <li>
             <a
               href={href}
               class:list={[
-                "blog-header__link",
-                { "blog-header__link--active": currentPath === href },
+                "site-header__link",
+                { "site-header__link--active": isActive(href, isExternal) },
               ]}
             >
               <span>{label}</span>
               {isExternal && (
-                <span class="blog-header__external-indicator" aria-hidden="true">
-                  ↗
-                </span>
+                <span class="site-header__external" aria-hidden="true">↗</span>
               )}
             </a>
           </li>
         ))}
       </ul>
     </nav>
+
+    <button
+      type="button"
+      class="site-header__menu-trigger"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+    >
+      <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <line class="menu-icon__top" x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></line>
+        <line class="menu-icon__bot" x1="3" y1="15" x2="21" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></line>
+      </svg>
+    </button>
   </div>
 </header>
 
+<nav id="mobile-nav" class:list={["mobile-nav", { "mobile-nav--dark": dark }]} aria-label="Mobile navigation" aria-hidden="true">
+  <ul class="mobile-nav__links">
+    {navLinks.map(({ href, label, isExternal }, index) => (
+      <li class="mobile-nav__item" style={`--nav-item-index: ${index}`}>
+        <a
+          href={href}
+          class:list={[
+            "site-header__link",
+            { "site-header__link--active": isActive(href, isExternal) },
+          ]}
+        >
+          <span>{label}</span>
+          {isExternal && <span class="site-header__external" aria-hidden="true">↗</span>}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
 <style>
-  .blog-header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    transition: transform 0.3s ease;
-    view-transition-name: header;
+  .site-header {
+    position: relative;
+    z-index: 20;
+    background: var(--2);
+    color: var(--3);
   }
 
-  .blog-header.hidden {
-    transform: translateY(-100%);
+  /* Dark variant — blends into the black post header on blog posts */
+  .site-header--dark {
+    background: #000;
+    color: #fff;
   }
 
-  .blog-header__inner {
-    max-width: var(--max-width-content);
-    margin-inline: auto;
-    min-height: 4.25rem;
+  .site-header--dark .site-header__wordmark {
+    filter: brightness(0) invert(1);
+  }
+
+  .site-header--dark .site-header__link {
+    color: color-mix(in oklch, #fff 60%, #000);
+  }
+
+  .site-header--dark .site-header__link--active,
+  .site-header--dark .site-header__link:hover,
+  .site-header--dark .site-header__link:focus-visible {
+    color: #fff;
+  }
+
+  .site-header__shell {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-4);
+    gap: var(--space-6);
+    max-width: var(--max-width-site);
+    margin-inline: auto;
+    width: 100%;
+    padding: var(--space-6) var(--space-container);
   }
 
-  .blog-header__title {
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text-primary);
+  .site-header__logo {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
     text-decoration: none;
     transition: opacity 0.15s ease;
   }
 
-  .blog-header__wordmark {
+  .site-header__logo:hover {
+    opacity: 0.6;
+  }
+
+  .site-header__wordmark {
     display: block;
     width: auto;
-    max-width: 160px;
-    object-fit: contain;
+    height: clamp(18px, 2.2vw, 22px);
+    /* Source asset is yellow; map to ink for the off-white theme */
+    filter: brightness(0);
   }
 
-  .blog-header__title:hover {
-    opacity: 0.8;
+  .site-header__nav {
+    display: flex;
+    align-items: center;
   }
 
-  .blog-header__links {
+  .site-header__links {
+    display: flex;
+    gap: var(--space-8);
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    column-gap: var(--space-6);
-    row-gap: var(--space-2);
   }
 
-  .blog-header__link {
+  .site-header__link {
     display: inline-flex;
     align-items: baseline;
     gap: var(--space-1);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
+    color: color-mix(in oklch, var(--3) 55%, var(--2));
     text-decoration: none;
-    color: var(--color-text-secondary);
-    text-transform: none;
+    transition: color 0.12s ease;
   }
 
-  .blog-header__external-indicator {
+  .site-header__link--active,
+  .site-header__link:hover,
+  .site-header__link:focus-visible {
+    color: var(--3);
+    text-decoration: none;
+  }
+
+  .site-header__external {
     font-size: 0.95em;
     line-height: 1;
     transform: translateY(-0.08em);
   }
 
-  .blog-header__link:hover,
-  .blog-header__link--active {
-    color: var(--color-text-primary);
+  .site-header__menu-trigger {
+    display: none;
+  }
+
+  .mobile-nav {
+    display: none;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    /* Lift the header above the fixed drawer so the close (X) stays visible */
+    .site-header {
+      z-index: 200;
+    }
+
+    .site-header__nav {
+      display: none;
+    }
+
+    .site-header__menu-trigger {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      margin-right: calc(var(--space-2) * -1);
+      background: transparent;
+      color: var(--3);
+      border: none;
+      z-index: 1001;
+    }
+
+    .site-header--dark .site-header__menu-trigger {
+      color: #fff;
+    }
+
+    .menu-icon__top,
+    .menu-icon__bot {
+      transition: transform 0.28s var(--motion-ease-decelerate);
+    }
+
+    .menu-icon__top { transform-origin: 12px 9px; }
+    .menu-icon__bot { transform-origin: 12px 15px; }
+
+    .site-header__menu-trigger[aria-expanded="true"] .menu-icon__top {
+      transform: translateY(3px) rotate(45deg);
+    }
+
+    .site-header__menu-trigger[aria-expanded="true"] .menu-icon__bot {
+      transform: translateY(-3px) rotate(-45deg);
+    }
+
+    .mobile-nav {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-8);
+      position: fixed;
+      inset: 0;
+      padding: var(--space-16) var(--space-6);
+      background: var(--2);
+      z-index: 100;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-12px);
+      transition-property: opacity, transform;
+      transition-duration: 180ms;
+      transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+    }
+
+    .mobile-nav--dark {
+      background: #000;
+    }
+
+    .mobile-nav--dark .site-header__link {
+      color: color-mix(in oklch, #fff 60%, #000);
+    }
+
+    .mobile-nav--dark .site-header__link--active,
+    .mobile-nav--dark .site-header__link:hover,
+    .mobile-nav--dark .site-header__link:focus-visible {
+      color: #fff;
+    }
+
+    .mobile-nav.is-open {
+      pointer-events: auto;
+      opacity: 1;
+      transform: translateY(0);
+      transition-duration: 280ms;
+      transition-timing-function: var(--motion-ease-decelerate);
+    }
+
+    .mobile-nav__links {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .mobile-nav__item {
+      --nav-item-stagger: 50ms;
+      opacity: 0;
+      transform: translateY(16px);
+      transition-property: opacity, transform;
+      transition-duration: 180ms;
+      transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+    }
+
+    .mobile-nav.is-open .mobile-nav__item {
+      opacity: 1;
+      transform: translateY(0);
+      transition-duration: 350ms;
+      transition-timing-function: var(--motion-ease-decelerate);
+      transition-delay: calc(var(--nav-item-index, 0) * var(--nav-item-stagger));
+    }
+
+    .mobile-nav .site-header__link {
+      font-size: clamp(2.5rem, 13vw, 4rem);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: -0.03em;
+      text-transform: lowercase;
+      padding-block: var(--space-3);
+      line-height: var(--line-height-tight);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-nav,
+    .mobile-nav__item,
+    .menu-icon__top,
+    .menu-icon__bot {
+      transition-duration: 0.01ms !important;
+    }
   }
 </style>
 
 <script>
+  import { clearPageScrollLock, lockPageScroll, unlockPageScroll } from "@nope/ui/src/scroll-lock";
   {
-    const header = document.querySelector<HTMLElement>(".blog-header");
-    let lastY = window.scrollY;
+    let cleanup: (() => void) | undefined;
 
-    if (header) {
-      window.addEventListener(
-        "scroll",
-        () => {
-          const y = window.scrollY;
-          header.classList.toggle("hidden", y > lastY && y > 80);
-          lastY = y;
-        },
-        { passive: true },
+    function init() {
+      cleanup?.();
+
+      const trigger = document.querySelector<HTMLButtonElement>(".site-header__menu-trigger");
+      const nav = document.querySelector<HTMLElement>("#mobile-nav");
+      if (!trigger || !nav) return;
+
+      nav.style.transition = "";
+      nav.style.opacity = "";
+      nav.style.pointerEvents = "";
+
+      const controller = new AbortController();
+      const { signal } = controller;
+
+      const open = () => {
+        nav.classList.add("is-open");
+        nav.setAttribute("aria-hidden", "false");
+        trigger.setAttribute("aria-expanded", "true");
+        lockPageScroll();
+      };
+
+      const close = () => {
+        nav.classList.remove("is-open");
+        nav.setAttribute("aria-hidden", "true");
+        trigger.setAttribute("aria-expanded", "false");
+        unlockPageScroll();
+      };
+
+      trigger.addEventListener(
+        "click",
+        () => (nav.classList.contains("is-open") ? close() : open()),
+        { signal },
       );
+
+      nav.querySelectorAll<HTMLAnchorElement>(".site-header__link").forEach((link) => {
+        link.addEventListener(
+          "click",
+          () => {
+            const onAfterSwap = () => {
+              nav.style.transition = "none";
+              close();
+              requestAnimationFrame(() => { nav.style.transition = ""; });
+              document.removeEventListener("astro:after-swap", onAfterSwap);
+            };
+            document.addEventListener("astro:after-swap", onAfterSwap);
+          },
+          { signal },
+        );
+      });
+
+      document.addEventListener(
+        "keydown",
+        (e) => {
+          if (e.key === "Escape" && nav.classList.contains("is-open")) close();
+        },
+        { signal },
+      );
+
+      cleanup = () => {
+        controller.abort();
+        clearPageScrollLock();
+      };
     }
+
+    document.addEventListener("astro:page-load", init);
+    init();
   }
 </script>
