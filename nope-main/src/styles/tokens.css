@@ -179,6 +179,8 @@
   --color-text-secondary: var(--experimental-3);
   --color-accent-experimental: var(--neutral-100);
   --button-theme-toggle-color: var(--neutral-100);
+  /* Lighten the background grid lines so they read against the blue. */
+  --color-border-default: color-mix(in srgb, var(--brand-purple) 84%, white);
 }
 
 [data-theme="experimental"] {

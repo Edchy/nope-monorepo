@@ -149,6 +149,10 @@ const footerLinks = [
     text-transform: lowercase;
     white-space: nowrap;
     color: var(--neutral-900);
+    /* The word's line-height (0.85) crops its box tighter than the
+       glyphs, so the overlay's center sits above the optical middle.
+       Nudge down by a fraction of the word's font size. */
+    transform: translateY(calc(var(--fz) * 0.06));
   }
 
   /* ----- Meta row ----- */
@@ -205,9 +209,17 @@ const footerLinks = [
   }
 
   /* ----- Experimental theme ----- */
-  /* Taglines: black on experimental (yellow word), yellow on default
-     (black/white theme) for a pop against the dark wordmark. */
+  /* Default (black/white) theme: yellow taglines pop against dark word. */
   :global(:root:not([data-theme="experimental"])) .site-footer__tagline {
+    color: var(--brand-green);
+  }
+
+  /* Experimental theme: words black, taglines yellow. */
+  :global([data-theme="experimental"]) .site-footer__word {
+    color: var(--neutral-900);
+  }
+
+  :global([data-theme="experimental"]) .site-footer__tagline {
     color: var(--brand-green);
   }
 
