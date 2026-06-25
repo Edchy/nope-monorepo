@@ -35,9 +35,9 @@ Think of it like a model launcher. The AI runs on your machine, not on a server 
 
 Before getting into specifics, it helps to understand what you're actually downloading.
 
-A model is mostly just a very large file full of numbers. That's kind of it. Those numbers are the parameters — billions of tiny values that were adjusted over months of training on enormous amounts of text. The training process slowly tuned all those numbers until the model got good at predicting what comes next in a sentence. Which turns out to be the same thing as being good at answering questions, writing code, summarizing things, and so on.
+A model is mostly just a very large file full of numbers. That's kind of it. Those numbers are the parameters, billions of tiny values that were adjusted over months of training on enormous amounts of text. The training process slowly tuned all those numbers until the model got good at predicting what comes next in a sentence. Which turns out to be the same thing as being good at answering questions, writing code, summarizing things, and so on.
 
-Alongside the numbers there's some code that defines the structure — how information flows through the model, what happens at each layer. But the bulk of what you download is the parameters. A 4 billion parameter model is literally a file containing 4 billion numbers.
+Alongside the numbers there's some code that defines the structure, how information flows through the model, what happens at each layer. But the bulk of what you download is the parameters. A 4 billion parameter model is literally a file containing 4 billion numbers.
 
 When you run a model, the whole thing gets loaded into memory. Not streamed, not fetched on demand. The entire file, sitting in RAM, waiting for your input. This is why memory is the hard limit for local models. If the model is 5GB, you need 5GB of RAM free just to hold it. Then your computer does a huge amount of math every time you type something, using all those numbers to figure out what word comes next, one token at a time.
 
