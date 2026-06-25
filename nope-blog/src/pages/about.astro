@@ -3,11 +3,42 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="me" description="About Eddie, frontend engineer and creative builder.">
-  <article class="about">
+  <div class="about">
+    <article class="about__inner">
 
     <p class="p--intro">
-      I did a 2 year Webmaster program at university. Then a 2 year vocational program in frontend engineering. Left four months before the end.
+      I'm Eddie. I've always been the kind of person who needs to be making something. Drawing, building, putting things together. That part has been there for as long as I can remember.
+    </p>
 
+    <div class="about-row">
+      <div class="about-row__text">
+        <p class="p--body p--tilt-left">
+          I went to a Waldorf school. Less sitting and reading boring stuff, more making things with your hands and being allowed to think a little sideways. That's where the creative side got its shape. <em>Not being square was kind of the point.</em>
+        </p>
+
+        <p class="p--body">
+          And there was always a computer nearby. I grew up on them. Gaming, messing around, just living online. Computer-native before that was a word for it. I never really programmed as a kid, but I always cared about how things looked and felt. <em>Aesthetics were never an afterthought.</em>
+        </p>
+      </div>
+
+      <figure class="about-photo">
+        <img
+          src="/images/me.jpeg"
+          alt="Eddie"
+          width="828"
+          height="1283"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+    </div>
+
+    <p class="p--punch p--center">
+      Creative first.<br>Code came <strong>later</strong>.
+    </p>
+
+    <p class="p--intro">
+      Eventually I went looking for the formal version of all this. I did a 2 year Webmaster program at university. Then a 2 year vocational program in frontend engineering. Left four months before the end.
     </p>
 
     <p class="p--punch">
@@ -19,7 +50,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </p>
 
     <p class="p--body p--right">
-      The other thing that pushed me out: the program had almost nothing to say about AI. That felt wrong. AI was already changing how software gets built, and sitting in classes that ignored it started to feel like <em>training for a world that was going away</em>.
+      The other thing that pushed me out: the program had almost nothing to say about AI, even as it was already changing how software gets built. I'd rather be <em>in it than reading about it later</em>.
     </p>
 
     <p class="p--body">
@@ -39,24 +70,35 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </p>
 
     <p class="p--body">
-      The past year has been learning on my own. Building with AI, breaking things, figuring out where agents are actually useful and where they're noise. The landscape moves fast. <em>Staying close to it is the only way to keep up.</em>
+      Lately I've been learning on my own. Building real things, experimenting, taking on work for friends and local companies. I've been building plenty with AI, but what actually pulls me in is <em>how it works underneath</em>, not just what it can spit out.
+    </p>
+
+    <p class="p--body p--tilt-left">
+      I'd rather understand a thing than just use it. So I take it apart, see what it's made of, and put it back together a little better than I found it.
     </p>
 
     <p class="p--outro">
-      <strong>NOPE</strong> is where I do the work.<br>The bet is that <strong>building with AI is the most useful skill right now</strong>.
+      <strong>nope studio</strong> is where I do the work.<br>Real things, made <strong>with care</strong>.
     </p>
 
-  </article>
+    </article>
+  </div>
 </BaseLayout>
 
 <style>
   .about {
     width: 100%;
-    min-height: 100svh;
-    padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 6vw, 4rem) clamp(6rem, 14vw, 12rem);
+    flex: 1;
     background: var(--2);
     color: var(--3);
     overflow-x: hidden;
+  }
+
+  .about__inner {
+    width: 100%;
+    max-width: var(--max-width-site);
+    margin-inline: auto;
+    padding: clamp(3rem, 8vw, 6rem) var(--space-container) clamp(6rem, 14vw, 12rem);
   }
 
   .about p {
@@ -125,6 +167,57 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     line-height: 1.35;
     letter-spacing: -0.02em;
     margin-top: clamp(4rem, 8vw, 7rem);
+  }
+
+  /* Text + photo row */
+  .about-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 4rem);
+    margin-bottom: clamp(4rem, 8vw, 7rem);
+  }
+
+  .about-row__text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2rem, 4vw, 3rem);
+  }
+
+  /* Paragraphs inside the row drop their own bottom margin; the row's gap
+     and flex layout handle spacing. */
+  .about-row__text p {
+    margin-bottom: 0;
+    max-width: none;
+  }
+
+  /* Portrait photo */
+  .about-photo {
+    flex: 0 0 auto;
+    margin: 0;
+    width: clamp(11rem, 26vw, 18rem);
+    transform: rotate(2deg);
+  }
+
+  .about-photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    filter: grayscale(1);
+  }
+
+  @media (max-width: 640px) {
+    .about-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .about-photo {
+      width: clamp(13rem, 60vw, 18rem);
+      align-self: center;
+    }
   }
 
   /* Tilt variants */

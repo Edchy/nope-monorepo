@@ -127,25 +127,6 @@ a {
 }
 
 /* ============================================================
-   CURSORS
-   ============================================================ */
-html {
-  cursor: url("/images/cursor/mickey_cursor.png"), auto !important;
-}
-
-a,
-button,
-input[type="submit"],
-input[type="button"],
-select,
-[role="button"],
-.clickable,
-[data-clickable],
-summary {
-  cursor: url("/images/cursor/mickey_pointer.png"), pointer !important;
-}
-
-/* ============================================================
    SCROLLBAR
    ============================================================ */
 @media (hover: hover) and (pointer: fine) {

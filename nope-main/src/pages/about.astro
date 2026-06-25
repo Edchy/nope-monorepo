@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout
-  title="About Nope"
+  title="Soul"
   description="A bit about us."
   enableClientRouter={true}
 >
@@ -11,40 +11,46 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <div class="about-grid layout-grid">
       <article class="about">
 
+        <h1 class="about-title">Soul.</h1>
+
         <p class="p--intro">
-          nope studio is a small web agency based just outside Stockholm, Sweden. We build websites, apps, and digital things that capture the soul of the people and companies behind them. No generic slop. Just clean, minimal, human-made work.
+          We're a small studio outside Stockholm that builds websites, apps, and digital things for people and companies who'd rather not blend in. The internet is full of work that could belong to anyone. We make the kind that could only belong to you.
         </p>
 
         <p class="p--punch">
-          The name is<br>intentional.
+          We're<br>chasing soul.
         </p>
 
         <p class="p--body p--tilt-left">
-          I say no to most things. Not out of stubbornness. Out of conviction. Most things don't need to exist... extra features nobody asked for, pages that fill space, design that decorates instead of communicates.
+          That's the real job, as we see it. Not just something that looks good or loads fast, but something that feels like the actual person or company behind it. Most sites are a costume. We're trying to build the opposite: the thing underneath, made visible.
         </p>
 
         <p class="p--body p--right">
-          I try to remove all of it. <em>What's left is usually better.</em>
+          A site should sound like <em>you talking</em>, not like a template wearing your logo.
         </p>
 
         <p class="p--display">
-          method,<br>not<br>aesthetic (kinda).
+          grounded,<br>not<br>generic.
         </p>
 
         <p class="p--body p--tilt-right">
-          Every decision starts with a question: Does this need to be here? If the answer isn't clearly yes, it goes. I apply this to everything. The work I take on, the words I write, the pixels I place.
+          So we spend more time than we probably should figuring out who you actually are: how you talk, what you care about, what makes you different from the ten others doing the same thing. Then we build outward from that. Every typeface, colour, margin and line is a decision, and we make them in service of that one truth instead of decorating around it.
         </p>
 
         <p class="p--punch p--center">
-          Good design<br>disappears.
+          We say no<br>a lot.
         </p>
 
         <p class="p--body">
-          The typeface, the spacing, the colour, the weight of a line ___ these are all decisions. Decisions made carelessly produce work that feels wrong even when people can't say why. I try to make them carefully.
+          That part's true to the name. Features nobody asked for, pages that fill space, the shiny stuff that exists so a deck felt expensive. We'll usually try to talk you out of it. Not to be difficult. Because every thing that doesn't belong quietly drowns out the things that do. Less in the way means more of you comes through.
+        </p>
+
+        <p class="p--body p--tilt-left">
+          We'd rather build one honest thing that actually sounds like you than ten clever things that sound like a committee. Smaller, sharper, unmistakably yours.
         </p>
 
         <p class="p--outro">
-          The name wasn't a strategy.<br>It was just the <strong>first honest thing</strong>.
+          Nope to the noise.<br>Nope to the template.<br>Yes to the <strong>soul underneath it all</strong>.
         </p>
 
       </article>
@@ -59,7 +65,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   .about {
     grid-column: 3 / 11;
-    padding-block: clamp(4rem, 10vw, 8rem) clamp(6rem, 14vw, 12rem);
+    /* Top spacing comes from .page-shell (--space-section), matching the
+       work page; keep the generous bottom padding only. */
+    padding-block: 0 clamp(6rem, 14vw, 12rem);
     color: var(--color-text-primary);
     overflow-x: hidden;
     transition: background 0.3s ease, color 0.3s ease;
@@ -69,6 +77,22 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     font-family: var(--font-family-prose);
     color: var(--color-text-primary);
     margin: 0;
+  }
+
+  /* Big display title, matching the work page's intro display. */
+  .about-title {
+    font-family: var(--font-family-base);
+    font-size: clamp(3rem, 9vw, 8rem);
+    font-weight: var(--font-weight-black);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    margin: 0 0 clamp(3rem, 8vw, 7rem);
+    color: var(--brand-purple);
+  }
+
+  :global([data-theme="experimental"]) .about-title {
+    color: var(--neutral-50);
   }
 
   .about .p--intro {

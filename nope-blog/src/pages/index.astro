@@ -1,6 +1,5 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import VoxelWork from "../components/VoxelWork.astro";
 import { getCollection } from "astro:content";
 import { quotes } from "../data/quotes";
 
@@ -8,340 +7,283 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 
-const latestPost = posts[0];
+const latest = posts[0];
+
+function postHref(id: string) {
+  return `/writing/${id.replace(/\/index\.md$/, "").replace(/\.md$/, "")}`;
+}
+
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString("en-US", { year: "numeric", month: "long" });
 ---
 
-<BaseLayout title="NOPE">
-  <div class="home-grid">
+<BaseLayout title="NOPE" description="Notes on building, design, and the web.">
+  <div class="home">
+    <div class="container">
+      <header class="home__intro">
+        <h1 class="home__tagline">My corner of the interwebz, where I post, write about stuff, and experiment and shit like that.</h1>
+      </header>
 
-    <!-- 1: Voxel -->
-    <a href="https://nope.digital" class="cell cell--voxel" aria-label="Work" target="_blank" rel="noopener noreferrer">
-      <VoxelWork />
-      <span class="cell__label cell__meta">nope ↗</span>
-    </a>
-
-    <!-- 2: Latest blog post -->
-    {latestPost && (
-      <a
-        href={`/writing/${latestPost.id.replace(/\/index$/, "")}`}
-        class="cell cell--post cell--lift"
-        data-lift-max="18"
-      >
-        <p class="cell__eyebrow cell__meta">Latest post</p>
-        <h2 class="cell__title" transition:name={`post-title-${latestPost.id}`}>{latestPost.data.title}</h2>
-        {latestPost.data.description && (
-          <p class="cell__desc cell__meta">{latestPost.data.description}</p>
+      <div class="cards">
+        <!-- Latest post — primary -->
+        {latest && (
+          <div class="card card--feature">
+            <span class="card__eyebrow">Latest post</span>
+            <h2 class="card__title" transition:name={`post-title-${latest.id}`}>
+              <a href={postHref(latest.id)} class="card__title-link">{latest.data.title}</a>
+            </h2>
+            {latest.data.description && (
+              <p class="card__desc">{latest.data.description}</p>
+            )}
+            <span class="card__foot">
+              <span class="card__date">{fmtDate(latest.data.date)}</span>
+              <a href="/writing" class="card__cta card__cta--link">All writing →</a>
+            </span>
+          </div>
         )}
-        <p class="cell__date cell__meta cell__meta--end">
-          {latestPost.data.date.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-          })}
-        </p>
-      </a>
-    )}
 
-    <!-- 4: Cycling quotes -->
-    <div class="cell cell--quote" id="quote-cell" data-quotes={JSON.stringify(quotes)}>
-      <blockquote class="cell__blockquote" id="quote-text"></blockquote>
-      <p class="cell__source cell__meta cell__meta--end" id="quote-source"></p>
+        <!-- 3D Room -->
+        <a href="/room" class="card">
+          <span class="card__eyebrow">Experiment</span>
+          <h2 class="card__title card__title--sm">3DRoom</h2>
+          <p class="card__desc">A walkable 3D gallery of work &amp; experiments.</p>
+          <span class="card__foot">
+            <span class="card__cta">Enter →</span>
+          </span>
+        </a>
+
+        <!-- Untangled -->
+        <a href="https://untangled.se" class="card" target="_blank" rel="noopener noreferrer">
+          <span class="card__eyebrow">Experiment</span>
+          <h2 class="card__title card__title--sm">
+            Untangled <span class="card__ext" aria-hidden="true">↗</span>
+          </h2>
+          <p class="card__desc">An AI learning platform I'm building.</p>
+          <span class="card__foot">
+            <span class="card__cta">untangled.se</span>
+          </span>
+        </a>
+
+      </div>
+
+      <aside class="quote" id="quote-cell" data-quotes={JSON.stringify(quotes)} aria-label="A line I like">
+        <blockquote class="quote__text" id="quote-text"></blockquote>
+        <p class="quote__source" id="quote-source"></p>
+      </aside>
     </div>
-
-    <!-- 5: Coming soon -->
-    <div class="cell cell--coming-soon">
-      <span class="cell__meta">Coming soon</span>
-      <span class="cell__label-lg">Untangled</span>
-    </div>
-
-    <!-- 1: Gallery -->
-    <a href="/room" class="cell cell--gallery cell--lift" data-lift-max="18">
-      <span class="cell__label-lg">3DRoom</span>
-      <span class="cell__sublabel cell__meta">3D work &amp; experiments</span>
-    </a>
-
   </div>
 </BaseLayout>
 
 <style>
-  .home-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 50svh 50svh;
-    min-height: 100svh;
-    gap: 0;
-    overflow-anchor: none;
-  }
-
-  /* Base cell */
-  .cell {
+  .home {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    padding: var(--space-6);
-    text-decoration: none;
-    color: inherit;
-    position: relative;
-    overflow: hidden;
-    border: none;
-    text-transform: uppercase;
-  }
-
-  .cell--lift {
-    --_tx: 0px;
-    --_ty: 0px;
-    --_scale: 1;
-    transform: translate(var(--_tx), var(--_ty)) scale(var(--_scale));
-    transform-origin: center;
-    transition: transform 0.15s ease;
-    will-change: transform;
-  }
-
-  /* ── Voxel cell ── */
-  .cell--voxel {
-    grid-column: span 2;
-    justify-content: stretch;
-    padding: 0;
     background: var(--2);
     color: var(--3);
-    transition: background-color 0.45s ease;
+    padding-block: clamp(3.5rem, 9vw, 7rem) clamp(1.5rem, 3vw, 2.5rem);
   }
 
-  .cell--voxel :global(canvas),
-  .cell--voxel :global(.voxel-work) {
-    width: 100% !important;
-    height: 100% !important;
-    position: absolute;
-    inset: 0;
+  .container {
+    max-width: var(--max-width-site);
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: var(--space-container);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
   }
 
-  .cell--voxel .cell__label {
-    position: absolute;
-    bottom: var(--space-6);
-    left: var(--space-6);
-    z-index: 2;
+  /* ── Intro ── */
+  .home__intro {
+    margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
   }
 
-  /* ── Blog post cells ── */
-  .cell--post {
-    background: var(--3);
-    color: var(--2);
-    gap: var(--space-3);
-  }
-
-  .cell--post-alt {
-    background: var(--neutral-100);
-  }
-
-  .cell__eyebrow {
-    margin: 0;
-  }
-
-  .cell__label-lg,
-  .cell__title {
+  .home__tagline {
     margin: 0;
     font-family: var(--font-zt-nature);
     font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     line-height: var(--line-height-tight);
     letter-spacing: -0.02em;
-    overflow-wrap: break-word;
-    hyphens: auto;
+    color: var(--3);
+    max-width: 24ch;
+    text-wrap: balance;
   }
 
-  .cell__desc {
-    margin: 0;
-    line-height: var(--line-height-relaxed);
+  /* ── Card grid ── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.75rem, 2vw, 1.25rem);
   }
 
-  .cell__date {
-    margin: auto 0 0 auto;
-  }
-
-  /* ── Quote cell ── */
-  .cell--quote {
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: clamp(1.4rem, 3vw, 2rem);
+    border: var(--border-width-1) solid var(--color-border-default);
+    border-radius: 0;
     background: var(--2);
     color: var(--3);
-    justify-content: space-between;
-    padding: var(--space-8) var(--space-6);
+    text-decoration: none;
+    transition:
+      border-color 0.18s ease,
+      transform 0.2s var(--motion-ease-decelerate);
   }
 
-  .cell__blockquote {
-    margin: 0;
-    font-family: var(--font-zt-nature);
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-regular);
-    text-transform: none;
-    line-height: var(--line-height-relaxed);
-    letter-spacing: -0.01em;
-  }
-
-  .cell__source {
-    margin: 0;
-  }
-
-  /* ── Coming soon cell ── */
-  .cell--coming-soon {
+  /* Feature post spans full width and pops with inverted ink */
+  .card--feature {
+    grid-column: 1 / -1;
     background: var(--3);
     color: var(--2);
-    gap: var(--space-2);
+    border-color: var(--3);
+    min-height: clamp(11rem, 24vw, 15rem);
   }
 
-  /* ── Gallery cell ── */
-  .cell--gallery {
-    background: var(--2);
-    color: var(--3);
-    gap: var(--space-2);
-  }
-
-  /* ── Shared typographic pieces ── */
-  .cell__meta {
+  .card__eyebrow {
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
-    letter-spacing: 0.1em;
-    line-height: var(--line-height-relaxed);
-    color: currentColor;
-    opacity: 0.62;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.6;
   }
 
-  .cell__meta--end {
-    align-self: flex-end;
+  .card__title {
+    font-family: var(--font-zt-nature);
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: -0.025em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .card__title--sm {
+    font-size: var(--font-size-xl);
+  }
+
+  .card__title-link {
+    color: inherit;
+    text-decoration: none;
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .cell--voxel:hover {
-      background: var(--3);
-      color: var(--2);
-    }
-
-.cell--lift:is(:hover, :focus-visible) {
-      z-index: 2;
+    .card__title-link:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 2px;
     }
   }
 
-  /* ── Mobile: stack to 2-col, then 1-col ── */
-  @media (max-width: 900px) {
-    .home-grid {
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 50vw 40svh 50vw;
-    }
-
-    .cell--voxel {
-      grid-column: 1 / -1;
-      grid-row: 3;
-    }
-
-    .cell--post {
-      grid-column: 2;
-      grid-row: 2;
-    }
-
-    .cell--quote {
-      grid-column: 1;
-      grid-row: 1;
-    }
-
-    .cell--gallery {
-      grid-column: 2;
-      grid-row: 1;
-    }
-
+  .card__ext {
+    font-size: 0.7em;
+    vertical-align: middle;
+    opacity: 0.6;
   }
 
-  @media (max-width: 480px) {
-    .home-grid {
-      grid-template-columns: 1fr;
-      grid-template-rows: none;
-      grid-auto-rows: minmax(12rem, auto);
-      min-height: 0;
-    }
+  .card__desc {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-relaxed);
+    opacity: 0.72;
+    text-wrap: pretty;
+  }
 
-    .cell--post,
-    .cell--gallery,
-    .cell--quote,
-    .cell--voxel {
-      grid-column: 1;
-    }
+  .card__foot {
+    margin-top: auto;
+    padding-top: var(--space-3);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
 
-    .cell--quote {
-      grid-row: 1;
-    }
+  .card__date {
+    opacity: 0.6;
+  }
 
-    .cell--post {
-      grid-row: 2;
-    }
+  .card__cta {
+    opacity: 0.85;
+  }
 
-    .cell--gallery {
-      grid-row: 3;
-    }
+  .card__cta--link {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity 0.12s ease;
+  }
 
-    .cell--voxel {
-      grid-row: 4;
-      min-height: 60vw;
-    }
-
-    .cell--quote {
-      min-height: 18rem;
-    }
-
-    .cell--gallery,
-    .cell--post {
-      min-height: 12rem;
-    }
-
-    .cell--post .cell__title {
-      font-size: var(--font-size-lg);
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+  @media (hover: hover) and (pointer: fine) {
+    .card__cta--link:hover {
+      opacity: 1;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
   }
 
-  @media (max-width: 768px) {
-    .home-grid {
-      padding-top: var(--space-8);
-      box-sizing: border-box;
-      background: var(--2);
-    }
-
-    .cell--lift {
-      transform: none;
-      transition: none;
-    }
+  /* ── Quote (centered, above footer) ── */
+  .quote {
+    margin-top: auto;
+    padding-top: clamp(4rem, 12vw, 8rem);
+    text-align: center;
+    max-width: 52ch;
+    margin-inline: auto;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .cell--lift {
-      transition: none;
-    }
+  .quote__text {
+    margin: 0;
+    font-family: var(--font-family-prose);
+    font-size: var(--font-size-base);
+    font-style: italic;
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text-secondary);
+    text-wrap: pretty;
   }
 
-  /* ── Quote transition ── */
-  #quote-cell blockquote,
-  #quote-cell p {
+  .quote__source {
+    margin: var(--space-2) 0 0;
+    font-size: var(--font-size-xs);
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+    opacity: 0.7;
+  }
+
+  .quote__text,
+  .quote__source {
     transition: opacity 0.5s ease;
   }
 
-  #quote-cell.is-transitioning blockquote,
-  #quote-cell.is-transitioning p {
+  .quote.is-transitioning .quote__text,
+  .quote.is-transitioning .quote__source {
     opacity: 0;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    a.card:hover {
+      border-color: var(--color-border-strong);
+      transform: translateY(-3px);
+    }
+
+    a.card--feature:hover {
+      border-color: var(--3);
+      transform: translateY(-3px);
+    }
+  }
+
+  @media (max-width: 620px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 
 <script>
-  let cleanupLiftCells: (() => void) | undefined;
-
-  const canUseLiftInteractions = () =>
-    window.matchMedia("(min-width: 769px)").matches &&
-    window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
-    !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  const resetLiftStyles = (cell: HTMLElement) => {
-    cell.style.setProperty("--_tx", "0px");
-    cell.style.setProperty("--_ty", "0px");
-    cell.style.setProperty("--_scale", "1");
-  };
-
   function initQuotes() {
     const cell = document.getElementById("quote-cell");
     const textEl = document.getElementById("quote-text");
@@ -352,17 +294,16 @@ const latestPost = posts[0];
       text: string;
       source?: string;
       author?: string;
-      href?: string;
     }>;
 
     if (!quotes.length) return;
 
-    let index = 0;
+    let index = Math.floor(Math.random() * quotes.length);
 
-    function render(q: typeof quotes[number]) {
+    function render(q: (typeof quotes)[number]) {
       textEl!.textContent = `"${q.text}"`;
       const label = q.source ?? q.author ?? "";
-      sourceEl!.textContent = label;
+      sourceEl!.textContent = label ? `— ${label}` : "";
     }
 
     function advance() {
@@ -374,68 +315,14 @@ const latestPost = posts[0];
       }, 500);
     }
 
-    render(quotes[0]);
-    const interval = setInterval(advance, 10000);
+    render(quotes[index]);
+    const interval = setInterval(advance, 12000);
 
-    document.addEventListener("astro:before-swap", () => clearInterval(interval), { once: true });
+    document.addEventListener("astro:before-swap", () => clearInterval(interval), {
+      once: true,
+    });
   }
 
   document.addEventListener("astro:page-load", initQuotes);
   initQuotes();
-
-  function initLiftCells() {
-    cleanupLiftCells?.();
-
-    const cells = document.querySelectorAll<HTMLElement>(".cell--lift");
-    if (!cells.length) {
-      cleanupLiftCells = undefined;
-      return;
-    }
-
-    if (!canUseLiftInteractions()) {
-      cells.forEach((cell) => resetLiftStyles(cell));
-      cleanupLiftCells = undefined;
-      return;
-    }
-
-    const controller = new AbortController();
-    const { signal } = controller;
-
-    cells.forEach((cell) => {
-      const max = Number(cell.dataset.liftMax ?? 18);
-
-      cell.addEventListener(
-        "mousemove",
-        (event) => {
-          const rect = cell.getBoundingClientRect();
-          const nx = (event.clientX - rect.left) / rect.width;
-          const ny = (event.clientY - rect.top) / rect.height;
-
-          cell.style.setProperty("--_tx", `${nx * max}px`);
-          cell.style.setProperty("--_ty", `${-(ny * max)}px`);
-          cell.style.setProperty("--_scale", "1.04");
-        },
-        { signal },
-      );
-
-      cell.addEventListener(
-        "mouseleave",
-        () => {
-          resetLiftStyles(cell);
-        },
-        { signal },
-      );
-    });
-
-    cleanupLiftCells = () => {
-      controller.abort();
-      cells.forEach((cell) => resetLiftStyles(cell));
-    };
-  }
-
-  document.addEventListener("astro:page-load", initLiftCells);
-  document.addEventListener("astro:before-swap", () => cleanupLiftCells?.(), {
-    once: true,
-  });
-  initLiftCells();
 </script>

@@ -176,7 +176,7 @@ const displayData = assignedItems.map(({ item, slot, cycleIndex = 0 }, index) =>
 const displayDataJson = JSON.stringify(displayData);
 ---
 
-<BaseLayout title="Room" noFooter>
+<BaseLayout title="Room" noFooter noHeader>
   <div class="gallery-wrapper" id="gallery-wrapper" data-gallery-state="idle">
     <canvas id="gallery-canvas"></canvas>
     <div class="gallery-hud">
@@ -507,7 +507,7 @@ const displayDataJson = JSON.stringify(displayData);
     display: grid;
     grid-template-rows: auto 1fr;
     gap: var(--space-4);
-    min-height: calc(100dvh - var(--mobile-header-offset));
+    min-height: 100dvh;
     padding: var(--space-6);
     color: var(--neutral-50);
     background: var(--neutral-950);

@@ -2,6 +2,7 @@
 title: "Multiple git branches"
 description: "Git lets you have multiple branches checked out at the same time. Here is how that works and when it's useful."
 date: 2026-03-15
+tags: [git, tools, dev]
 draft: false
 color: "6"
 ---

@@ -20,7 +20,7 @@ interface Props {
 const { title, description, date, postId, prev, next } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} noFooter>
+<BaseLayout title={title} description={description} noFooter darkHeader>
   <article class="post">
     <header class="post__header">
       <div class="post__header-content">
@@ -90,13 +90,16 @@ const { title, description, date, postId, prev, next } = Astro.props;
   /* ── Header ── */
   .post__header {
     width: 100%;
+    /* Fill the viewport so the post body starts below the fold, but grow
+       past it if the title + meta need more room — content is never clipped. */
     min-height: 100svh;
     display: flex;
-    align-items: flex-end;
-    padding: clamp(2rem, 5vw, 3rem);
-    margin-bottom: clamp(2.5rem, 6vw, 4rem);
-    background: var(--2);
-    color: var(--3);
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: clamp(2rem, 5vw, 3rem) clamp(2rem, 5vw, 3rem) clamp(4rem, 10vw, 8rem);
+    box-sizing: border-box;
+    background: #000;
+    color: #fff;
     margin-bottom: 0;
   }
 
@@ -108,11 +111,15 @@ const { title, description, date, postId, prev, next } = Astro.props;
 
   .post__header-content {
     width: 100%;
+    max-width: var(--max-width-content);
+    margin-inline: auto;
   }
 
   .post__title {
     font-family: var(--font-zt-nature);
-    font-size: clamp(2.75rem, 8vw, 6.5rem);
+    /* Scale with viewport width. The header grows past 100svh when the
+       title + meta need more room, so the title is never clipped. */
+    font-size: clamp(2.25rem, 5.5vw, 4.25rem);
     font-weight: var(--font-weight-black);
     line-height: 0.9;
     letter-spacing: -0.035em;
@@ -122,15 +129,17 @@ const { title, description, date, postId, prev, next } = Astro.props;
   }
 
   @media (max-width: 767px) {
-    .post__header {
-      align-items: center;
-    }
-    .post__meta {
-      display: none;
-    }
     .post__body.post__constrained,
     .post-nav {
       padding-inline: var(--space-4);
+    }
+
+    /* On narrow screens a long title + meta can exceed the viewport, so let
+       the header grow to fit its content instead of pinning to 100svh. */
+    .post__header {
+      min-height: auto;
+      padding-top: clamp(6rem, 22vh, 11rem);
+      padding-inline: 1rem;
     }
   }
 
@@ -138,7 +147,7 @@ const { title, description, date, postId, prev, next } = Astro.props;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    margin-top: clamp(2rem, 5vw, 3rem);
+    margin-top: clamp(1.25rem, 3vw, 2rem);
   }
 
   .post__date {

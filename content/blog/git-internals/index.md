@@ -2,6 +2,7 @@
 title: "Git Is Just Text Files Pointing at Other Text Files"
 description: "Inside every Git repo is just a folder of small text files pointing at each other. Here is what they are."
 date: 2026-03-10
+tags: [git, nerdstuff, dev]
 draft: false
 color: "5"
 ---
