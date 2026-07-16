@@ -17,7 +17,7 @@ Here is what that means.
 
 ## A machine that completes sentences
 
-An AI language model — the kind behind ChatGPT, Claude, and the rest — was trained by reading a huge amount of text. Books, websites, code, articles. Enormous amounts of it.
+An AI language model (the kind behind ChatGPT, Claude, and the rest) was trained by reading a huge amount of text. Books, websites, code, articles. Enormous amounts of it.
 
 While reading, it learned one thing: given a sequence of words, what word comes next?
 
@@ -37,7 +37,7 @@ It can be wrong with total confidence. A person who does not know something will
 
 The same question can get different answers. Because the model is sampling from probabilities, not retrieving a fixed answer, it will sometimes say different things to the same question. The output is not deterministic. You are not getting truth. You are getting the most likely response, with some randomness built in.
 
-Your phrasing changes the output. If you think of it as a conversation, you ask questions and hope for good answers. If you think of it as steering probabilities, you understand that the words you use, the context you provide, the structure of your request — all of it shifts what gets generated. Better input, better output.
+Your phrasing changes the output. If you think of it as a conversation, you ask questions and hope for good answers. If you think of it as steering probabilities, you understand that the words you use, the context you provide, the structure of your request, all of it shifts what gets generated. Better input, better output.
 
 ---
 

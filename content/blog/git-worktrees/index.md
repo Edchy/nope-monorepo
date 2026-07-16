@@ -14,7 +14,7 @@ Normally in Git, you can only be on one branch at a time. If you need to switch 
 
 ## What a worktree is
 
-Normally, a Git repo is like a desk. One surface. If you want to work on a different branch, you have to clear everything off first — stash your changes, switch branches, and try to remember what you were doing when you come back.
+Normally, a Git repo is like a desk. One surface. If you want to work on a different branch, you have to clear everything off first: stash your changes, switch branches, and try to remember what you were doing when you come back.
 
 A worktree is like having a second desk that shares the same filing cabinet.
 

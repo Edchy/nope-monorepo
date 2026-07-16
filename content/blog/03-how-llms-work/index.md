@@ -1,6 +1,6 @@
 ---
 title: "How LLMs Work"
-description: "Tokens, context windows, temperature, attention — the basics of how a language model actually works, without the hype."
+description: "Tokens, context windows, temperature, attention: the basics of how a language model actually works, without the hype."
 date: 2025-11-05
 tags: [ai, technical, llm]
 draft: false
@@ -15,7 +15,7 @@ You do not need to understand what is happening inside an AI model to use one we
 
 An LLM is a file. A very large file.
 
-More precisely, it is a collection of numbers — billions of them, sometimes trillions — stored as floating-point values. These numbers are called parameters or weights. They are arranged in layers, and together they form a neural network.
+More precisely, it is a collection of numbers (billions of them, sometimes trillions) stored as floating-point values. These numbers are called parameters or weights. They are arranged in layers, and together they form a neural network.
 
 When you run the model, those numbers are loaded into GPU memory (the same kind of hardware that renders video games, repurposed for matrix multiplication). Your text goes in. The network performs calculations using those billions of numbers. Text comes out.
 
@@ -89,7 +89,7 @@ This is why large models can reason across long documents in a way earlier model
 
 A model's training data has a cutoff date. Anything that happened after training is unknown to it. You cannot add new knowledge to a model without retraining it, and retraining is enormously expensive.
 
-**RAG** — Retrieval Augmented Generation — is the solution.
+**RAG** (Retrieval Augmented Generation) is the solution.
 
 Instead of baking new facts into the model, you store documents in a database. When a question comes in, the relevant documents are retrieved and injected into the context window alongside the question. The model answers using that retrieved information.
 

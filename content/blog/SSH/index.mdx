@@ -1,6 +1,6 @@
 ---
 title: SSH - The Secret Handshake of the Internet
-description: Ever wondered what SSH actually *does* when you push to GitHub? This guide breaks it down — keys, tunnels, trust, and why your terminal doesn't ask for your password anymore.
+description: "Ever wondered what SSH actually *does* when you push to GitHub? This guide breaks it down: keys, tunnels, trust, and why your terminal doesn't ask for your password anymore."
 date: 2025-05-14
 tags: [nerdstuff, life]
 draft: false
@@ -15,7 +15,7 @@ Maybe you've even gone through the process of setting it up. But do you know wha
 
 I had a shallow understanding of it when i first started using GitHub, and I think a lot of people do. So I wanted to take a moment to break it down in simple terms.
 
-SSH stands for **Secure Shell**, but what does that _actually_ mean? Well, it’s right there in the name — a **protective shell** that wraps around your data as it sails through the murky, pirate-infested waters of the internet. Without it, digital pirates could plunder your ship and steal your treasure (read: your credentials). But with SSH, even if they intercept your data, they’re left staring at a locked chest — encrypted and unreadable.
+SSH stands for **Secure Shell**, but what does that _actually_ mean? Well, it’s right there in the name: a **protective shell** that wraps around your data as it sails through the murky, pirate-infested waters of the internet. Without it, digital pirates could plunder your ship and steal your treasure (read: your credentials). But with SSH, even if they intercept your data, they’re left staring at a locked chest, encrypted and unreadable.
 
 
 
@@ -65,7 +65,7 @@ When you run something like `git push`, GitHub:
 If it matches, GitHub knows:  
 **“Only the real you could’ve answered that.”**
 
-Boom. You’re in — and your private key never left your machine.
+Boom. You’re in, and your private key never left your machine.
 
 
 ##  What Gets Encrypted?
@@ -74,12 +74,12 @@ Boom. You’re in — and your private key never left your machine.
 
 - Your Git commands
 - Your commit data
-- File diffs, branches, metadata — all of it
+- File diffs, branches, metadata, all of it
 
 But to be clear:
 
 -  **In transit?** Yes, fully encrypted
--  **On GitHub?** Nope — your code is stored as-is (unless it’s in a private repo)
+-  **On GitHub?** Nope, your code is stored as-is (unless it’s in a private repo)
 
 So SSH protects the journey, not the destination.
 
@@ -89,7 +89,7 @@ So SSH protects the journey, not the destination.
 SSH is like shipping your code in a bulletproof armored van. Nobody can see inside or tamper with it while it’s moving.
 
 Once it arrives at GitHub, it’s unpacked and put on the shelf.  
-Whether others can see it depends on your repo’s privacy settings — not SSH.
+Whether others can see it depends on your repo’s privacy settings, not SSH.
 
 
 
@@ -165,7 +165,7 @@ ssh-keygen -t ed25519 -C "your-email@example.com" -f ~/.ssh/gitlab_key
 
  - **-C:** optional label (your email for example, used for reference)
 
- - **-f:** filename — this is crucial! This is where you **avoid overwriting** your old key.
+ - **-f:** filename, this is crucial! This is where you **avoid overwriting** your old key.
 
 You’ll be prompted to enter a passphrase (you can leave it empty, but adding one adds security).
 
@@ -184,7 +184,7 @@ Also - as you might understand the - the `.pub` extension means the key is safe 
 
 ### Config it
 
-If you use more than one SSH key — say, one for GitHub and another for GitLab — an SSH config file helps your computer know which key to use for each. Without it, things _might_ still work, but you could run into confusing errors or failed logins. The config just makes everything smoother and more reliable.
+If you use more than one SSH key (say, one for GitHub and another for GitLab) an SSH config file helps your computer know which key to use for each. Without it, things _might_ still work, but you could run into confusing errors or failed logins. The config just makes everything smoother and more reliable.
 
 ``nano ~/.ssh/config`` will create/open a config file in your ssh dir. 
 
@@ -256,7 +256,7 @@ Are you sure you want to continue connecting (yes/no/[fingerprint])?
 ```
 
 What's this mumbo-jumbo? Well, its just SSH saying:
-> Hey, I’ve never talked to gitlab.com before. I don’t know if this is really GitLab or someone pretending to be. The server is showing me a fingerprint — do you trust it?
+> Hey, I’ve never talked to gitlab.com before. I don’t know if this is really GitLab or someone pretending to be. The server is showing me a fingerprint, do you trust it?
 
 This is SSH’s way of **verifying the server’s identity** before continuing. If you answer yes, SSH will save that fingerprint in your `~/.ssh/known_hosts` file, so it won’t ask again next time.
 
@@ -271,4 +271,3 @@ ssh -T gitlab.com
 Welcome to GitLab, @username!
 ```
 This means you’re all set! You can now use SSH to push, pull, and clone without entering your password every time.
-

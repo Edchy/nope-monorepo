@@ -1,6 +1,6 @@
 ---
 title: "Building AI Projects"
-description: "A step-by-step workflow for building software with AI — from idea to working app."
+description: "A step-by-step workflow for building software with AI: from idea to working app."
 date: 2026-01-21
 tags: [ai, workflow, building]
 draft: false
@@ -31,13 +31,13 @@ A **Lean Canvas** is a one-page business plan. Not a 20-page document. One page.
 
 Cover four things:
 
-**Problem** — what are the top three problems your app solves?
+**Problem**: what are the top three problems your app solves?
 
-**Solution** — how exactly does it solve them?
+**Solution**: how exactly does it solve them?
 
-**Unique value** — why would someone use your app instead of something that already exists?
+**Unique value**: why would someone use your app instead of something that already exists?
 
-**Revenue** — how does money come in?
+**Revenue**: how does money come in?
 
 If you cannot answer these four things in a few sentences each, you do not understand the idea well enough yet. That is fine. Figure it out here, not in code.
 
@@ -61,7 +61,7 @@ Tools like Whimsical or Relume can generate flowcharts from a description. Or sk
 
 ## Step 3: PRD
 
-A **PRD** — Product Requirements Document — is the source of truth for what gets built. Not every product needs a formal one. But having something written down prevents the AI from making assumptions, and it prevents you from changing the spec halfway through a build without realizing it.
+A **PRD** (Product Requirements Document) is the source of truth for what gets built. Not every product needs a formal one. But having something written down prevents the AI from making assumptions, and it prevents you from changing the spec halfway through a build without realizing it.
 
 A useful PRD includes:
 

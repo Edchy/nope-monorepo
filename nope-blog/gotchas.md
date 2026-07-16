@@ -16,6 +16,14 @@ Each entry should include:
 
 ## Entries
 
+### 2026-07-16: Rotating copy must reserve its tallest intrinsic height
+
+**What:** The homepage shifted vertically in mobile Safari when the rotating quote changed between long and short text.
+
+**Why:** The quote lived in normal flow with no stable block size, so each text replacement changed the height of the flex page.
+
+**Fix:** Overlay hidden copies of every quote in one CSS Grid cell behind the live quote. The grid reserves the tallest intrinsic height for the current viewport and font metrics while only the live copy remains accessible and animated.
+
 ### 2026-04-14: Shared nav indicators must target the hovered link and use valid list markup
 
 **What:** The sidebar nav indicator was added as a sliding green highlight, but hover did not move it to the hovered item and the indicator element was inserted as a `div` directly inside the `ul`.

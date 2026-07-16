@@ -1,6 +1,6 @@
 ---
 title: "A Brief History of AI"
-description: "From the 1956 Dartmouth conference to ChatGPT and beyond — the short version of how we got here."
+description: "From the 1956 Dartmouth conference to ChatGPT and beyond: the short version of how we got here."
 date: 2025-10-22
 tags: [ai, history]
 draft: false
@@ -37,7 +37,7 @@ In 2017, a team at Google published a research paper called *"Attention Is All Y
 
 Without getting into the details: before Transformers, language models were slow and struggled with long-range context. The attention mechanism the paper introduced let models relate any word in a sentence to any other word, regardless of how far apart they were. This was a major improvement. It made large language models possible at scale.
 
-Every major language model today — GPT, Claude, Gemini, Llama — is built on this architecture.
+Every major language model today (GPT, Claude, Gemini, Llama) is built on this architecture.
 
 ---
 
@@ -45,13 +45,13 @@ Every major language model today — GPT, Claude, Gemini, Llama — is built on 
 
 Things moved fast from there.
 
-In 2018, Google released BERT, the first major Transformer-based language model for understanding language. In 2019, OpenAI released GPT-2 — and briefly held it back because they worried it was too good at generating convincing text.
+In 2018, Google released BERT, the first major Transformer-based language model for understanding language. In 2019, OpenAI released GPT-2, and briefly held it back because they worried it was too good at generating convincing text.
 
 In 2020, GPT-3 arrived. 175 billion parameters. It could write essays, answer questions, generate code, translate languages. The public perception of what AI could do shifted dramatically.
 
 In November 2022, ChatGPT launched. One million users in five days. The fastest-growing consumer product ever at the time. Anyone with a browser could now have a conversation with a large language model. Most people had never done that before.
 
-The two years after that saw model after model. GPT-4, Claude, Gemini, Llama, Mistral. Open-source models became competitive with commercial ones. The ability to run models locally on a laptop became real. Reasoning models appeared — models that think through problems step by step before answering. Coding agents arrived that could read, write, and run code without a human in the loop.
+The two years after that saw model after model. GPT-4, Claude, Gemini, Llama, Mistral. Open-source models became competitive with commercial ones. The ability to run models locally on a laptop became real. Reasoning models appeared: models that think through problems step by step before answering. Coding agents arrived that could read, write, and run code without a human in the loop.
 
 ---
 

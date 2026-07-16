@@ -68,7 +68,7 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
           {
             featuredProjects.map(({ name, type, year, color, desc, tags, images, href }) => (
               <li class="work-item work-item-featured">
-                <LiftSurface href={href} class="work-item-link">
+                <LiftSurface href={href} class="work-item-link work-item-link--desktop">
                   <span
                     data-color={color}
                     data-desc={desc}
@@ -87,6 +87,50 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
                     </span>
                   </span>
                 </LiftSurface>
+                <details class="mobile-work-preview">
+                  <summary class="mobile-work-preview__summary">
+                    <span class="work-item-main">
+                      <h3 class="project-name mobile-work-preview__title">
+                        {name}
+                      </h3>
+                      <span class="mobile-work-preview__indicator" aria-hidden="true" />
+                    </span>
+                  </summary>
+                  <div class="mobile-work-preview__content">
+                    <div class="mobile-work-preview__gallery">
+                      {images.length ? (
+                        images.map((image, index) => (
+                          <figure class="mobile-work-preview__media">
+                            <img
+                              src={image}
+                              alt={`${name} project preview ${index + 1}`}
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </figure>
+                        ))
+                      ) : (
+                        <div
+                          class="mobile-work-preview__media mobile-work-preview__media--fallback"
+                          style={`--project-tone: ${color}`}
+                        >
+                          <span>{name}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div class="mobile-work-preview__body">
+                      <p class="mobile-work-preview__meta">
+                        {[type, ...tags].join(", ")}
+                      </p>
+                      {desc && <p class="mobile-work-preview__description">{desc}</p>}
+                      {href !== "#" && (
+                        <a class="mobile-work-preview__link" href={href}>
+                          View project <span aria-hidden="true">↗</span>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </details>
               </li>
             ))
           }
@@ -269,12 +313,20 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
     min-width: 0;
   }
 
-  .work-item-link {
+  :global(.work-item-link) {
     display: block;
     width: 100%;
     text-decoration: none;
     color: inherit;
     outline-offset: var(--space-2);
+  }
+
+  :global(.work-item-link:visited) {
+    color: var(--work-text-color);
+  }
+
+  .mobile-work-preview {
+    display: none;
   }
 
   .project-name {
@@ -463,6 +515,168 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
       padding-block: 0;
     }
 
+    .work-item-featured > :global(.lift-surface-wrap) {
+      display: none;
+    }
+
+    .work-item-featured {
+      display: block;
+    }
+
+    .work-list-featured {
+      gap: 0;
+    }
+
+    .mobile-work-preview {
+      display: block;
+      width: 100%;
+      color: var(--work-text-color);
+    }
+
+    .mobile-work-preview__summary {
+      position: relative;
+      display: block;
+      padding-block: var(--space-3);
+      cursor: pointer;
+      list-style: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .mobile-work-preview__summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .mobile-work-preview__summary::marker {
+      content: "";
+    }
+
+    .mobile-work-preview__summary:focus-visible {
+      outline: 3px solid var(--color-action-primary);
+      outline-offset: var(--space-1);
+    }
+
+    .mobile-work-preview__summary .work-item-main {
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .mobile-work-preview__title {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .mobile-work-preview__indicator {
+      position: relative;
+      width: 0.75rem;
+      height: 0.75rem;
+      flex: 0 0 0.75rem;
+      margin-left: auto;
+      transition: transform 0.2s var(--motion-ease-decelerate);
+    }
+
+    .mobile-work-preview__indicator::after {
+      content: "";
+      position: absolute;
+      inset: 0.05rem 0.05rem auto auto;
+      width: 0.5rem;
+      height: 0.5rem;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+    }
+
+    .mobile-work-preview[open] .mobile-work-preview__indicator {
+      transform: rotate(180deg);
+    }
+
+    .mobile-work-preview__content {
+      padding-bottom: var(--space-8);
+    }
+
+    .mobile-work-preview__gallery {
+      display: flex;
+      gap: var(--space-3);
+      width: calc(100% + var(--space-container-x));
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      padding-right: var(--space-container-x);
+    }
+
+    .mobile-work-preview__gallery::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mobile-work-preview__media {
+      flex: 0 0 min(84vw, 34rem);
+      aspect-ratio: 4 / 3;
+      margin: 0;
+      overflow: hidden;
+      scroll-snap-align: start;
+      background: var(--neutral-200);
+    }
+
+    .mobile-work-preview__media img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .mobile-work-preview__media--fallback {
+      display: grid;
+      place-items: center;
+      padding: var(--space-6);
+      background: var(--project-tone, var(--neutral-200));
+      color: var(--neutral-900);
+    }
+
+    .mobile-work-preview__media--fallback span {
+      max-width: 12ch;
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-black);
+      line-height: var(--line-height-tight);
+      text-align: center;
+      text-transform: uppercase;
+      text-wrap: balance;
+    }
+
+    .mobile-work-preview__body {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding-top: var(--space-4);
+    }
+
+    .mobile-work-preview__meta {
+      margin: 0;
+      color: var(--work-text-color);
+      font-size: var(--font-size-xs);
+      line-height: var(--line-height-tight);
+      text-transform: lowercase;
+    }
+
+    .mobile-work-preview__description {
+      max-width: 56ch;
+      margin: 0;
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-normal);
+      text-wrap: pretty;
+    }
+
+    .mobile-work-preview__link,
+    .mobile-work-preview__link:visited {
+      color: var(--work-text-color);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-bold);
+      text-decoration: underline;
+      text-underline-offset: var(--space-1);
+    }
+
   }
 
   @media (max-width: 500px) {
@@ -474,6 +688,7 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
 
 <script>
   let cleanupWorkPreview: (() => void) | undefined;
+  let cleanupMobileWorkPreviews: (() => void) | undefined;
 
   const getPreviewMode = () => {
     const canHover =
@@ -728,6 +943,18 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
         () => {
           const dataEl = item.querySelector<HTMLElement>(".work-item-main");
           const mode = getPreviewMode();
+
+          if (mode === "none") {
+            stopSlideshow();
+            preview.classList.remove("visible");
+            activeItem = null;
+            document
+              .querySelectorAll(".work-item-featured.is-hovered")
+              .forEach((el) => el.classList.remove("is-hovered"));
+            hidePill();
+            return;
+          }
+
           const color = dataEl?.dataset.color ?? "";
           const href = dataEl?.dataset.href ?? "";
           const text = dataEl?.dataset.desc;
@@ -736,13 +963,6 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
           document.querySelectorAll(".work-item-featured.is-hovered").forEach((el) => el.classList.remove("is-hovered"));
           item.classList.add("is-hovered");
           movePillTo(item);
-
-          if (mode === "none") {
-            stopSlideshow();
-            preview.classList.remove("visible");
-            activeItem = null;
-            return;
-          }
 
           startSlideshow(images, color);
           if (linkIcon) {
@@ -779,6 +999,52 @@ const archiveProjects = workItems.filter((item) => item.section !== "selected");
     };
   }
 
+  function initMobileWorkPreviews() {
+    cleanupMobileWorkPreviews?.();
+
+    const previews = document.querySelectorAll<HTMLDetailsElement>(
+      ".mobile-work-preview",
+    );
+    if (!previews.length) {
+      cleanupMobileWorkPreviews = undefined;
+      return;
+    }
+
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    previews.forEach((preview) => {
+      preview.addEventListener(
+        "toggle",
+        () => {
+          if (!preview.open) return;
+
+          previews.forEach((otherPreview) => {
+            if (otherPreview !== preview) otherPreview.open = false;
+          });
+        },
+        { signal },
+      );
+    });
+
+    cleanupMobileWorkPreviews = () => {
+      controller.abort();
+      previews.forEach((preview) => {
+        preview.open = false;
+      });
+    };
+  }
+
   document.addEventListener("astro:page-load", initWorkPreview);
+  document.addEventListener("astro:page-load", initMobileWorkPreviews);
+  window.addEventListener("pagehide", () => {
+    cleanupWorkPreview?.();
+    cleanupMobileWorkPreviews?.();
+  });
+  window.addEventListener("pageshow", () => {
+    initWorkPreview();
+    initMobileWorkPreviews();
+  });
   initWorkPreview();
+  initMobileWorkPreviews();
 </script>
