@@ -1,6 +1,6 @@
 ---
 title: "How to Prompt"
-description: "How to ask AI better questions — not vague, not clever, just specific and clear."
+description: "How to ask AI better questions: not vague, not clever, just specific and clear."
 date: 2026-02-25
 tags: [ai, prompting, workflow]
 draft: false
@@ -79,9 +79,9 @@ Each step builds on the last. Each prompt is focused enough to get a good answer
 
 Not every task needs the most powerful (and most expensive) model.
 
-**For complex decisions** — architecture, product requirements, hard technical design — use the strongest model available. Claude Opus, GPT-4o, o3. The extra cost is worth it. Bad decisions made here cost more downstream.
+**For complex decisions** (architecture, product requirements, hard technical design), use the strongest model available. Claude Opus, GPT-4o, o3. The extra cost is worth it. Bad decisions made here cost more downstream.
 
-**For repetitive tasks** — generating variations, processing data, drafting standard responses — use a fast, cheap model. Claude Haiku, Gemini Flash. You will run these hundreds of times. Cost adds up.
+**For repetitive tasks** (generating variations, processing data, drafting standard responses), use a fast, cheap model. Claude Haiku, Gemini Flash. You will run these hundreds of times. Cost adds up.
 
 Using Opus to write a hundred similar emails is wasteful. Using Haiku to design your database schema is false economy.
 

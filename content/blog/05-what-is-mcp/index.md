@@ -15,7 +15,7 @@ MCP is how you give it access.
 
 ## The problem it solves
 
-Before MCP, if you wanted to connect an AI to an external tool — say, a calendar, a database, or a web API — you had to build a custom integration. Different apps built different integrations in different ways. Nothing was portable. If you built something for ChatGPT, it would not work with Claude. Everything had to be rebuilt from scratch.
+Before MCP, if you wanted to connect an AI to an external tool (say, a calendar, a database, or a web API) you had to build a custom integration. Different apps built different integrations in different ways. Nothing was portable. If you built something for ChatGPT, it would not work with Claude. Everything had to be rebuilt from scratch.
 
 **MCP** (Model Context Protocol) is an open standard that defines a single way for AI models to talk to external tools. Build a tool once, using the MCP format, and any AI client that supports MCP can use it.
 
@@ -94,9 +94,9 @@ Now the AI can tell the time.
 
 ## MCP servers you should know about
 
-**Context7** — Feeds the AI up-to-date documentation for any programming library. When you ask for help with a framework, it retrieves the current docs and puts them in context. This is useful because the AI's training data has a cutoff date.
+**Context7**: Feeds the AI up-to-date documentation for any programming library. When you ask for help with a framework, it retrieves the current docs and puts them in context. This is useful because the AI's training data has a cutoff date.
 
-**GitHub MCP** — Lets the AI interact with GitHub repositories: read issues, open pull requests, check code. Useful for AI-assisted development workflows.
+**GitHub MCP**: Lets the AI interact with GitHub repositories: read issues, open pull requests, check code. Useful for AI-assisted development workflows.
 
 These are small examples. The pattern scales. Any API, any database, any local tool can be wrapped in an MCP server and made available to any AI that supports the standard.
 

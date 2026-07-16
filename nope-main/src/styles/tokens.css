@@ -115,6 +115,7 @@
   /* Actions */
   --color-action-primary: var(--neutral-900);
   --color-action-primary-hover: var(--neutral-700);
+  --color-action-visited: var(--neutral-600);
   --color-accent-experimental: var(--brand-purple);
 
   /* Borders */
@@ -177,6 +178,7 @@
   --color-background: var(--brand-purple);
   --color-text-primary: var(--brand-green);
   --color-text-secondary: var(--experimental-3);
+  --color-action-visited: var(--brand-green);
   --color-accent-experimental: var(--neutral-100);
   --button-theme-toggle-color: var(--neutral-100);
   /* Lighten the background grid lines so they read against the blue. */

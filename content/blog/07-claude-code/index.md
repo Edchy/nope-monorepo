@@ -47,11 +47,11 @@ Inside a session:
 | Shortcut | What it does |
 |----------|--------------|
 | `/init` | Creates a CLAUDE.md file in your project (more on this below) |
-| `Tab` | Triggers extended thinking — Claude reasons more carefully before responding |
+| `Tab` | Triggers extended thinking: Claude reasons more carefully before responding |
 | Double `ESC` | Rewinds to a previous point in the session |
 | `Shift + Tab` | Toggles between plan mode and auto-accept mode |
 | `@filename` | Give a specific file as context |
-| `Ctrl + O` | Verbose mode — shows more detail about what Claude is doing |
+| `Ctrl + O` | Verbose mode: shows more detail about what Claude is doing |
 
 **Plan mode** is worth knowing. When you toggle it with `Shift + Tab`, Claude shows you its plan before doing anything. Review it, adjust if needed, then let it run. Useful when you want control over a complex task.
 
@@ -77,7 +77,7 @@ Create it with `/init` and fill it in.
 
 ## Thinking mode
 
-By default, Claude generates responses without pausing to reason step by step. For complex problems — architecture decisions, tricky bugs, multi-file changes — you can ask it to think harder.
+By default, Claude generates responses without pausing to reason step by step. For complex problems (architecture decisions, tricky bugs, multi-file changes) you can ask it to think harder.
 
 Trigger it with keywords in your message: "think", "think hard", or "ultrathink."
 
@@ -105,7 +105,7 @@ If you are running it in a context where mistakes are expensive, set restrictive
 
 ## Subagents
 
-For complex tasks, Claude can delegate subtasks to fresh instances of itself — called subagents. The subagent starts with a clean context, does the assigned work, and returns a summary.
+For complex tasks, Claude can delegate subtasks to fresh instances of itself, called subagents. The subagent starts with a clean context, does the assigned work, and returns a summary.
 
 This is useful when a task has multiple independent parts. The subagent does not carry the baggage of the full conversation, which can actually make it more focused.
 

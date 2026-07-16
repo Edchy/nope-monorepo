@@ -55,7 +55,7 @@ conversation history
 my actual message
 ```
 
-The message looks small to me. To the model provider, it can be a large package. That package is called the prompt — and AI APIs charge by tokens.
+The message looks small to me. To the model provider, it can be a large package. That package is called the prompt, and AI APIs charge by tokens.
 
 ---
 
@@ -102,7 +102,7 @@ But if Hermes sends a huge prompt every turn, input cost matters a lot. A single
 500 output tokens
 ```
 
-The model mostly spent time reading. So the real question isn't which model has cheaper output — it's how many total tokens am I being billed for, and at what rate.
+The model mostly spent time reading. So the real question isn't which model has cheaper output, it's how many total tokens am I being billed for, and at what rate.
 
 ---
 
@@ -225,4 +225,4 @@ Am I comparing dollars to quota percentages?
 
 That last one is the trap.
 
-A model can look cheaper on paper and still cost more in practice. Not because the price chart is lying — because the chart is only one piece of the story. The trick is knowing which meter is running.
+A model can look cheaper on paper and still cost more in practice. Not because the price chart is lying, but because the chart is only one piece of the story. The trick is knowing which meter is running.

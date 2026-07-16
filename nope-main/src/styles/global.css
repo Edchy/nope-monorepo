@@ -102,6 +102,10 @@ a {
   text-decoration: none;
 }
 
+a:visited {
+  color: var(--color-action-visited);
+}
+
 @media (hover: hover) and (pointer: fine) {
   a:hover {
     color: var(--color-action-primary-hover);

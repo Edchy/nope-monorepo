@@ -46,7 +46,7 @@ const footerLetters = [...footerWordmark];
         <a href={`mailto:${email}`}>{email}</a>
       </p>
       <p class="site-footer__copy site-footer__copy--center">© {year} {studioName}</p>
-      <p class="site-footer__tagline">{tagline}</p>
+      {tagline && <p class="site-footer__tagline">{tagline}</p>}
     </div>
   </div>
 </footer>

@@ -1,6 +1,6 @@
 ---
 title: "Scroll Containers & Overflow"
-description: "A deep (and slightly magical 🪄) dive into how CSS handles overflowing content — exploring everything from scroll containers to the mysteries of block formatting contexts and stacking order."
+description: "A deep (and slightly magical 🪄) dive into how CSS handles overflowing content, exploring everything from scroll containers to the mysteries of block formatting contexts and stacking order."
 date: 2025-05-11
 tags: [css]
 draft: false
@@ -18,10 +18,10 @@ import four from "./4.png"
 
 
 
-When something is overflowing, it just means it's too big to fit inside the thing it's in. Like pouring too much water into a glass — the water spills over. That's overflow.
+When something is overflowing, it just means it's too big to fit inside the thing it's in. Like pouring too much water into a glass, the water spills over. That's overflow.
 It happens in the real world, and also in the world of CSS.
 
-I say **CSS** here, because overflow usually occurs when you give elements fixed widths or heights. It's kind of hard to overflow with just plain HTML — unless you toss in a mega-large image or an unbreakable word.
+I say **CSS** here, because overflow usually occurs when you give elements fixed widths or heights. It's kind of hard to overflow with just plain HTML, unless you toss in a mega-large image or an unbreakable word.
 
 For example, if you have a `<div>` with a fixed width of 200px and you put a `<p>` inside it with a long word like "supercalifragilisticexpialidocious", the word will overflow the container. 
 
@@ -56,7 +56,7 @@ Normally, text wraps automatically (especially inside paragraphs), so it won't o
 	
 ```
 
-This example is just one of many that shows how it's often the author (you) who breaks things by adding CSS to an otherwise inherently responsive base. User agent styles — the default styles applied by the browser — are typically quite flexible and responsive by default.
+This example is just one of many that shows how it's often the author (you) who breaks things by adding CSS to an otherwise inherently responsive base. User agent styles (the default styles applied by the browser) are typically quite flexible and responsive by default.
 
 <InfoBox title='WTF is a user agent?'>
   <p>**Agent** = a person who acts on behalf of another person or group.</p>
@@ -137,18 +137,18 @@ overflow: auto;
 
 All elements have `overflow` set to `visible` by default. That just means: if you put something big inside something small, the overflow will spill out and still be visible.
 
-`overflow: hidden` hides the parts that don't fit — no scrollbars, no way to reach them. Just clipped. It's like putting a small picture frame over a much larger photo, and then snipping off the parts that stick out. Clean and static.
+`overflow: hidden` hides the parts that don't fit, no scrollbars, no way to reach them. Just clipped. It's like putting a small picture frame over a much larger photo, and then snipping off the parts that stick out. Clean and static.
 
-But — and here's where the metaphor breaks down a bit — the content isn't actually gone. Unlike scissors cutting a photo, `overflow: hidden` doesn't remove the overflow, it just hides it from view. The content is still there in the DOM and can affect things like _focus_, _screen readers_, or _JavaScript measurements_.
+But (and here's where the metaphor breaks down a bit) the content isn't actually gone. Unlike scissors cutting a photo, `overflow: hidden` doesn't remove the overflow, it just hides it from view. The content is still there in the DOM and can affect things like _focus_, _screen readers_, or _JavaScript measurements_.
 
 By setting an elements `overflow` property to either `hidden`, `scroll` or `auto`, you are creating a new [block formatting context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Block_formatting_context) (BFC).
 
 Ok, _WTF_ is that?
 
-Yeah, this is a whole topic on its own — but here’s the short version:
+Yeah, this is a whole topic on its own, but here’s the short version:
 **A Block Formatting Context (BFC)** is a special kind of layout container in CSS. It keeps what’s inside it separate from what’s outside in two important ways:
-- **Floats outside won’t affect it** — elements inside a BFC won’t overlap with floated elements that live outside of it.
-- **Margins won’t collapse across the boundary** — vertical margins inside the BFC won’t “merge” with margins outside it.
+- **Floats outside won’t affect it**: elements inside a BFC won’t overlap with floated elements that live outside of it.
+- **Margins won’t collapse across the boundary**: vertical margins inside the BFC won’t “merge” with margins outside it.
 
 Floats and margin collapsing... do i need to know about this? Maybe not, but it's good to understand that when you change certain properties, you also change how CSS renders certain parts of a web page. _Flex_ and _grid_ children that are not themselves _grid_ or _flex_ containers, also create new BFCs, for example. _Grid_ and _flex_ containers create something similar to a BFC - _grid/flex formatting contexts_,  which behave similarly in some ways (like float containment) but are **distinct layout models** with their own rules.
 
@@ -336,15 +336,15 @@ In the real world you could probably open the window a bit and let the cat stick
 You could also think about it as a _stacking context_, where that `<img>` is then moved to the bottom, but since the window is transparent it lets you see parts of it.
 
 <InfoBox title="">
- CSS allows mixing values like `overflow-x: hidden` and `overflow-y: visible`, but in practice, browsers ignore the visible part once an element becomes a scroll container (it gets converted to `overflow:auto`). The content is confined to the container’s edges, and trying to “let it spill out” in one direction while clipping in the other just doesn’t work. It’s like trying to open a window on only one side of a sealed frame — the layout model simply won’t allow it.
+ CSS allows mixing values like `overflow-x: hidden` and `overflow-y: visible`, but in practice, browsers ignore the visible part once an element becomes a scroll container (it gets converted to `overflow:auto`). The content is confined to the container’s edges, and trying to “let it spill out” in one direction while clipping in the other just doesn’t work. It’s like trying to open a window on only one side of a sealed frame, the layout model simply won’t allow it.
 </InfoBox>
 
 ## Clip 'em
- Ok, so what if we really need to hide something on the x-axis and let it overflow on the y-axis? We’d need something that **doesn’t** create a _scroll container_, right? Because, like we’ve established, a scroll container locks its children out of the house — you can watch them through the window, but they’re not allowed back inside. Ever again 😈.
+ Ok, so what if we really need to hide something on the x-axis and let it overflow on the y-axis? We’d need something that **doesn’t** create a _scroll container_, right? Because, like we’ve established, a scroll container locks its children out of the house, you can watch them through the window, but they’re not allowed back inside. Ever again 😈.
 
  Turns out, there’s another (newer) value we can use: `overflow: clip`.
 
- `clip` works like `hidden` — overflow content is clipped at the element’s _overflow clip edge_. But here’s the key difference: `clip` **doesn’t** create a **scroll container** or a new _formatting context_. That means the children aren’t banished — they can stay “inside,” and you’re free to clip them on one axis and let them overflow on the other.
+ `clip` works like `hidden`: overflow content is clipped at the element’s _overflow clip edge_. But here’s the key difference: `clip` **doesn’t** create a **scroll container** or a new _formatting context_. That means the children aren’t banished, they can stay “inside,” and you’re free to clip them on one axis and let them overflow on the other.
  <BlogPostImage src={four} alt="A window with a picture of a cat" caption='confused cat. clipped on one axis. visible on the other.'/>
 
 You also get acces to `overflow-clip-margin` which lets you specify how much of the overflow you wanna clip. Pretty neat.

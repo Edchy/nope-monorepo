@@ -1,6 +1,6 @@
 ---
 title: "The Model Landscape"
-description: "GPT, Claude, Gemini, Llama — what they are, who makes them, and how to choose."
+description: "GPT, Claude, Gemini, Llama: what they are, who makes them, and how to choose."
 date: 2025-11-19
 tags: [ai, models]
 draft: false
@@ -13,7 +13,7 @@ There are a lot of AI models. The names blend together quickly. Here is a map.
 
 ## What a model is
 
-A model is a trained neural network. It is a file of numbers — billions or trillions of them — that transforms text input into text output. Different models were trained on different data, at different scales, with different goals. The result is different strengths.
+A model is a trained neural network. It is a file of numbers (billions or trillions of them) that transforms text input into text output. Different models were trained on different data, at different scales, with different goals. The result is different strengths.
 
 Some models are fast and cheap. Some are slow and expensive but better at complex reasoning. Some are good at code. Some are good at following instructions. Some are good at talking through subtle topics without confidently saying wrong things.
 
@@ -21,17 +21,17 @@ Some models are fast and cheap. Some are slow and expensive but better at comple
 
 ## The main families
 
-**OpenAI** makes the GPT family. GPT-4o is their main model for most tasks. The "o" series (o1, o3) are reasoning models — they spend extra time thinking through problems before answering, which makes them better at math and complex logic. GPT-4.1 is their latest general model.
+**OpenAI** makes the GPT family. GPT-4o is their main model for most tasks. The "o" series (o1, o3) are reasoning models: they spend extra time thinking through problems before answering, which makes them better at math and complex logic. GPT-4.1 is their latest general model.
 
 **Anthropic** makes Claude. The naming follows three tiers: Haiku (fast and cheap), Sonnet (balanced), Opus (most capable). Anthropic's focus is on making models that are honest and reliable. Claude is widely considered the best for writing and nuanced reasoning.
 
 **Google** makes Gemini. Flash is fast and affordable. Pro and Ultra are stronger but more expensive. Gemini is deeply integrated into Google's products and has some of the largest context windows available.
 
-**Meta** makes Llama. Open-source. The weights are publicly available — you can download them and run them yourself. Llama models are competitive with commercial models and have become the foundation for a huge number of derivative projects.
+**Meta** makes Llama. Open-source. The weights are publicly available, so you can download them and run them yourself. Llama models are competitive with commercial models and have become the foundation for a huge number of derivative projects.
 
 **Mistral** is a French AI lab that produces efficient, high-quality open-source models. Mistral 7B can run on a laptop. Mixtral is a larger architecture that punches above its weight.
 
-**Chinese models** — DeepSeek, Qwen (Alibaba), Kimi (Moonshot), ByteDance's Doubao — are advancing fast and increasingly competitive with Western models. DeepSeek in particular shocked the industry in early 2025 by matching GPT-4 class performance at a fraction of the cost to run.
+**Chinese models** (DeepSeek, Qwen (Alibaba), Kimi (Moonshot), ByteDance's Doubao) are advancing fast and increasingly competitive with Western models. DeepSeek in particular shocked the industry in early 2025 by matching GPT-4 class performance at a fraction of the cost to run.
 
 ---
 
@@ -47,7 +47,7 @@ Some models are fast and cheap. Some are slow and expensive but better at comple
 
 **Cloud models** run on the company's servers. You send a request, they process it, you get a response. No hardware requirement on your end. Always the latest version. Costs money per token. Your data leaves your device.
 
-**Local models** run on your own machine. A tool called Ollama makes this easy — one command installs a model and runs it on your Mac or Linux machine. Private. Free after setup. Works without internet. The limit is your hardware. A laptop cannot run a 70 billion parameter model well. Smaller models (7B, 13B parameters) run fine.
+**Local models** run on your own machine. A tool called Ollama makes this easy: one command installs a model and runs it on your Mac or Linux machine. Private. Free after setup. Works without internet. The limit is your hardware. A laptop cannot run a 70 billion parameter model well. Smaller models (7B, 13B parameters) run fine.
 
 ---
 
@@ -77,11 +77,11 @@ Because the company's business model does not require charging users directly. T
 
 Training happens in stages.
 
-First, the model reads an enormous amount of text from the internet — books, code, articles, websites. It learns to predict the next word in a sequence. This is called **pre-training**. It is unsupervised and very expensive.
+First, the model reads an enormous amount of text from the internet: books, code, articles, websites. It learns to predict the next word in a sequence. This is called **pre-training**. It is unsupervised and very expensive.
 
 Second, the model is trained further on curated examples of good responses to questions and instructions. This is called **fine-tuning** or supervised fine-tuning. It teaches the model to be helpful rather than just a text predictor.
 
-Third, human raters evaluate outputs and the model learns to produce responses humans prefer. This is called **RLHF** — reinforcement learning from human feedback.
+Third, human raters evaluate outputs and the model learns to produce responses humans prefer. This is called **RLHF**, reinforcement learning from human feedback.
 
 Anthropic uses a variation called **Constitutional AI**, where the model evaluates its own responses against a set of principles rather than relying only on human raters.
 
