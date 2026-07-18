@@ -12,7 +12,7 @@ const work = defineCollection({
       type: z.string(),
       section: z.enum(["selected", "archive"]).default("archive"),
       tags: z.array(z.string()).default([]),
-      url: z.url().optional(),
+      url: z.union([z.url(), z.literal("")]).optional(),
       images: z.array(z.union([image(), z.url()])).default([]),
       tech: z.array(z.string()).default([]),
       effort: z.number().min(1).max(3).default(2),
