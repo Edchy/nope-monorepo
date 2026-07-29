@@ -4,7 +4,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 <BaseLayout
   title="Soul"
-  description="A bit about us."
+  description="About Eddie, the person behind nope digital."
   enableClientRouter={true}
 >
   <section class="about-shell layout-shell page-shell">
@@ -14,43 +14,50 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <h1 class="about-title">Soul.</h1>
 
         <p class="p--intro">
-          We're a small studio outside Stockholm that builds websites, apps, and digital things for people and companies who'd rather not blend in. The internet is full of work that could belong to anyone. We make the kind that could only belong to you.
+          Hi, I'm Eddie. I design and build websites, apps, and other things
+          for screens. nope digital is the name I work under, but it's just me,
+          working from just outside Stockholm.
         </p>
 
         <p class="p--punch">
-          We're<br>chasing soul.
+          I want to make things<br>with some life in them.
         </p>
 
         <p class="p--body p--tilt-left">
-          That's the real job, as we see it. Not just something that looks good or loads fast, but something that feels like the actual person or company behind it. Most sites are a costume. We're trying to build the opposite: the thing underneath, made visible.
+          Most projects start with a mix of ideas, references, problems, and
+          things that aren't quite clear yet. That's normal. I help turn that
+          mix into something you can look at, talk through with me, and improve.
         </p>
 
         <p class="p--body p--right">
-          A site should sound like <em>you talking</em>, not like a template wearing your logo.
+          You don't need to arrive with a finished brief or all the answers.
         </p>
 
         <p class="p--display">
-          grounded,<br>not<br>generic.
+          start with<br>what you<br>know.
         </p>
 
         <p class="p--body p--tilt-right">
-          So we spend more time than we probably should figuring out who you actually are: how you talk, what you care about, what makes you different from the ten others doing the same thing. Then we build outward from that. Every typeface, colour, margin and line is a decision, and we make them in service of that one truth instead of decorating around it.
-        </p>
-
-        <p class="p--punch p--center">
-          We say no<br>a lot.
-        </p>
-
-        <p class="p--body">
-          That part's true to the name. Features nobody asked for, pages that fill space, the shiny stuff that exists so a deck felt expensive. We'll usually try to talk you out of it. Not to be difficult. Because every thing that doesn't belong quietly drowns out the things that do. Less in the way means more of you comes through.
+          I ask questions, show the work early, and explain why I've made a
+          choice. You can tell me when something doesn't feel right. That back
+          and forth is part of the work, and it usually makes the result better.
         </p>
 
         <p class="p--body p--tilt-left">
-          We'd rather build one honest thing that actually sounds like you than ten clever things that sound like a committee. Smaller, sharper, unmistakably yours.
+          You work directly with me from start to finish. I do the design and
+          frontend development myself, so there isn't a handoff between the
+          person you talk to and the person making the thing.
         </p>
 
         <p class="p--outro">
-          Nope to the noise.<br>Nope to the template.<br>Yes to the <strong>soul underneath it all</strong>.
+          What I want at the end is quite simple: something that works well,
+          has some character, and <strong>feels like it belongs to you</strong>.
+        </p>
+
+        <p class="p--body">
+          If you're curious about how I ended up doing this, I've written a bit
+          more about myself on the{" "}
+          <a href="https://blog.nope.digital/about">blog</a>.
         </p>
 
       </article>
@@ -117,6 +124,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     line-height: 1.75;
     max-width: 48ch;
     margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .about .p--body a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: var(--space-1);
   }
 
   .about .p--right {

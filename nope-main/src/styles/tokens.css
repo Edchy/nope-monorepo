@@ -145,11 +145,11 @@
   --motion-duration-hero-weight-shift: 0.45s;
   --motion-duration-hero-human: 0.4s;
   --motion-duration-hero-minimal: 0.3s;
-  --motion-duration-hero-deliberate: 0.35s;
+  --motion-duration-hero-alive: 0.35s;
   --motion-ease-decelerate: cubic-bezier(0.19, 1, 0.22, 1);
   --motion-ease-hero-human: cubic-bezier(0.34, 1.8, 0.64, 1);
   --motion-ease-hero-minimal: cubic-bezier(0.76, 0, 0.24, 1);
-  --motion-ease-hero-deliberate: cubic-bezier(0.55, 0, 0.1, 1);
+  --motion-ease-hero-alive: cubic-bezier(0.55, 0, 0.1, 1);
   --motion-ease-hero-weight-shift: cubic-bezier(0.76, 0, 0.24, 1);
   --motion-ease-footer-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
