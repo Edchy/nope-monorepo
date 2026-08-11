@@ -19,7 +19,7 @@ const currentPath = Astro.url.pathname;
     <div class="site-header__shell layout-shell">
       <div class="site-header__grid layout-grid">
         <a href="/" class="site-header__logo" aria-label={`${siteTitle} home`}
-          >nope studio</a
+          >nope digital</a
         >
         <nav class="site-header__nav" aria-label="Main navigation">
           <ul class="site-header__links">
@@ -49,9 +49,8 @@ const currentPath = Astro.url.pathname;
             type="button"
             class="site-header__theme-toggle"
             data-theme-toggle
-            aria-label="Toggle experimental theme"
-            aria-pressed="false"
-            title="Toggle experimental theme"></button>
+            aria-label="Change color theme"
+            title="Change color theme"></button>
         </nav>
         <button
           type="button"
@@ -129,9 +128,8 @@ const currentPath = Astro.url.pathname;
         type="button"
         class="site-header__theme-toggle site-header__theme-toggle--mobile"
         data-theme-toggle
-        aria-label="Toggle experimental theme"
-        aria-pressed="false"
-        title="Toggle experimental theme"></button>
+        aria-label="Change color theme"
+        title="Change color theme"></button>
     </div>
   </nav>
 </>
@@ -238,7 +236,7 @@ const currentPath = Astro.url.pathname;
     outline: none;
     box-shadow:
       0 0 0 3px var(--color-background),
-      0 0 0 5px var(--color-action-primary);
+      0 0 0 5px var(--color-focus-ring);
   }
 
   .site-header__menu-trigger {
@@ -284,7 +282,7 @@ const currentPath = Astro.url.pathname;
       height: 44px;
       padding: 0;
       background: transparent;
-      color: var(--color-text-primary);
+      color: var(--menu-trigger-color);
       border: none;
       cursor: pointer;
       z-index: 1001;
@@ -392,22 +390,64 @@ const currentPath = Astro.url.pathname;
     if (mainHeader) {
       let cleanup: (() => void) | undefined;
 
-      const syncThemeToggleState = (experimental: boolean) => {
+      const themes = ["original", "experimental", "beige"] as const;
+      type Theme = (typeof themes)[number];
+
+      const themeLabels: Record<Theme, string> = {
+        original: "original",
+        experimental: "blue and yellow",
+        beige: "beige",
+      };
+
+      const getCurrentTheme = (): Theme => {
+        const theme = document.documentElement.dataset.theme;
+        return theme === "experimental" || theme === "beige"
+          ? theme
+          : "original";
+      };
+
+      const getNextTheme = (theme: Theme): Theme => {
+        const currentIndex = themes.indexOf(theme);
+        return themes[(currentIndex + 1) % themes.length];
+      };
+
+      const syncThemeToggleState = (theme: Theme) => {
+        const nextTheme = getNextTheme(theme);
+        const label = `Color theme: ${themeLabels[theme]}. Switch to ${themeLabels[nextTheme]}.`;
+
         document
           .querySelectorAll<HTMLButtonElement>("[data-theme-toggle]")
           .forEach((toggle) => {
-            toggle.setAttribute("aria-pressed", experimental ? "true" : "false");
+            toggle.dataset.currentTheme = theme;
+            toggle.setAttribute("aria-label", label);
+            toggle.title = label;
           });
       };
 
-      const applyTheme = (experimental: boolean) => {
-        document.documentElement.dataset.theme = experimental ? "experimental" : "";
-        syncThemeToggleState(experimental);
+      const applyTheme = (theme: Theme) => {
+        if (theme === "original") {
+          document.documentElement.removeAttribute("data-theme");
+        } else {
+          document.documentElement.dataset.theme = theme;
+        }
+        syncThemeToggleState(theme);
+      };
+
+      const getStoredTheme = (): Theme => {
+        const storedTheme = localStorage.getItem("theme");
+        if (
+          storedTheme === "original" ||
+          storedTheme === "experimental" ||
+          storedTheme === "beige"
+        ) {
+          return storedTheme;
+        }
+        return "beige";
       };
 
       function init() {
         cleanup?.();
-        applyTheme(localStorage.getItem("theme") !== "default");
+        applyTheme(getStoredTheme());
 
         const trigger = document.querySelector<HTMLButtonElement>(
           ".site-header__menu-trigger",
@@ -489,10 +529,9 @@ const currentPath = Astro.url.pathname;
             toggle.addEventListener(
               "click",
               () => {
-                const next =
-                  document.documentElement.dataset.theme !== "experimental";
-                applyTheme(next);
-                localStorage.setItem("theme", next ? "experimental" : "default");
+                const nextTheme = getNextTheme(getCurrentTheme());
+                applyTheme(nextTheme);
+                localStorage.setItem("theme", nextTheme);
               },
               { signal },
             );

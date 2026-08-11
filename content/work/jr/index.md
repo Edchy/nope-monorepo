@@ -7,7 +7,7 @@ section: "selected"
 tags: ["brochure", "brand"]
 tech: ["Astro"]
 effort: 2
-url: "https://www.jarnarosteri.se/"
+url: ""
 images:
   - "./jarnarosteri-1.jpg"
   - "./jarnarosteri-2.jpg"

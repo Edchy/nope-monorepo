@@ -34,6 +34,7 @@ body {
   line-height: var(--line-height-normal);
   color: var(--color-text-primary);
   background-color: var(--color-background);
+  text-shadow: var(--theme-text-shadow);
   -webkit-font-smoothing: antialiased;
   min-height: 100dvh;
   display: flex;
@@ -92,7 +93,7 @@ video {
 }
 
 *:focus-visible {
-  outline: 3px solid var(--color-action-primary);
+  outline: 3px solid var(--color-focus-ring);
   outline-offset: 2px;
   border-radius: 2px;
 }
@@ -173,7 +174,7 @@ a:visited {
     --motion-duration-hero-weight-shift: 0s;
     --motion-duration-hero-human: 0s;
     --motion-duration-hero-minimal: 0s;
-    --motion-duration-hero-deliberate: 0s;
+    --motion-duration-hero-alive: 0s;
     --motion-duration-hero-reveal: 0s;
     --hero-word-stagger: 0ms;
   }

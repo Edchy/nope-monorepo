@@ -4,6 +4,7 @@ description: "AI learning plaform."
 date: 2026-05-01
 type: "web app"
 section: "selected"
+wip: true
 tags: ["concept", "community"]
 tech: ["Next.js"]
 effort: 1

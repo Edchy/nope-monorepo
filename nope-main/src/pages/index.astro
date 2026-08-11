@@ -1,11 +1,21 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
 import LiftButton from "../components/LiftButton.astro";
+
+const nowMaking = (await getCollection("work"))
+  .filter((entry) => entry.data.wip)
+  .sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
+  .map((entry) => ({
+    name: entry.data.title,
+    description: entry.data.description ?? entry.data.type,
+    href: entry.data.url || "/work",
+  }));
 ---
 
 <BaseLayout
   title="NOPE"
-  description="Design, websites, and digital work for ordinary folks and small companies. Made by people."
+  description="Design, websites, and digital work for ordinary folks and small companies. Designed and built by one person."
   mainClass="site-main--viewport-floor"
 >
   <section class="hero">
@@ -40,25 +50,17 @@ import LiftButton from "../components/LiftButton.astro";
               Minimal<span class="hero__title-dot">.</span>
             </span>
             <span
-              class="hero__title-word hero__title-word--deliberate"
+              class="hero__title-word hero__title-word--alive"
               style="--word-index: 2"
-              aria-label="Deliberate"
+              aria-label="Alive"
             >
-              <span class="hero__deliberate-letter" style="--i:0" aria-hidden="true">D</span><span
-                class="hero__deliberate-letter"
-                style="--i:1" aria-hidden="true">e</span
-              ><span class="hero__deliberate-letter" style="--i:2" aria-hidden="true">l</span><span
-                class="hero__deliberate-letter"
-                style="--i:3" aria-hidden="true">i</span
-              ><span class="hero__deliberate-letter" style="--i:4" aria-hidden="true">b</span><span
-                class="hero__deliberate-letter"
-                style="--i:5" aria-hidden="true">e</span
-              ><span class="hero__deliberate-letter" style="--i:6" aria-hidden="true">r</span><span
-                class="hero__deliberate-letter"
-                style="--i:7" aria-hidden="true">a</span
-              ><span class="hero__deliberate-letter" style="--i:8" aria-hidden="true">t</span><span
-                class="hero__deliberate-letter"
-                style="--i:9" aria-hidden="true">e</span
+              <span class="hero__alive-letter" style="--i:0" aria-hidden="true">A</span><span
+                class="hero__alive-letter"
+                style="--i:1" aria-hidden="true">l</span
+              ><span class="hero__alive-letter" style="--i:2" aria-hidden="true">i</span><span
+                class="hero__alive-letter"
+                style="--i:3" aria-hidden="true">v</span
+              ><span class="hero__alive-letter" style="--i:4" aria-hidden="true">e</span
               ><span class="hero__title-dot" aria-hidden="true">.</span>
             </span>
           </h1>
@@ -67,10 +69,9 @@ import LiftButton from "../components/LiftButton.astro";
               Websites. Apps. Design.<br/> All things digital.
             </p>
             <p class="hero__summary">
-              Human, because real people build it, with soul.<br/>
-              Minimal, because we cut what doesn't earn its place.<br/>
-              Deliberate, because nothing here is by accident.<br/>
-              Got an idea, or just the itch to build something? Say hello and we'll take it from there.
+              Human, because a real person builds it, with soul.<br/>
+              Minimal, because I cut what doesn't earn its place.<br/>
+              Alive, because it should feel like someone cared.<br/>
             </p>
           </div>
           <nav class="hero__actions">
@@ -84,6 +85,21 @@ import LiftButton from "../components/LiftButton.astro";
             <LiftButton href="/work" variant="secondary">See work</LiftButton>
           </nav>
         </div>
+        {nowMaking.length > 0 && (
+          <aside class="hero__now-making" aria-label="Currently making">
+            <p class="hero__now-making-label"><span aria-hidden="true"></span>Now making</p>
+            <ul class="hero__now-making-list">
+              {nowMaking.map(({ name, description, href }) => (
+                <li>
+                  <a href={href}>
+                    <span class="hero__now-making-name">{name}</span>
+                    <span class="hero__now-making-description">{description}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
       </div>
     </div>
   </section>
@@ -117,13 +133,110 @@ import LiftButton from "../components/LiftButton.astro";
   }
 
   .hero__copy {
-    grid-column: 3 / 11;
+    grid-column: 3 / 9;
     grid-row: 2;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     row-gap: var(--space-6);
     align-content: start;
     width: 100%;
+  }
+
+  .hero__now-making {
+    grid-column: 10 / 13;
+    grid-row: 2;
+    align-self: center;
+    width: 100%;
+    max-width: 17rem;
+    margin-top: var(--space-16);
+    color: var(--color-text-primary);
+  }
+
+  .hero__now-making-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .hero__now-making-label span {
+    width: 0.6rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--brand-green);
+    box-shadow: 0 0 0 2px var(--brand-purple);
+  }
+
+  .hero__now-making-list {
+    list-style: none;
+    border-top: var(--border-width-2) solid currentColor;
+  }
+
+  .hero__now-making-list li + li {
+    border-top: var(--border-width-1) solid var(--color-border-strong);
+  }
+
+  .hero__now-making-list a {
+    display: grid;
+    gap: var(--space-1);
+    padding-block: var(--space-3);
+    color: inherit;
+    text-decoration: none;
+    transition: color 180ms var(--motion-ease-decelerate), translate 180ms var(--motion-ease-decelerate);
+  }
+
+  .hero__now-making-name {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .hero__now-making-description {
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-snug);
+    color: var(--color-text-secondary);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hero__now-making-list a:hover {
+      color: var(--brand-purple);
+      text-decoration: none;
+      translate: var(--space-1) 0;
+    }
+  }
+
+  :global([data-theme="experimental"]) .hero__now-making {
+    color: var(--brand-green);
+  }
+
+  :global([data-theme="experimental"]) .hero__now-making-label span {
+    background: var(--brand-green);
+    box-shadow: 0 0 0 2px var(--brand-green);
+  }
+
+  :global([data-theme="experimental"]) .hero__now-making-description {
+    color: var(--neutral-50);
+  }
+
+  :global([data-theme="experimental"]) .hero__now-making-list li + li {
+    border-color: color-mix(in srgb, var(--brand-green) 45%, transparent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__now-making-label span {
+      animation: now-making-pulse 2.8s ease-in-out infinite;
+    }
+  }
+
+  @keyframes now-making-pulse {
+    50% {
+      scale: 1.25;
+    }
   }
 
   @keyframes hero-word-in {
@@ -175,12 +288,12 @@ import LiftButton from "../components/LiftButton.astro";
     cursor: inherit;
   }
 
-  .hero__title-word--deliberate {
+  .hero__title-word--alive {
     --hero-title-word-transition-duration: var(
-      --motion-duration-hero-deliberate
+      --motion-duration-hero-alive
     );
-    --hero-title-word-transition-ease: var(--motion-ease-hero-deliberate);
-    --hero-title-word-min-width: 10ch;
+    --hero-title-word-transition-ease: var(--motion-ease-hero-alive);
+    --hero-title-word-min-width: 5ch;
     cursor: inherit;
   }
 
@@ -213,17 +326,35 @@ import LiftButton from "../components/LiftButton.astro";
     }
   }
 
-  .hero__deliberate-letter {
+  @keyframes alive-pulse {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg) scale(1);
+      font-variation-settings: "wght" var(--font-weight-regular);
+    }
+    35% {
+      transform: translateY(-0.08em) rotate(-2deg) scaleX(0.96) scaleY(1.08);
+      font-variation-settings: "wght" var(--font-weight-black);
+    }
+    65% {
+      transform: translateY(0.025em) rotate(1deg) scaleX(1.03) scaleY(0.98);
+      font-variation-settings: "wght" var(--font-weight-semibold);
+    }
+  }
+
+  .hero__alive-letter {
     display: inline-block;
     pointer-events: none;
+    transform-origin: center 70%;
     font-variation-settings: "wght" var(--font-weight-regular);
-    transition: font-variation-settings 0.2s var(--motion-ease-hero-deliberate)
+    transition: font-variation-settings 0.2s var(--motion-ease-hero-alive)
       calc(var(--i) * 40ms);
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .hero__title-word--deliberate:hover .hero__deliberate-letter {
-      font-variation-settings: "wght" var(--font-weight-black);
+    .hero__title-word--alive:hover .hero__alive-letter {
+      animation: alive-pulse 1s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 70ms);
     }
   }
 
@@ -257,14 +388,21 @@ import LiftButton from "../components/LiftButton.astro";
     --hero-title-word-weight: var(--hero-title-word-hover-weight);
   }
 
-  .hero__title-word--deliberate.is-intro-active .hero__deliberate-letter {
-    font-variation-settings: "wght" var(--font-weight-black);
+  .hero__title-word--alive.is-intro-active .hero__alive-letter {
+    animation: alive-pulse 1s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 70ms);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .hero__title-word {
       animation: none;
       transition: none;
+    }
+
+    .hero__title-word--alive:hover .hero__alive-letter,
+    .hero__title-word--alive.is-intro-active .hero__alive-letter {
+      animation: none;
+      font-variation-settings: "wght" var(--font-weight-black);
     }
   }
 
@@ -337,7 +475,7 @@ import LiftButton from "../components/LiftButton.astro";
       min-height: 100svh;
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows: auto;
-      row-gap: var(--space-6);
+      row-gap: var(--space-24);
       padding-top: var(--space-16);
       padding-bottom: var(--space-10);
     }
@@ -351,6 +489,14 @@ import LiftButton from "../components/LiftButton.astro";
       max-width: 34rem;
       min-height: 100%;
       margin-inline: auto;
+    }
+
+    .hero__now-making {
+      grid-column: 1 / -1;
+      grid-row: auto;
+      align-self: auto;
+      max-width: 34rem;
+      margin: 0 auto;
     }
 
     .hero__title {
@@ -394,8 +540,14 @@ import LiftButton from "../components/LiftButton.astro";
     .hero__title-word--human.is-intro-active .hero__title-letter {
       transition-duration: 0.5s;
     }
-    .hero__title-word--deliberate.is-intro-active .hero__deliberate-letter {
+    .hero__title-word--alive.is-intro-active .hero__alive-letter {
       transition-duration: 0.4s;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__now-making-list a {
+      transition: none;
     }
   }
 
@@ -412,8 +564,8 @@ import LiftButton from "../components/LiftButton.astro";
 
     const human = document.querySelector<HTMLElement>(".hero__title-word--human");
     const minimal = document.querySelector<HTMLElement>(".hero__title-word--minimal");
-    const deliberate = document.querySelector<HTMLElement>(".hero__title-word--deliberate");
-    if (!human || !minimal || !deliberate) return;
+    const alive = document.querySelector<HTMLElement>(".hero__title-word--alive");
+    if (!human || !minimal || !alive) return;
 
     // Stagger: wait for words to finish appearing, then trigger each effect
     // Words animate in at: 0ms, 80ms, 160ms — done by ~870ms total
@@ -430,7 +582,7 @@ import LiftButton from "../components/LiftButton.astro";
 
     activate(human, baseDelay);
     activate(minimal, baseDelay + holdDuration + between);
-    activate(deliberate, baseDelay + (holdDuration + between) * 2);
+    activate(alive, baseDelay + (holdDuration + between) * 2);
   }
 
   document.addEventListener("astro:page-load", initHeroIntro);

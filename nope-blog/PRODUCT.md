@@ -6,14 +6,14 @@ brand
 
 ## Users
 
-Visitors arriving from the nope studio site, Eddie's writing, or search. They're
+Visitors arriving from the nope digital site, Eddie's writing, or search. They're
 curious about who is behind the work and the words — potential clients,
 collaborators, and fellow builders reading on their own time.
 
 ## Product Purpose
 
 blog.nope.digital is Eddie's personal corner: writing, experiments, and an
-about page. It exists to show the person behind nope studio — the site itself
+about page. It exists to show the person behind nope digital — the site itself
 is a work sample. Success is a visitor leaving with a clear sense of a real,
 specific person who makes things with care.
 

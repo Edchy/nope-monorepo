@@ -4,6 +4,7 @@ import { ClientRouter, slide } from "astro:transitions";
 
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import ContrastLens from "../components/ContrastLens.astro";
 import "../styles/global.css";
 
 interface Props {
@@ -23,8 +24,27 @@ const {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="beige">
   <head>
+    <script is:inline>
+      try {
+        const storedTheme = localStorage.getItem("theme");
+        const theme =
+          storedTheme === "original" ||
+          storedTheme === "experimental" ||
+          storedTheme === "beige"
+            ? storedTheme
+            : "beige";
+
+        if (theme === "original") {
+          document.documentElement.removeAttribute("data-theme");
+        } else {
+          document.documentElement.dataset.theme = theme;
+        }
+      } catch {
+        document.documentElement.dataset.theme = "beige";
+      }
+    </script>
     {
       enableClientRouter && (
         <>
@@ -106,6 +126,7 @@ const {
       </div>
     </main>
     <Footer siteTitle={SITE_TITLE} />
+    <ContrastLens />
   </body>
 </html>
 

@@ -1,0 +1,190 @@
+<div class="contrast-lens-radius" data-contrast-lens-radius aria-hidden="true"></div>
+
+<style>
+  .contrast-lens-radius {
+    position: fixed;
+    width: calc(var(--contrast-lens-radius) * 2);
+    height: 1px;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    :global([data-theme="beige"] .contrast-lens-target) {
+      transition: color var(--motion-duration-contrast-lens)
+        var(--motion-ease-decelerate);
+    }
+
+    :global(
+        [data-theme="beige"]
+          .contrast-lens-target.is-contrast-revealed
+      ) {
+      color: var(--contrast-lens-color) !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global([data-theme="beige"] .contrast-lens-target) {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  {
+    let cleanupContrastLens: (() => void) | undefined;
+
+    function init() {
+      cleanupContrastLens?.();
+
+      const radiusProbe = document.querySelector<HTMLElement>(
+        "[data-contrast-lens-radius]",
+      );
+      if (!radiusProbe) return;
+
+      const controller = new AbortController();
+      const { signal } = controller;
+      const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+      const targets = new Set<HTMLElement>();
+      const activeTargets = new Set<HTMLElement>();
+      let animationFrame = 0;
+      let pointerActive = false;
+      let pointerX = 0;
+      let pointerY = 0;
+
+      const collectTargets = () => {
+        targets.clear();
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+          {
+            acceptNode(node) {
+              const parent = node.parentElement;
+              if (
+                !node.textContent?.trim() ||
+                !(parent instanceof HTMLElement) ||
+                parent.matches("script, style, noscript") ||
+                parent.closest("[data-contrast-lens-radius]")
+              ) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              return NodeFilter.FILTER_ACCEPT;
+            },
+          },
+        );
+
+        while (walker.nextNode()) {
+          const parent = walker.currentNode.parentElement;
+          if (parent instanceof HTMLElement) {
+            parent.classList.add("contrast-lens-target");
+            targets.add(parent);
+          }
+        }
+      };
+
+      const clearReveal = () => {
+        activeTargets.forEach((target) => {
+          target.classList.remove("is-contrast-revealed");
+          target.style.removeProperty("--contrast-lens-color");
+        });
+        activeTargets.clear();
+      };
+
+      const renderReveal = () => {
+        clearReveal();
+        animationFrame = 0;
+
+        if (
+          !pointerActive ||
+          !finePointer.matches ||
+          document.documentElement.dataset.theme !== "beige"
+        ) {
+          return;
+        }
+
+        const radius = radiusProbe.getBoundingClientRect().width / 2;
+
+        targets.forEach((target) => {
+          const rect = target.getBoundingClientRect();
+          if (
+            rect.bottom < pointerY - radius ||
+            rect.top > pointerY + radius ||
+            rect.right < pointerX - radius ||
+            rect.left > pointerX + radius
+          ) {
+            return;
+          }
+
+          const deltaX = Math.max(rect.left - pointerX, 0, pointerX - rect.right);
+          const deltaY = Math.max(rect.top - pointerY, 0, pointerY - rect.bottom);
+          const distance = Math.hypot(deltaX, deltaY);
+          const proximity = Math.max(0, 1 - distance / radius);
+          const easedProximity = proximity * proximity * (3 - 2 * proximity);
+
+          if (easedProximity <= 0) return;
+
+          const darkening = Math.round(easedProximity * 58);
+          target.style.setProperty(
+            "--contrast-lens-color",
+            `color-mix(in oklch, var(--beige-text-primary), var(--beige-lens-text) ${darkening}%)`,
+          );
+          target.classList.add("is-contrast-revealed");
+          activeTargets.add(target);
+        });
+      };
+
+      const requestReveal = () => {
+        if (!animationFrame) animationFrame = requestAnimationFrame(renderReveal);
+      };
+
+      const onPointerMove = (event: PointerEvent) => {
+        pointerActive = true;
+        pointerX = event.clientX;
+        pointerY = event.clientY;
+        requestReveal();
+      };
+
+      const hideReveal = () => {
+        pointerActive = false;
+        clearReveal();
+      };
+
+      collectTargets();
+      document.addEventListener("pointermove", onPointerMove, {
+        passive: true,
+        signal,
+      });
+      document.addEventListener(
+        "pointerout",
+        (event) => {
+          if (!event.relatedTarget) hideReveal();
+        },
+        { signal },
+      );
+      document.addEventListener("scroll", requestReveal, {
+        passive: true,
+        signal,
+      });
+      window.addEventListener("resize", requestReveal, { signal });
+      window.addEventListener("blur", hideReveal, { signal });
+
+      const themeObserver = new MutationObserver(requestReveal);
+      themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme"],
+      });
+
+      cleanupContrastLens = () => {
+        controller.abort();
+        themeObserver.disconnect();
+        if (animationFrame) cancelAnimationFrame(animationFrame);
+        hideReveal();
+        targets.forEach((target) => target.classList.remove("contrast-lens-target"));
+        targets.clear();
+      };
+    }
+
+    document.addEventListener("astro:page-load", init);
+    init();
+  }
+</script>
