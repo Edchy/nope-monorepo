@@ -29,12 +29,15 @@ const {
     <script is:inline>
       try {
         const storedTheme = localStorage.getItem("theme");
+        const defaultTheme = window.matchMedia("(max-width: 768px)").matches
+          ? "experimental"
+          : "beige";
         const theme =
           storedTheme === "original" ||
           storedTheme === "experimental" ||
           storedTheme === "beige"
             ? storedTheme
-            : "beige";
+            : defaultTheme;
 
         if (theme === "original") {
           document.documentElement.removeAttribute("data-theme");
@@ -42,7 +45,11 @@ const {
           document.documentElement.dataset.theme = theme;
         }
       } catch {
-        document.documentElement.dataset.theme = "beige";
+        document.documentElement.dataset.theme = window.matchMedia(
+          "(max-width: 768px)",
+        ).matches
+          ? "experimental"
+          : "beige";
       }
     </script>
     {
@@ -103,7 +110,7 @@ const {
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <Font cssVariable="--font-zt-nature" preload={true} />
-    <Font cssVariable="--font-literata" preload={true} />
+    <Font cssVariable="--font-literata" preload={false} />
   </head>
   <body>
     <Header

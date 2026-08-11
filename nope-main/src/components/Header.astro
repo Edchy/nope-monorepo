@@ -442,7 +442,9 @@ const currentPath = Astro.url.pathname;
         ) {
           return storedTheme;
         }
-        return "beige";
+        return window.matchMedia("(max-width: 768px)").matches
+          ? "experimental"
+          : "beige";
       };
 
       function init() {
