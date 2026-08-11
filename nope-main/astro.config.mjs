@@ -2,6 +2,9 @@ import { defineConfig, fontProviders } from "astro/config";
 
 export default defineConfig({
   site: "https://nope.digital",
+  build: {
+    inlineStylesheets: "always",
+  },
   vite: {
     server: {
       watch: {
