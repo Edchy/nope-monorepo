@@ -34,6 +34,7 @@ body {
   line-height: var(--line-height-normal);
   color: var(--color-text-primary);
   background-color: var(--color-background);
+  text-shadow: var(--theme-text-shadow);
   -webkit-font-smoothing: antialiased;
   min-height: 100dvh;
   display: flex;
@@ -92,7 +93,7 @@ video {
 }
 
 *:focus-visible {
-  outline: 3px solid var(--color-action-primary);
+  outline: 3px solid var(--color-focus-ring);
   outline-offset: 2px;
   border-radius: 2px;
 }

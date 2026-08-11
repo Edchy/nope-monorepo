@@ -23,6 +23,13 @@
   --brand-purple: #0000d2;
   --brand-green: #ffff04;
   --experimental-3: oklch(0.75 0.1 125);
+  --beige-background: oklch(0.69 0.04 82);
+  --beige-text-primary: oklch(0.69 0.03 65);
+  --beige-text-secondary: oklch(0.69 0.028 72);
+  --beige-shadow-highlight: oklch(0.75 0.025 82 / 0.52);
+  --beige-shadow-lowlight: oklch(0.59 0.045 65 / 0.4);
+  --beige-lens-text: oklch(0.42 0.04 65);
+  --beige-focus: oklch(0.36 0.04 65);
 
   /* Spacing primitives */
   --space-1: 4px;
@@ -117,6 +124,7 @@
   --color-action-primary-hover: var(--neutral-700);
   --color-action-visited: var(--neutral-600);
   --color-accent-experimental: var(--brand-purple);
+  --color-focus-ring: var(--color-action-primary);
 
   /* Borders */
   --color-border-default: color-mix(
@@ -146,6 +154,7 @@
   --motion-duration-hero-human: 0.4s;
   --motion-duration-hero-minimal: 0.3s;
   --motion-duration-hero-alive: 0.35s;
+  --motion-duration-contrast-lens: 0.16s;
   --motion-ease-decelerate: cubic-bezier(0.19, 1, 0.22, 1);
   --motion-ease-hero-human: cubic-bezier(0.34, 1.8, 0.64, 1);
   --motion-ease-hero-minimal: cubic-bezier(0.76, 0, 0.24, 1);
@@ -165,13 +174,18 @@
   /* Footer */
   --footer-letter-stagger: 52ms;
   --footer-wordmark-offset-y: 1.15em;
+
+  /* Experimental theme effects */
+  --theme-text-shadow: none;
+  --contrast-lens-radius: clamp(5rem, 9vw, 7rem);
 }
 
 /* ------------------------------------------------------------
-   Experimental theme override
+   Experimental theme overrides
    ------------------------------------------------------------ */
 :root {
   --button-theme-toggle-color: var(--brand-purple);
+  --menu-trigger-color: var(--color-text-primary);
 }
 
 [data-theme="experimental"] {
@@ -185,10 +199,41 @@
   --color-border-default: color-mix(in srgb, var(--brand-purple) 84%, white);
 }
 
-[data-theme="experimental"] {
-  --color-background: var(--brand-purple);
-  --color-text-primary: var(--brand-green);
-  --color-text-secondary: var(--experimental-3);
-  --color-accent-experimental: var(--neutral-100);
-  --button-theme-toggle-color: var(--neutral-100);
+[data-theme="beige"] {
+  /* Wash brand roles into one deliberately low-contrast beige family. */
+  --brand-purple: var(--beige-text-primary);
+  --brand-green: var(--beige-text-secondary);
+  --experimental-3: var(--beige-text-secondary);
+
+  --color-background: var(--beige-background);
+  --color-background-surface: var(--beige-background);
+  --color-background-subtle: var(--beige-background);
+  --color-text-primary: var(--beige-text-primary);
+  --color-text-secondary: var(--beige-text-secondary);
+  --color-text-disabled: var(--beige-text-secondary);
+  --color-text-inverse: var(--beige-background);
+  --color-action-primary: var(--beige-text-primary);
+  --color-action-primary-hover: color-mix(
+    in oklch,
+    var(--beige-text-primary) 94%,
+    black
+  );
+  --color-action-visited: var(--beige-text-secondary);
+  --color-accent-experimental: var(--beige-text-primary);
+  --color-focus-ring: var(--beige-focus);
+  --color-border-default: color-mix(
+    in oklch,
+    var(--beige-background) 82%,
+    var(--beige-text-primary)
+  );
+  --color-border-strong: color-mix(
+    in oklch,
+    var(--beige-background) 55%,
+    var(--beige-text-primary)
+  );
+  --button-theme-toggle-color: var(--beige-focus);
+  --menu-trigger-color: var(--beige-focus);
+  --theme-text-shadow:
+    -0.8px -0.8px 1px var(--beige-shadow-highlight),
+    0.8px 0.8px 1.2px var(--beige-shadow-lowlight);
 }

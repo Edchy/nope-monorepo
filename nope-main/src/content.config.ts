@@ -11,6 +11,7 @@ const work = defineCollection({
       date: z.date().optional(),
       type: z.string(),
       section: z.enum(["selected", "archive"]).default("archive"),
+      wip: z.boolean().default(false),
       tags: z.array(z.string()).default([]),
       url: z.union([z.url(), z.literal("")]).optional(),
       images: z.array(z.union([image(), z.url()])).default([]),

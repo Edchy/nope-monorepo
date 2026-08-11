@@ -3,7 +3,7 @@ title: Just To Do It
 description: Obligatory todo app (every developer needs one).
 date: 2025-04-14
 type: web app
-section: selected
+section: archive
 tags:
   - community
   - marketplace

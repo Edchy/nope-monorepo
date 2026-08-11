@@ -1,6 +1,16 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
 import LiftButton from "../components/LiftButton.astro";
+
+const nowMaking = (await getCollection("work"))
+  .filter((entry) => entry.data.wip)
+  .sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
+  .map((entry) => ({
+    name: entry.data.title,
+    description: entry.data.description ?? entry.data.type,
+    href: entry.data.url || "/work",
+  }));
 ---
 
 <BaseLayout
@@ -62,7 +72,6 @@ import LiftButton from "../components/LiftButton.astro";
               Human, because a real person builds it, with soul.<br/>
               Minimal, because I cut what doesn't earn its place.<br/>
               Alive, because it should feel like someone cared.<br/>
-              Got an idea, or just the itch to build something? Say hello and I'll take it from there.
             </p>
           </div>
           <nav class="hero__actions">
@@ -76,6 +85,21 @@ import LiftButton from "../components/LiftButton.astro";
             <LiftButton href="/work" variant="secondary">See work</LiftButton>
           </nav>
         </div>
+        {nowMaking.length > 0 && (
+          <aside class="hero__now-making" aria-label="Currently making">
+            <p class="hero__now-making-label"><span aria-hidden="true"></span>Now making</p>
+            <ul class="hero__now-making-list">
+              {nowMaking.map(({ name, description, href }) => (
+                <li>
+                  <a href={href}>
+                    <span class="hero__now-making-name">{name}</span>
+                    <span class="hero__now-making-description">{description}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
       </div>
     </div>
   </section>
@@ -109,13 +133,110 @@ import LiftButton from "../components/LiftButton.astro";
   }
 
   .hero__copy {
-    grid-column: 3 / 11;
+    grid-column: 3 / 9;
     grid-row: 2;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     row-gap: var(--space-6);
     align-content: start;
     width: 100%;
+  }
+
+  .hero__now-making {
+    grid-column: 10 / 13;
+    grid-row: 2;
+    align-self: center;
+    width: 100%;
+    max-width: 17rem;
+    margin-top: var(--space-16);
+    color: var(--color-text-primary);
+  }
+
+  .hero__now-making-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .hero__now-making-label span {
+    width: 0.6rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--brand-green);
+    box-shadow: 0 0 0 2px var(--brand-purple);
+  }
+
+  .hero__now-making-list {
+    list-style: none;
+    border-top: var(--border-width-2) solid currentColor;
+  }
+
+  .hero__now-making-list li + li {
+    border-top: var(--border-width-1) solid var(--color-border-strong);
+  }
+
+  .hero__now-making-list a {
+    display: grid;
+    gap: var(--space-1);
+    padding-block: var(--space-3);
+    color: inherit;
+    text-decoration: none;
+    transition: color 180ms var(--motion-ease-decelerate), translate 180ms var(--motion-ease-decelerate);
+  }
+
+  .hero__now-making-name {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .hero__now-making-description {
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-snug);
+    color: var(--color-text-secondary);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hero__now-making-list a:hover {
+      color: var(--brand-purple);
+      text-decoration: none;
+      translate: var(--space-1) 0;
+    }
+  }
+
+  :global([data-theme="experimental"]) .hero__now-making {
+    color: var(--brand-green);
+  }
+
+  :global([data-theme="experimental"]) .hero__now-making-label span {
+    background: var(--brand-green);
+    box-shadow: 0 0 0 2px var(--brand-green);
+  }
+
+  :global([data-theme="experimental"]) .hero__now-making-description {
+    color: var(--neutral-50);
+  }
+
+  :global([data-theme="experimental"]) .hero__now-making-list li + li {
+    border-color: color-mix(in srgb, var(--brand-green) 45%, transparent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__now-making-label span {
+      animation: now-making-pulse 2.8s ease-in-out infinite;
+    }
+  }
+
+  @keyframes now-making-pulse {
+    50% {
+      scale: 1.25;
+    }
   }
 
   @keyframes hero-word-in {
@@ -354,7 +475,7 @@ import LiftButton from "../components/LiftButton.astro";
       min-height: 100svh;
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows: auto;
-      row-gap: var(--space-6);
+      row-gap: var(--space-24);
       padding-top: var(--space-16);
       padding-bottom: var(--space-10);
     }
@@ -368,6 +489,14 @@ import LiftButton from "../components/LiftButton.astro";
       max-width: 34rem;
       min-height: 100%;
       margin-inline: auto;
+    }
+
+    .hero__now-making {
+      grid-column: 1 / -1;
+      grid-row: auto;
+      align-self: auto;
+      max-width: 34rem;
+      margin: 0 auto;
     }
 
     .hero__title {
@@ -413,6 +542,12 @@ import LiftButton from "../components/LiftButton.astro";
     }
     .hero__title-word--alive.is-intro-active .hero__alive-letter {
       transition-duration: 0.4s;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__now-making-list a {
+      transition: none;
     }
   }
 
